@@ -8,12 +8,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:parkcore_app/main.dart';
+import 'package:parkcore_app/home.dart';
+
+//void main() {
+//  testWidgets('MyHomePage has a title', (WidgetTester tester) async {
+//    // Create the widget by telling the tester to build it.
+//    await tester.pumpWidget(MyHomePage());
+//    // Use the `findsOneWidget` matcher provided by flutter_test to verify
+//    // that the Text widgets appear exactly once in the widget tree.
+//    final titleFinder = find.text('ParkCore');
+//    expect(titleFinder, findsOneWidget);
+//  });
+//}
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "title"),
+    ));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
