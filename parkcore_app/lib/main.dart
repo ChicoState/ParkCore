@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:parkcore_app/home.dart';
-import 'package:parkcore_app/onboard.dart';
+import 'package:parkcore_app/routes.dart';
+import 'package:parkcore_app/style.dart';
 
 // This application can be run with "flutter run".
 void main() => runApp(MyApp());
@@ -11,15 +11,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ParkCore',
-      theme: ThemeData(
-        // This is the theme of your application.
-        primarySwatch: Colors.green,
-      ),
+      theme: appTheme(),
       initialRoute: '/',
-      routes: {
-        '/': (context) => OnBoard(title: 'Welcome'),
-        '/home': (context) => MyHomePage(title: 'ParkCore'),
-      },
+      routes: routes,
     );
   }
 }
