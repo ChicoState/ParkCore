@@ -1,4 +1,4 @@
-# parkcore_app 
+# parkcore_app
 
 A new Flutter application.
 
