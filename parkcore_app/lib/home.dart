@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
-        backgroundColor: Colors.green[900],
+        backgroundColor: Theme.of(context).backgroundColor,
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.close),
@@ -52,14 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                'You have pushed the button this many times:',
-              ),
+              Text('You have pushed the button this many times:'),
               Text(
                 '$_counter',
-                style: TextStyle(
-                  color: Colors.green[900],
-                ),
+                style: Theme.of(context).textTheme.headline5,
               ),
             ]
         ),
@@ -68,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-        backgroundColor: Colors.green[700],
+        backgroundColor: Theme.of(context).backgroundColor,
       ),
     );
   }

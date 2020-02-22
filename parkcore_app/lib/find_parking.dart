@@ -26,7 +26,7 @@ class _MyFindParkingState extends State<FindParking> {
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
-        backgroundColor: Colors.green[900],
+        backgroundColor: Theme.of(context).backgroundColor,
       ),
       drawer: MenuDrawer(),
       body: Center(
@@ -35,23 +35,11 @@ class _MyFindParkingState extends State<FindParking> {
             children: <Widget>[
               Text(
                 'Find Parking',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2.0,
-                  color: Colors.grey[600],
-                ),
+                style: Theme.of(context).textTheme.headline3,
               ),
             ]
         ),
       ),
-//      floatingActionButton: FloatingActionButton(
-//        onPressed: () {
-//          Navigator.pushNamed(context, '/home');
-//        },
-//        child: Icon(Icons.home),
-//        backgroundColor: Colors.green[700],
-//      ),
     );
   }
 }

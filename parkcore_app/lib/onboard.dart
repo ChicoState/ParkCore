@@ -29,7 +29,7 @@ class _MyOnBoardState extends State<OnBoard> {
         ),
         title: Text(widget.title),
         centerTitle: true,
-        backgroundColor: Colors.green[900],
+        backgroundColor: Theme.of(context).backgroundColor,
       ),
       body: Center(
         child: Column(
@@ -37,12 +37,7 @@ class _MyOnBoardState extends State<OnBoard> {
             children: <Widget>[
               Text(
                 'Welcome to ParkCore!',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2.0,
-                  color: Colors.grey[600],
-                ),
+                style: Theme.of(context).textTheme.headline3,
               ),
             ]
         ),
@@ -52,7 +47,7 @@ class _MyOnBoardState extends State<OnBoard> {
           Navigator.pushNamed(context, '/home');
         },
         child: Icon(Icons.home),
-        backgroundColor: Colors.green[700],
+        backgroundColor: Theme.of(context).backgroundColor,
       ),
     );
   }

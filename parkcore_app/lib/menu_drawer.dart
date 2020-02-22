@@ -8,42 +8,51 @@ class MenuDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('ParkCore'),
+            child: Text(
+                'ParkCore',
+              style: Theme.of(context).textTheme.headline2,
+            ),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
           ),
           ListTile(
-            title: Text('Home'),
+            title: Text(
+              'Home',
+              style: Theme.of(context).textTheme.headline5,
+            ),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
               // Update the state of the app.
               // ...
               // Then close the drawer.
               Navigator.pushNamed(context, '/home');
-              //Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text('Add Parking'),
+            title: Text(
+              'Add Parking',
+              style: Theme.of(context).textTheme.headline5,
+            ),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
               // Update the state of the app.
               // ...
               // Then close the drawer.
               Navigator.pushNamed(context, '/add_parking');
-              //Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text('Find Parking'),
+            title: Text(
+              'Find Parking',
+              style: Theme.of(context).textTheme.headline5,
+            ),
             trailing: Icon(Icons.arrow_forward),
             onTap: () {
               // Update the state of the app.
               // ...
               // Then close the drawer.
               Navigator.pushNamed(context, '/find_parking');
-              // Navigator.pop(context);
             },
           ),
         ],
