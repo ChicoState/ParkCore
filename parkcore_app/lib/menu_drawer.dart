@@ -8,7 +8,7 @@ class MenuDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('Drawer Header'),
+            child: Text('ParkCore'),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),

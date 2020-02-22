@@ -27,12 +27,6 @@ class _MyAddParkingState extends State<AddParking> {
         title: Text(widget.title),
         centerTitle: true,
         backgroundColor: Colors.green[900],
-        actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.close),
-            onPressed: () => Navigator.pushNamed(context, '/home'),
-          ),
-        ],
       ),
       drawer: MenuDrawer(),
       body: Center(
