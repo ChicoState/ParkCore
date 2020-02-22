@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkcore_app/style.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -46,6 +47,41 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Drawer Header'),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            ListTile(
+              title: Text('Add Parking'),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                // Then close the drawer.
+                Navigator.pushNamed(context, '/add_parking');
+                //Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Find Parking'),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                // Then close the drawer.
+                Navigator.pushNamed(context, '/find_parking');
+               // Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
       body: Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -55,7 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Text(
                 '$_counter',
-                style: Theme.of(context).textTheme.display1,
+                style: TextStyle(
+                  color: Colors.green[900],
+                ),
               ),
             ]
         ),
