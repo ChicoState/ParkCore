@@ -16,47 +16,42 @@ class MenuDrawer extends StatelessWidget {
               color: Theme.of(context).primaryColor,
             ),
           ),
-          ListTile(
-            title: Text(
-              'Home',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            trailing: Icon(Icons.arrow_forward),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-              // Then close the drawer.
-              Navigator.pushNamed(context, '/home');
-            },
+          _createMenuItem(
+            context: context, icon: Icons.home, text: 'Home', route: '/home',
           ),
-          ListTile(
-            title: Text(
-              'Add Parking',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            trailing: Icon(Icons.arrow_forward),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-              // Then close the drawer.
-              Navigator.pushNamed(context, '/add_parking');
-            },
+          _createMenuItem(
+            context: context, icon: Icons.directions_car,
+            text: 'Post a Parking Space', route: '/add_parking',
           ),
-          ListTile(
-            title: Text(
-              'Find Parking',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            trailing: Icon(Icons.arrow_forward),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-              // Then close the drawer.
-              Navigator.pushNamed(context, '/find_parking');
-            },
+          _createMenuItem(
+            context: context, icon: Icons.add_location,
+            text: 'Find Parking', route: '/find_parking',
           ),
         ],
       ),
     );
   }
+}
+
+Widget _createMenuItem(
+    {BuildContext context, IconData icon, String text, String route}) {
+  return ListTile(
+    title: Row(
+      children: <Widget>[
+        Icon(icon),
+        Padding(
+          padding: EdgeInsets.only(left: 8.0),
+          child: Text(
+            text,
+            style: Theme.of(context).textTheme.headline5,
+          ),
+        )
+      ],
+    ),
+    trailing: Icon(Icons.arrow_forward),
+    onTap: () {
+      // Update the state of the app, then close the drawer.
+      Navigator.pushNamed(context, route);
+    },
+  );
 }
