@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:parkcore_app/menu_drawer.dart';
 
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
@@ -23,14 +24,17 @@ class _MyAddParkingState extends State<AddParking> {
     // change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: new Icon(Icons.close),
-          onPressed: () => Navigator.pushNamed(context, '/home'),
-        ),
         title: Text(widget.title),
         centerTitle: true,
         backgroundColor: Colors.green[900],
+        actions: <Widget>[
+          new IconButton(
+            icon: new Icon(Icons.close),
+            onPressed: () => Navigator.pushNamed(context, '/home'),
+          ),
+        ],
       ),
+      drawer: MenuDrawer(),
       body: Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

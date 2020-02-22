@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkcore_app/style.dart';
+import 'package:parkcore_app/menu_drawer.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -47,41 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text('Drawer Header'),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-            ListTile(
-              title: Text('Add Parking'),
-              trailing: Icon(Icons.arrow_forward),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                // Then close the drawer.
-                Navigator.pushNamed(context, '/add_parking');
-                //Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Find Parking'),
-              trailing: Icon(Icons.arrow_forward),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                // Then close the drawer.
-                Navigator.pushNamed(context, '/find_parking');
-               // Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: MenuDrawer(),
       body: Center(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
