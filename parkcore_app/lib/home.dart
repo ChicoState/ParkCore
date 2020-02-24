@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/menu_drawer.dart';
 
-
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   // This widget is the home page of your application. It is stateful: it has a
@@ -55,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Text('You have pushed the button this many times:'),
               Text(
                 '$_counter',
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.display2,
               ),
             ]
         ),

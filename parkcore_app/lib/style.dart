@@ -5,19 +5,19 @@ ThemeData appTheme() {
     primarySwatch: Colors.green,
     backgroundColor: Colors.green[900],
     textTheme: TextTheme(
-      headline2: TextStyle(
+      headline: TextStyle(
         fontSize: 36.0,
         fontWeight: FontWeight.bold,
         fontStyle: FontStyle.italic,
         color: Colors.white70,
       ),
-      headline3: TextStyle(
+      display1: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
         letterSpacing: 2.0,
         color: Colors.grey[600],
       ),
-      headline5: TextStyle(
+      display2: TextStyle(
         fontSize: 20.0,
         fontFamily: 'Georgia',
       ),

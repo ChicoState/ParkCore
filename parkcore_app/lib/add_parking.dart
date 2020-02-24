@@ -35,7 +35,7 @@ class _MyAddParkingState extends State<AddParking> {
             children: <Widget>[
               Text(
                 'Post Your Parking Space',
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.display1,
               ),
             ]
         ),

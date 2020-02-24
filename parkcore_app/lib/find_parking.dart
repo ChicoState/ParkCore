@@ -35,7 +35,7 @@ class _MyFindParkingState extends State<FindParking> {
             children: <Widget>[
               Text(
                 'Find Parking',
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.display1,
               ),
             ]
         ),

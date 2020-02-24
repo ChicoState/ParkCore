@@ -9,8 +9,8 @@ class MenuDrawer extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(
             child: Text(
-                'ParkCore',
-              style: Theme.of(context).textTheme.headline2,
+              'ParkCore',
+              style: Theme.of(context).textTheme.headline,
             ),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
@@ -43,7 +43,7 @@ Widget _createMenuItem(
           padding: EdgeInsets.only(left: 8.0),
           child: Text(
             text,
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.display2,
           ),
         )
       ],
@@ -51,7 +51,12 @@ Widget _createMenuItem(
     trailing: Icon(Icons.arrow_forward),
     onTap: () {
       // Update the state of the app, then close the drawer.
-      Navigator.pushNamed(context, route);
+      //Navigator.of(context).pop();
+      //Navigator.pushNamed(context, route);
+      Navigator.pushReplacementNamed(context, route);
+//      Navigator.pushNamedAndRemoveUntil(
+//          context, route, (Route<dynamic> route) => false
+//      );
     },
   );
 }

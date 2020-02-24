@@ -37,7 +37,7 @@ class _MyOnBoardState extends State<OnBoard> {
             children: <Widget>[
               Text(
                 'Welcome to ParkCore!',
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.display1,
               ),
             ]
         ),
