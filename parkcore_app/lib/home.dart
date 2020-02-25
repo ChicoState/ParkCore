@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/menu_drawer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -19,13 +20,21 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
-    setState(() {
-      // Call to setState tells Flutter framework that something has changed in
-      // this State. Then the build method is rerun so that the display can
-      // reflect the updated values. If we changed _counter without calling
-      // setState(), then the build method would not be called again, and so
-      // nothing would appear to happen.
-      _counter++;
+    // setState(() {
+    //   // Call to setState tells Flutter framework that something has changed in
+    //   // this State. Then the build method is rerun so that the display can
+    //   // reflect the updated values. If we changed _counter without calling
+    //   // setState(), then the build method would not be called again, and so
+    //   // nothing would appear to happen.
+    //   _counter++;
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot freshSnap = await Firestore.instance
+          .collection('test')
+          .document('IpejvjqCkEsjvHGp71xk')
+          .get();
+      await transaction.update(freshSnap.reference, {
+        'count': freshSnap['count'] + 1,
+      });
     });
   }
 
@@ -52,12 +61,24 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text('You have pushed the button this many times:'),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.display2,
-              ),
-            ]
-        ),
+              StreamBuilder(
+                stream: Firestore.instance.collection('test').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return Text(
+                    'Loading Clicks...',
+                    style: Theme.of(context).textTheme.display1
+                  );
+                  return Text(
+                    snapshot.data.documents[0]['count'].toString(),
+                    style: Theme.of(context).textTheme.display1
+                  );
+                }
+              )
+              // Text(
+              //   '$_counter',
+              //   style: Theme.of(context).textTheme.display2,
+              // ),
+            ]),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,

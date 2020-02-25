@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>229550166850-fqs8mlaubcbdetem5cbjisa2k304ghvj.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.229550166850-fqs8mlaubcbdetem5cbjisa2k304ghvj</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>229550166850-9pfabj4k8k4uua60oegjhr6mpoi2bjl7.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBxCzoNYXPfWps-wBpk8XtxLCmsSKalcrU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>229550166850</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>io.parkcore.flutter.app</string>
+	<key>PROJECT_ID</key>
+	<string>parkcore-7e1db</string>
+	<key>STORAGE_BUCKET</key>
+	<string>parkcore-7e1db.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:229550166850:ios:524b624cd06c899855eedb</string>
+	<key>DATABASE_URL</key>
+	<string>https://parkcore-7e1db.firebaseio.com</string>
+</dict>
+</plist>
