@@ -62,18 +62,14 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Text('You have pushed the button this many times:'),
               StreamBuilder(
-                stream: Firestore.instance.collection('test').snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) return Text(
-                    'Loading Clicks...',
-                    style: Theme.of(context).textTheme.display1
-                  );
-                  return Text(
-                    snapshot.data.documents[0]['count'].toString(),
-                    style: Theme.of(context).textTheme.display1
-                  );
-                }
-              )
+                  stream: Firestore.instance.collection('test').snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      return Text('Loading Clicks...',
+                          style: Theme.of(context).textTheme.display1);
+                    return Text(snapshot.data.documents[0]['count'].toString(),
+                        style: Theme.of(context).textTheme.display1);
+                  })
               // Text(
               //   '$_counter',
               //   style: Theme.of(context).textTheme.display2,
