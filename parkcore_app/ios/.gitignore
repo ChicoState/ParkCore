@@ -30,3 +30,6 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# Google Firebase app key files
+Runner/GoogleService-Info.plist
