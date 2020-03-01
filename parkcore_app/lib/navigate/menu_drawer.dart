@@ -51,12 +51,7 @@ Widget _createMenuItem(
     trailing: Icon(Icons.arrow_forward),
     onTap: () {
       // Update the state of the app, then close the drawer.
-      //Navigator.of(context).pop();
-      //Navigator.pushNamed(context, route);
       Navigator.pushReplacementNamed(context, route);
-//      Navigator.pushNamedAndRemoveUntil(
-//          context, route, (Route<dynamic> route) => false
-//      );
     },
   );
 }
