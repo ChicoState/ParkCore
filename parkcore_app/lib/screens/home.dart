@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkcore_app/menu_drawer.dart';
+import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -50,12 +50,12 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         centerTitle: true,
         backgroundColor: Theme.of(context).backgroundColor,
-        actions: <Widget>[
-          new IconButton(
-            icon: new Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
+//        actions: <Widget>[
+//          new IconButton(
+//            icon: new Icon(Icons.close),
+//            onPressed: () => Navigator.pop(context),
+//          ),
+//        ],
       ),
       drawer: MenuDrawer(),
       body: Center(
