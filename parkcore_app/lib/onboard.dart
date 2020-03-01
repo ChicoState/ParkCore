@@ -25,7 +25,7 @@ class _MyOnBoardState extends State<OnBoard> {
       appBar: AppBar(
         leading: IconButton(
           icon: new Icon(Icons.close),
-          onPressed: () => Navigator.pushNamed(context, '/home'),
+          onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
         ),
         title: Text(widget.title),
         centerTitle: true,
@@ -44,7 +44,7 @@ class _MyOnBoardState extends State<OnBoard> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/home');
+          Navigator.pushReplacementNamed(context, '/home');
         },
         child: Icon(Icons.home),
         backgroundColor: Theme.of(context).backgroundColor,
