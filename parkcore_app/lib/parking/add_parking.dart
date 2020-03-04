@@ -17,12 +17,44 @@ class AddParking extends StatefulWidget {
 
 class _MyAddParkingState extends State<AddParking> {
 
+  // Create a global key that uniquely identifies the Form widget
+  // and allows validation of the form.
+  // Note: This is a `GlobalKey<FormState>`, not GlobalKey<MyCustomFormState>.
+  final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  String _title;
+  String _city;
+
+//  bool validateAndSave() {
+//    final form = _formKey.currentState;
+//    if (form.validate()) {
+//      form.save();
+//      setState(() {
+//
+//      });
+//      return true;
+//    }
+//    return false;
+//  }
+
+//  String validate(String value) {
+//    if(value.isEmpty){
+//      return 'Field can\'t be empty';
+//    }
+//    if(value.contains(" ")){
+//      return 'Field can\'t contain spaces';
+//    }
+//    return null;
+//  }
+
   @override
   Widget build(BuildContext context) {
     // build(): rerun every time setState is called (e.g. for stateful methods)
     // Rebuild anything that needs updating instead of having to individually
     // change instances of widgets.
+    // Build a Form widget using the _formKey created above.
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
@@ -30,16 +62,148 @@ class _MyAddParkingState extends State<AddParking> {
       ),
       drawer: MenuDrawer(),
       body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Post Your Parking Space',
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          //padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+          child: Column(
+            children: <Widget> [
+              _title == null ?
+              Text('Post Your Parking Space',
+                style: Theme.of(context).textTheme.display1,
+              )
+              :Text('$_title $_city',
                 style: Theme.of(context).textTheme.display1,
               ),
-            ]
+              SizedBox(height: 10),
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: buildInputs() + buildSubmitButtons(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  List<Widget> buildInputs() {
+    return [
+      TextFormField(
+        key: Key('title'),
+        autofocus: true,
+        validator: validateTitle,
+        decoration: InputDecoration(
+          labelText: 'Enter a descriptive title for your parking space:',
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.lightGreen
+            ),
+          ),
+        ),
+        onSaved: (value) => _title = value,
+      ),
+      SizedBox(height: 10),
+      TextFormField(
+        key: Key('city'),
+        validator: validateCity,
+        decoration: InputDecoration(
+          labelText: 'City:',
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color: Colors.lightGreen
+            ),
+          ),
+        ),
+        onSaved: (value) => _city = value,
+      ),
+    ];
+  }
+
+  List<Widget> buildSubmitButtons() {
+    return [
+      RaisedButton(
+        key: Key('submit'),
+        onPressed: validateAndSubmit,
+//        onPressed: () {
+          // Validate returns true if the form is valid, otherwise false.
+//          if (_formKey.currentState.validate()) {
+//            // If the form is valid, display a snackbar. In the real world,
+//            // you'd often call a server or save the information in a database.
+//            Scaffold.of(context).showSnackBar(new SnackBar(
+//              content: new Text('Processing Data...'),
+//            ));
+//          }
+//        },
+        child: Text(
+          'Submit',
+          style: Theme.of(context).textTheme.display2,
+        ),
+        color: Colors.green[100],
+      ),
+    ];
+  }
+
+  void validateAndSubmit() async {
+    if (validateAndSave()) {
+      var snackBar = SnackBar(
+        content: Text("Processing"),
+//        action: SnackBarAction(
+//          label: 'Return',
+//          onPressed: () {
+//            Navigator.pop(context);
+//          },
+//        ),
+      );
+
+      // Find the Scaffold via key and use it to show a SnackBar!
+ //     _scaffoldKey.currentState.showSnackBar(snackBar);
+
+    }
+  }
+
+  bool validateAndSave() {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      setState(() {
+
+      });
+      return true;
+    }
+    return false;
+  }
+
+  String validateTitle(String value) {
+    if(value.isEmpty){
+      return 'Field can\'t be empty';
+    }
+    if(value.length > 60){
+      return 'Title cannot be more than 60 characters';
+    }
+//    if(value.contains(" ")){
+//      return 'Field can\'t contain spaces';
+//    }
+    return null;
+  }
+
+  String validateCity(String value) {
+    if(value.isEmpty){
+      return 'Field can\'t be empty';
+    }
+    if(value.toLowerCase() != 'chico'){
+      return 'Sorry, we are not operating in your town yet';
+    }
+//    if(value.contains(" ")){
+//      return 'Field can\'t contain spaces';
+//    }
+    return null;
+  }
+
+  _displaySnackBar(BuildContext context, String text) {
+    final snackBar = SnackBar(content: Text(text));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }
