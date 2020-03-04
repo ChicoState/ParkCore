@@ -17,7 +17,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  //int _counter = 0;
 
   void _incrementCounter() {
 //     setState(() {
@@ -67,9 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
               StreamBuilder(
                   stream: Firestore.instance.collection('test').snapshots(),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData)
+                    if (!snapshot.hasData) {
                       return Text('Loading Clicks...',
                           style: Theme.of(context).textTheme.display1);
+                    }
                     return Text(snapshot.data.documents[0]['count'].toString(),
                         style: Theme.of(context).textTheme.display1);
                   })
