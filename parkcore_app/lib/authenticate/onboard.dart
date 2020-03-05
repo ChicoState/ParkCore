@@ -15,7 +15,6 @@ class OnBoard extends StatefulWidget {
 }
 
 class _MyOnBoardState extends State<OnBoard> {
-
   @override
   Widget build(BuildContext context) {
     // build(): rerun every time setState is called (e.g. for stateful methods)
@@ -24,7 +23,7 @@ class _MyOnBoardState extends State<OnBoard> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: new Icon(Icons.close),
+          icon: Icon(Icons.close),
           onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
         ),
         title: Text(widget.title),
@@ -39,8 +38,7 @@ class _MyOnBoardState extends State<OnBoard> {
                 'Welcome to ParkCore!',
                 style: Theme.of(context).textTheme.display1,
               ),
-            ]
-        ),
+            ]),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
