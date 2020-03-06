@@ -16,7 +16,6 @@ class AddParking extends StatefulWidget {
 }
 
 class _MyAddParkingState extends State<AddParking> {
-
   @override
   Widget build(BuildContext context) {
     // build(): rerun every time setState is called (e.g. for stateful methods)
@@ -37,8 +36,7 @@ class _MyAddParkingState extends State<AddParking> {
                 'Post Your Parking Space',
                 style: Theme.of(context).textTheme.display1,
               ),
-            ]
-        ),
+            ]),
       ),
     );
   }
