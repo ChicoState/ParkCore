@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:parkcore_app/src/locations.dart' as locations;
 
 class FindParking extends StatefulWidget {
   FindParking({Key key, this.title}) : super(key: key);
@@ -17,11 +19,27 @@ class FindParking extends StatefulWidget {
 
 class _MyFindParkingState extends State<FindParking> {
 
+  final Map<String, Marker> _markers = {};
+  Future<void> _onMapCreated(GoogleMapController controller) async {
+    final googleOffices = await locations.getGoogleOffices();
+    setState(() {
+      _markers.clear();
+      for (final office in googleOffices.offices) {
+        final marker = Marker(
+          markerId: MarkerId(office.name),
+          position: LatLng(office.lat, office.lng),
+          infoWindow: InfoWindow(
+            title: office.name,
+            snippet: office.address,
+          ),
+        );
+        _markers[office.name] = marker;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // build(): rerun every time setState is called (e.g. for stateful methods)
-    // Rebuild anything that needs updating instead of having to individually
-    // change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -29,16 +47,13 @@ class _MyFindParkingState extends State<FindParking> {
         backgroundColor: Theme.of(context).backgroundColor,
       ),
       drawer: MenuDrawer(),
-      body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Find Parking',
-                style: Theme.of(context).textTheme.display1,
-              ),
-            ]
+      body: GoogleMap(
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: const LatLng(39.7285, -121.8375),
+          zoom: 7,
         ),
+        markers: _markers.values.toSet(),
       ),
     );
   }

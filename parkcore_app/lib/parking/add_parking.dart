@@ -16,7 +16,6 @@ class AddParking extends StatefulWidget {
 }
 
 class _MyAddParkingState extends State<AddParking> {
-
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   // Note: This is a `GlobalKey<FormState>`, not GlobalKey<MyCustomFormState>.
