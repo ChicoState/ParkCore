@@ -26,26 +26,47 @@ class _MyAddParkingState extends State<AddParking> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String _title;
+  String _address;
   String _city;
+  String _state;
   int _size;
+  int _type = 0;
+  int _driveway;
+  int _streetParking;
+  int _spaceType;
 
-  //List<DropdownMenuItem<int>> sizeList = [];
+  final _stateData = [
+    {"display": "California", "value": "CA"},
+  ];
 
-//  void loadSizeList() {
-//    sizeList = [];
-//    sizeList.add(DropdownMenuItem(
-//      child: Text('Compact'),
-//      value: 0,
-//    ));
-//    sizeList.add(DropdownMenuItem(
-//      child: Text('Regular'),
-//      value: 1,
-//    ));
-//    sizeList.add(DropdownMenuItem(
-//      child: Text('Oversized'),
-//      value: 2,
-//    ));
-//  }
+  final _sizeData = [
+    {"display": "Compact Car", "value": 0},
+    {"display": "Regular", "value": 1},
+    {"display": "Oversized", "value": 2},
+  ];
+
+  final _typeData = [
+    {"display": "Driveway", "value": 0},
+    {"display": "Other", "value": 1},
+  ];
+
+  final _drivewayData = [
+    {"display": "Left side", "value": 0},
+    {"display": "Right side", "value": 1},
+    {"display": "Center", "value": 2},
+    {"display": "Whole Driveway", "value": 3},
+  ];
+
+  final _streetParkingData = [
+    {"display": "In a Parking Lot", "value": 0},
+    {"display": "On the Street", "value": 1},
+  ];
+
+  final _parkingSpaceTypeData = [
+    {"display": "Angled", "value": 0},
+    {"display": "Parallel", "value": 1},
+    {"display": "Perpendicular", "value": 2},
+  ];
 
 
   @override
@@ -71,19 +92,21 @@ class _MyAddParkingState extends State<AddParking> {
             //padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
             child: Column(
               children: <Widget> [
-                _title == null ?
-                Text('Post Your Parking Space',
-                  style: Theme.of(context).textTheme.display1,
-                )
-                :Text('$_title $_city',
-                  style: Theme.of(context).textTheme.display1,
-                ),
+//                _title == null ?
+//                Text('Post Your Parking Space',
+//                  style: Theme.of(context).textTheme.display1,
+//                )
+//                :Text('$_title $_city',
+//                  style: Theme.of(context).textTheme.display1,
+//                ),
                 SizedBox(height: 10),
                 Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: buildInputs() + buildSubmitButtons(),
+                    children: buildInputs()
+                      + addParkingSpaceInfo()
+                      + buildSubmitButtons(),
                   ),
                 ),
               ],
@@ -112,6 +135,20 @@ class _MyAddParkingState extends State<AddParking> {
       ),
       SizedBox(height: 10),
       TextFormField(
+        key: Key('address'),
+       // validator: validateAddress,
+        decoration: InputDecoration(
+          labelText: 'Street Address:',
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color: Colors.lightGreen
+            ),
+          ),
+        ),
+        onSaved: (value) => _address = value,
+      ),
+      SizedBox(height: 10),
+      TextFormField(
         key: Key('city'),
         validator: validateCity,
         decoration: InputDecoration(
@@ -123,6 +160,25 @@ class _MyAddParkingState extends State<AddParking> {
           ),
         ),
         onSaved: (value) => _city = value,
+      ),
+      SizedBox(height: 10),
+      DropDownFormField(
+        titleText: 'State',
+        hintText: 'Currently only available in California:',
+        value: _state,
+        onSaved: (value) {
+          setState(() {
+            _state = value;
+          });
+        },
+        onChanged: (value) {
+          setState(() {
+            _state = value;
+          });
+        },
+        dataSource: _stateData,
+        textField: 'display',
+        valueField: 'value',
       ),
       SizedBox(height: 10),
       DropDownFormField(
@@ -139,24 +195,98 @@ class _MyAddParkingState extends State<AddParking> {
             _size = value;
           });
         },
-        dataSource: [
-          {
-            "display": "Compact",
-            "value": 0,
-          },
-          {
-            "display": "Regular",
-            "value": 1,
-          },
-          {
-            "display": "Oversized",
-            "value": 2,
-          },
-        ],
+        dataSource: _sizeData,
+        textField: 'display',
+        valueField: 'value',
+      ),
+      SizedBox(height: 10),
+      DropDownFormField(
+        titleText: 'Type of Parking Space',
+        hintText: 'Select one:',
+        value: _type,
+        onSaved: (value) {
+          setState(() {
+            _type = value;
+          });
+        },
+        onChanged: (value) {
+          setState(() {
+            _type = value;
+          });
+        },
+        dataSource: _typeData,
         textField: 'display',
         valueField: 'value',
       ),
     ];
+  }
+
+  List<Widget> addParkingSpaceInfo() {
+    if(_type == 0){
+      return [
+        SizedBox(height: 10),
+        DropDownFormField(
+          titleText: 'Driveway Parking Space',
+          hintText: 'Select one:',
+          value: _driveway,
+          onSaved: (value) {
+            setState(() {
+              _driveway = value;
+            });
+          },
+          onChanged: (value) {
+            setState(() {
+              _driveway = value;
+            });
+          },
+          dataSource: _drivewayData,
+          textField: 'display',
+          valueField: 'value',
+        ),
+      ];
+    }
+    else{
+      return [
+        SizedBox(height: 10),
+        DropDownFormField(
+        titleText: 'Other Parking',
+        hintText: 'Select one:',
+        value: _streetParking,
+        onSaved: (value) {
+        setState(() {
+        _streetParking = value;
+        });
+        },
+        onChanged: (value) {
+        setState(() {
+        _streetParking = value;
+        });
+        },
+        dataSource: _streetParkingData,
+        textField: 'display',
+        valueField: 'value',
+        ),
+        SizedBox(height: 10),
+        DropDownFormField(
+          titleText: 'Additional Parking Info',
+          hintText: 'Select one:',
+          value: _spaceType,
+          onSaved: (value) {
+            setState(() {
+              _spaceType = value;
+            });
+          },
+          onChanged: (value) {
+            setState(() {
+              _spaceType = value;
+            });
+          },
+          dataSource: _parkingSpaceTypeData,
+          textField: 'display',
+          valueField: 'value',
+        ),
+      ];
+    }
   }
 
   List<Widget> buildSubmitButtons() {
@@ -215,10 +345,24 @@ class _MyAddParkingState extends State<AddParking> {
 
   String validateTitle(String value) {
     if(value.isEmpty){
-      return 'Field can\'t be empty';
+      return 'Field can\'t be empty; \n'
+          'This is what potential renters will see instead of your address';
     }
     if(value.length > 60){
       return 'Title cannot be more than 60 characters';
+    }
+//    if(value.contains(" ")){
+//      return 'Field can\'t contain spaces';
+//    }
+    return null;
+  }
+
+  String validateAddress(String value) {
+    if(value.isEmpty){
+      return 'Field can\'t be empty';
+    }
+    if(value.length > 60){
+      return 'Address cannot be more than 60 characters';
     }
 //    if(value.contains(" ")){
 //      return 'Field can\'t contain spaces';
