@@ -1,5 +1,9 @@
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
+import 'package:dropdown_formfield/dropdown_formfield.dart';
+
 
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
@@ -23,28 +27,26 @@ class _MyAddParkingState extends State<AddParking> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String _title;
   String _city;
+  int _size;
 
-//  bool validateAndSave() {
-//    final form = _formKey.currentState;
-//    if (form.validate()) {
-//      form.save();
-//      setState(() {
-//
-//      });
-//      return true;
-//    }
-//    return false;
+  //List<DropdownMenuItem<int>> sizeList = [];
+
+//  void loadSizeList() {
+//    sizeList = [];
+//    sizeList.add(DropdownMenuItem(
+//      child: Text('Compact'),
+//      value: 0,
+//    ));
+//    sizeList.add(DropdownMenuItem(
+//      child: Text('Regular'),
+//      value: 1,
+//    ));
+//    sizeList.add(DropdownMenuItem(
+//      child: Text('Oversized'),
+//      value: 2,
+//    ));
 //  }
 
-//  String validate(String value) {
-//    if(value.isEmpty){
-//      return 'Field can\'t be empty';
-//    }
-//    if(value.contains(" ")){
-//      return 'Field can\'t contain spaces';
-//    }
-//    return null;
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,28 +62,32 @@ class _MyAddParkingState extends State<AddParking> {
         backgroundColor: Theme.of(context).backgroundColor,
       ),
       drawer: MenuDrawer(),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          //padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-          child: Column(
-            children: <Widget> [
-              _title == null ?
-              Text('Post Your Parking Space',
-                style: Theme.of(context).textTheme.display1,
-              )
-              :Text('$_title $_city',
-                style: Theme.of(context).textTheme.display1,
-              ),
-              SizedBox(height: 10),
-              Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: buildInputs() + buildSubmitButtons(),
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(),
+          child: Padding(
+          //child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            //padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+            child: Column(
+              children: <Widget> [
+                _title == null ?
+                Text('Post Your Parking Space',
+                  style: Theme.of(context).textTheme.display1,
+                )
+                :Text('$_title $_city',
+                  style: Theme.of(context).textTheme.display1,
                 ),
-              ),
-            ],
+                SizedBox(height: 10),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: buildInputs() + buildSubmitButtons(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -117,6 +123,38 @@ class _MyAddParkingState extends State<AddParking> {
           ),
         ),
         onSaved: (value) => _city = value,
+      ),
+      SizedBox(height: 10),
+      DropDownFormField(
+        titleText: 'Parking Space Size',
+        hintText: 'Select one:',
+        value: _size,
+        onSaved: (value) {
+          setState(() {
+            _size = value;
+          });
+        },
+        onChanged: (value) {
+          setState(() {
+            _size = value;
+          });
+        },
+        dataSource: [
+          {
+            "display": "Compact",
+            "value": 0,
+          },
+          {
+            "display": "Regular",
+            "value": 1,
+          },
+          {
+            "display": "Oversized",
+            "value": 2,
+          },
+        ],
+        textField: 'display',
+        valueField: 'value',
       ),
     ];
   }
