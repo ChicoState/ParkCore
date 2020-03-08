@@ -25,15 +25,21 @@ class _MyAddParkingState extends State<AddParking> {
   // Note: This is a `GlobalKey<FormState>`, not GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  String _title;
+  int _page = 1;
+  static String _title = "";
   String _address;
-  String _city;
+  static String _city = "";
   String _state;
   int _size;
   int _type = 0;
   int _driveway;
   int _streetParking;
   int _spaceType;
+
+  final Map _myData = {
+    "myTitle": "$_title",
+    "myCity": "$_city",
+  };
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -104,9 +110,11 @@ class _MyAddParkingState extends State<AddParking> {
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: buildInputs()
-                      + addParkingSpaceInfo()
-                      + buildSubmitButtons(),
+                    children: formPages(),
+                    //children: buildAddress(),
+                   // children: buildAddress() + saveAddressButton(),
+//                      + addParkingSpaceInfo()
+//                      + buildSubmitButtons(),
                   ),
                 ),
               ],
@@ -117,7 +125,19 @@ class _MyAddParkingState extends State<AddParking> {
     );
   }
 
-  List<Widget> buildInputs() {
+  List<Widget> formPages() {
+    if(_page == 1){
+      return buildAddress();
+    }
+    else{
+      return buildParkingType() + addParkingSpaceInfo();
+    }
+//    else{
+//      return addParkingSpaceInfo();
+//    }
+  }
+
+  List<Widget> buildAddress() {
     return [
       TextFormField(
         key: Key('title'),
@@ -131,7 +151,11 @@ class _MyAddParkingState extends State<AddParking> {
             ),
           ),
         ),
-        onSaved: (value) => _title = value,
+        onSaved: (value) {
+          setState(() {
+            _title = value;
+          });
+        },
       ),
       SizedBox(height: 10),
       TextFormField(
@@ -145,7 +169,12 @@ class _MyAddParkingState extends State<AddParking> {
             ),
           ),
         ),
-        onSaved: (value) => _address = value,
+        //onSaved: (value) => _address = value,
+        onSaved: (value) {
+          setState(() {
+            _address = value;
+          });
+        },
       ),
       SizedBox(height: 10),
       TextFormField(
@@ -159,7 +188,12 @@ class _MyAddParkingState extends State<AddParking> {
             ),
           ),
         ),
-        onSaved: (value) => _city = value,
+        //onSaved: (value) => _city = value,
+        onSaved: (value) {
+          setState(() {
+            _city = value;
+          });
+        },
       ),
       SizedBox(height: 10),
       DropDownFormField(
@@ -180,6 +214,50 @@ class _MyAddParkingState extends State<AddParking> {
         textField: 'display',
         valueField: 'value',
       ),
+      RaisedButton(
+        key: Key('saveAddress'),
+        onPressed: () {
+          setState(() {
+            _page = 2;
+          });
+        },
+        child: Text(
+          'Next: Parking Space Info',
+          style: Theme.of(context).textTheme.display2,
+        ),
+        color: Colors.green[100],
+      ),
+    ];
+  }
+
+//  List<Widget> saveAddressButton() {
+//    return [
+//      RaisedButton(
+//        key: Key('saveAddress'),
+//        onPressed: () {
+//          _sendDataToSecondScreen(context, _myData);
+//        },
+//        child: Text(
+//          'Next: Parking Space Info',
+//          style: Theme.of(context).textTheme.display2,
+//        ),
+//        color: Colors.green[100],
+//      ),
+//    ];
+//  }
+
+  // get the text in the TextField and start the Second Screen
+//  void _sendDataToSecondScreen(BuildContext context) {
+//    //String textToSend = textFieldController.text;
+//    Navigator.push(
+//        context,
+//        MaterialPageRoute(
+//          builder: (context) => buildParkingType(),
+//        ));
+//  }
+
+  List<Widget> buildParkingType() {
+    return[
       SizedBox(height: 10),
       DropDownFormField(
         titleText: 'Parking Space Size',
@@ -243,6 +321,32 @@ class _MyAddParkingState extends State<AddParking> {
           textField: 'display',
           valueField: 'value',
         ),
+        RaisedButton(
+          //key: Key('saveParkingType'),
+          onPressed: () {
+            setState(() {
+              _page = 1;
+            });
+          },
+          child: Text(
+            'Back',
+            style: Theme.of(context).textTheme.display2,
+          ),
+          color: Colors.green[100],
+        ),
+        RaisedButton(
+          key: Key('saveParkingType'),
+          onPressed: () {
+            setState(() {
+              _page = 3;
+            });
+          },
+          child: Text(
+            'Include additional details',
+            style: Theme.of(context).textTheme.display2,
+          ),
+          color: Colors.green[100],
+        ),
       ];
     }
     else{
@@ -284,6 +388,32 @@ class _MyAddParkingState extends State<AddParking> {
           dataSource: _parkingSpaceTypeData,
           textField: 'display',
           valueField: 'value',
+        ),
+        RaisedButton(
+          //key: Key('saveParkingType'),
+          onPressed: () {
+            setState(() {
+              _page = 1;
+            });
+          },
+          child: Text(
+            'Back',
+            style: Theme.of(context).textTheme.display2,
+          ),
+          color: Colors.green[100],
+        ),
+        RaisedButton(
+          key: Key('saveParkingType'),
+          onPressed: () {
+            setState(() {
+              _page = 3;
+            });
+          },
+          child: Text(
+            '$_state',
+            style: Theme.of(context).textTheme.display2,
+          ),
+          color: Colors.green[100],
         ),
       ];
     }
