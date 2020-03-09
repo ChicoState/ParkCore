@@ -39,7 +39,7 @@ class _MyAddParkingState extends State<AddParking> {
 //  static String _address;
 //  static String _city = "";
 //  String _state;
-//  int _size;
+  //int _size;
  // int _type = 0;
 //  int _driveway;
 //  int _streetParking;
@@ -54,7 +54,7 @@ class _MyAddParkingState extends State<AddParking> {
     "_type": 0,
     "_driveway": 0,
     "_streetParking": 0,
-    "_spaceType":0,
+    "_spaceType": 0,
   };
 
   //final Map<String, dynamic> formData = {'email': null, 'password': null};
@@ -64,7 +64,7 @@ class _MyAddParkingState extends State<AddParking> {
   ];
 
   final _sizeData = [
-    {"display": "Compact Car", "value": 0},
+    {"display": "Compact", "value": 0},
     {"display": "Regular", "value": 1},
     {"display": "Oversized", "value": 2},
   ];
@@ -75,21 +75,24 @@ class _MyAddParkingState extends State<AddParking> {
   ];
 
   final _drivewayData = [
-    {"display": "Left side", "value": 0},
-    {"display": "Right side", "value": 1},
-    {"display": "Center", "value": 2},
-    {"display": "Whole Driveway", "value": 3},
+    {"display": "N/A", "value": 0},
+    {"display": "Left side", "value": 1},
+    {"display": "Right side", "value": 2},
+    {"display": "Center", "value": 3},
+    {"display": "Whole Driveway", "value": 4},
   ];
 
   final _streetParkingData = [
-    {"display": "In a Parking Lot", "value": 0},
-    {"display": "On the Street", "value": 1},
+    {"display": "N/A", "value": 0},
+    {"display": "In a Parking Lot", "value": 1},
+    {"display": "On the Street", "value": 2},
   ];
 
   final _parkingSpaceTypeData = [
-    {"display": "Angled", "value": 0},
-    {"display": "Parallel", "value": 1},
-    {"display": "Perpendicular", "value": 2},
+    {"display": "N/A", "value": 0},
+    {"display": "Angled", "value": 1},
+    {"display": "Parallel", "value": 2},
+    {"display": "Perpendicular", "value": 3},
   ];
 
 
@@ -142,11 +145,11 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> formPages() {
     if(_page == 1){
-      return buildAddress() + pageButton('Next: Parking Space Info', 2);
+      return buildAddress() + pageButton('Next: Parking Space Info');
     }
     else if(_page == 2){
       return buildParkingType() + addParkingSpaceInfo()
-        + pageButton('Back', 1) + pageButton('Next', 3);
+        + goBack() + pageButton('Next');
     }
     else{
       return review();
@@ -249,12 +252,30 @@ class _MyAddParkingState extends State<AddParking> {
         value: _myData["_size"],
         onSaved: (value) {
           setState(() {
+//            if(_size == 0){
+//              _myData["_size"] = "Compact";
+//            }
+//            else if(_size == 1){
+//              _myData["_size"] = "Regular";
+//            }
+//            else{
+//              _myData["_size"] = "Oversized";
+//            }
             _myData["_size"] = value;
             //_size = value;
           });
         },
         onChanged: (value) {
           setState(() {
+//            if(_size == 0){
+//              _myData["_size"] = "Compact";
+//            }
+//            else if(_size == 1){
+//              _myData["_size"] = "Regular";
+//            }
+//            else{
+//              _myData["_size"] = "Oversized";
+//            }
             _myData["_size"] = value;
           });
         },
@@ -357,15 +378,26 @@ class _MyAddParkingState extends State<AddParking> {
     }
   }
 
-  List<Widget> pageButton(String buttonText, int pageNum) {
+
+
+  List<Widget> pageButton(String buttonText) {
     return [
       RaisedButton(
-        onPressed: () {
-          validateAndSubmit();
-          setState(() {
-            _page = pageNum;
-          });
-        },
+        onPressed: validateAndSubmit,
+//        onPressed: () => [
+//          validateAndSubmit,
+//          setState(() {
+//            //changePage(pageNum);
+//            _page = pageNum;
+//          }),
+//        ],
+//        onPressed: () {
+//          validateAndSubmit;
+//          setState(() {
+//            //changePage(pageNum);
+//            _page = pageNum;
+//          });
+//        },
         child: Text(
           buttonText,
           style: Theme.of(context).textTheme.display2,
@@ -375,19 +407,45 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
+  List<Widget> goBack(){
+    return [
+      RaisedButton(
+        onPressed: () {
+          setState(() {
+            _page--;
+            print(_page);
+          });
+        },
+        child: Text(
+          'Back',
+          style: Theme.of(context).textTheme.display2,
+        ),
+        color: Colors.green[100],
+      ),
+    ];
+//    _page--;
+//    print(_page);
+    //validateAndSubmit();
+  }
+
   List<Widget> review() {
     return [
       Text(
         'Title: ' + _myData["_title"],
       ),
       Text(
-          'City: ' + _myData["_city"],
+        'City: ' + _myData["_city"],
+      ),
+      Text(
+        'Size: ' + _sizeData[_myData["_size"]]["display"],
       ),
 //      Text(
 //          'Driveway: $_myData["_driveway"]',
 //      ),
     ];
   }
+
+
 
   List<Widget> buildSubmitButtons() {
     return [
@@ -414,8 +472,16 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   void validateAndSubmit() async {
-    _formKey.currentState.save();
-    print(_myData);
+//    final form = _formKey.currentState;
+//    if(form.validate()){
+//      form.save();
+//      _page++;
+//      print(_page);
+//    }
+//    else{
+//      print("validateAndSubmit not working");
+//    }
+   // print(_myData);
     if (validateAndSave()) {
       var snackBar = SnackBar(
         content: Text("Processing"),
@@ -437,6 +503,8 @@ class _MyAddParkingState extends State<AddParking> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
+      _page++;
+      print(_page);
       print(_myData);
       setState(() {
 
