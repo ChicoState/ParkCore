@@ -1,7 +1,8 @@
 //import 'dart:html';
-
+//import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
+//import 'package:parkcore_app/model.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 
 
@@ -15,6 +16,9 @@ class AddParking extends StatefulWidget {
 
   final String title;
 
+  //final ParkingSpace parking_space;
+  //Result({this.model});
+
   @override
   _MyAddParkingState createState() => _MyAddParkingState();
 }
@@ -25,21 +29,35 @@ class _MyAddParkingState extends State<AddParking> {
   // Note: This is a `GlobalKey<FormState>`, not GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _page = 1;
-  static String _title = "";
-  String _address;
-  static String _city = "";
-  String _state;
-  int _size;
-  int _type = 0;
-  int _driveway;
-  int _streetParking;
-  int _spaceType;
+  //ParkingSpace parking_space = ParkingSpace(_title,_address);
+  //static Map parkingMap = jsonDecode(jsonData);
+//  var parking_space = ParkingSpace.fromJson(parkingMap);
+  //static String get jsonData => null;
 
-  final Map _myData = {
-    "myTitle": "$_title",
-    "myCity": "$_city",
+  int _page = 1;
+//  String _title = "";
+//  static String _address;
+//  static String _city = "";
+//  String _state;
+//  int _size;
+ // int _type = 0;
+//  int _driveway;
+//  int _streetParking;
+//  int _spaceType;
+
+  Map<String, dynamic> _myData = {
+    "_title": null,
+    "_address": null,
+    "_city": null,
+    "_state": null,
+    "_size": 0,
+    "_type": 0,
+    "_driveway": 0,
+    "_streetParking": 0,
+    "_spaceType":0,
   };
+
+  //final Map<String, dynamic> formData = {'email': null, 'password': null};
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -73,6 +91,7 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Parallel", "value": 1},
     {"display": "Perpendicular", "value": 2},
   ];
+
 
 
   @override
@@ -111,10 +130,6 @@ class _MyAddParkingState extends State<AddParking> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: formPages(),
-                    //children: buildAddress(),
-                   // children: buildAddress() + saveAddressButton(),
-//                      + addParkingSpaceInfo()
-//                      + buildSubmitButtons(),
                   ),
                 ),
               ],
@@ -127,14 +142,15 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> formPages() {
     if(_page == 1){
-      return buildAddress();
+      return buildAddress() + pageButton('Next: Parking Space Info', 2);
+    }
+    else if(_page == 2){
+      return buildParkingType() + addParkingSpaceInfo()
+        + pageButton('Back', 1) + pageButton('Next', 3);
     }
     else{
-      return buildParkingType() + addParkingSpaceInfo();
+      return review();
     }
-//    else{
-//      return addParkingSpaceInfo();
-//    }
   }
 
   List<Widget> buildAddress() {
@@ -153,14 +169,18 @@ class _MyAddParkingState extends State<AddParking> {
         ),
         onSaved: (value) {
           setState(() {
-            _title = value;
+            //_title = value;
+            _myData["_title"] = value;
+            //parking_space['title'] = value;
+            //String json = jsonEncode(user);
+
           });
         },
       ),
       SizedBox(height: 10),
       TextFormField(
         key: Key('address'),
-       // validator: validateAddress,
+        validator: validateAddress,
         decoration: InputDecoration(
           labelText: 'Street Address:',
           focusedBorder: OutlineInputBorder(
@@ -169,10 +189,9 @@ class _MyAddParkingState extends State<AddParking> {
             ),
           ),
         ),
-        //onSaved: (value) => _address = value,
         onSaved: (value) {
           setState(() {
-            _address = value;
+            _myData["_address"] = value;
           });
         },
       ),
@@ -188,10 +207,10 @@ class _MyAddParkingState extends State<AddParking> {
             ),
           ),
         ),
-        //onSaved: (value) => _city = value,
         onSaved: (value) {
           setState(() {
-            _city = value;
+            _myData["_city"] = value;
+            //_city = value;
           });
         },
       ),
@@ -199,62 +218,26 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'State',
         hintText: 'Currently only available in California:',
-        value: _state,
+        //value: _state,
+        value: _myData["_state"],
         onSaved: (value) {
           setState(() {
-            _state = value;
+            //_state = value;
+            _myData["_state"] = value;
           });
         },
         onChanged: (value) {
           setState(() {
-            _state = value;
+            //_state = value;
+            _myData["_state"] = value;
           });
         },
         dataSource: _stateData,
         textField: 'display',
         valueField: 'value',
       ),
-      RaisedButton(
-        key: Key('saveAddress'),
-        onPressed: () {
-          setState(() {
-            _page = 2;
-          });
-        },
-        child: Text(
-          'Next: Parking Space Info',
-          style: Theme.of(context).textTheme.display2,
-        ),
-        color: Colors.green[100],
-      ),
     ];
   }
-
-//  List<Widget> saveAddressButton() {
-//    return [
-//      RaisedButton(
-//        key: Key('saveAddress'),
-//        onPressed: () {
-//          _sendDataToSecondScreen(context, _myData);
-//        },
-//        child: Text(
-//          'Next: Parking Space Info',
-//          style: Theme.of(context).textTheme.display2,
-//        ),
-//        color: Colors.green[100],
-//      ),
-//    ];
-//  }
-
-  // get the text in the TextField and start the Second Screen
-//  void _sendDataToSecondScreen(BuildContext context) {
-//    //String textToSend = textFieldController.text;
-//    Navigator.push(
-//        context,
-//        MaterialPageRoute(
-//          builder: (context) => buildParkingType(),
-//        ));
-//  }
 
   List<Widget> buildParkingType() {
     return[
@@ -262,15 +245,17 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'Parking Space Size',
         hintText: 'Select one:',
-        value: _size,
+        //value: _size,
+        value: _myData["_size"],
         onSaved: (value) {
           setState(() {
-            _size = value;
+            _myData["_size"] = value;
+            //_size = value;
           });
         },
         onChanged: (value) {
           setState(() {
-            _size = value;
+            _myData["_size"] = value;
           });
         },
         dataSource: _sizeData,
@@ -281,15 +266,16 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'Type of Parking Space',
         hintText: 'Select one:',
-        value: _type,
+        //value: _type,
+        value: _myData["_type"],
         onSaved: (value) {
           setState(() {
-            _type = value;
+            _myData["_type"] = value;
           });
         },
         onChanged: (value) {
           setState(() {
-            _type = value;
+            _myData["_type"] = value;
           });
         },
         dataSource: _typeData,
@@ -300,52 +286,28 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   List<Widget> addParkingSpaceInfo() {
-    if(_type == 0){
+    if(_myData["_type"] == 0){
       return [
         SizedBox(height: 10),
         DropDownFormField(
           titleText: 'Driveway Parking Space',
           hintText: 'Select one:',
-          value: _driveway,
+          //value: _driveway,
+          value: _myData["_driveway"],
           onSaved: (value) {
             setState(() {
-              _driveway = value;
+              _myData["_driveway"] = value;
+              //_driveway = value;
             });
           },
           onChanged: (value) {
             setState(() {
-              _driveway = value;
+              _myData["_driveway"] = value;
             });
           },
           dataSource: _drivewayData,
           textField: 'display',
           valueField: 'value',
-        ),
-        RaisedButton(
-          //key: Key('saveParkingType'),
-          onPressed: () {
-            setState(() {
-              _page = 1;
-            });
-          },
-          child: Text(
-            'Back',
-            style: Theme.of(context).textTheme.display2,
-          ),
-          color: Colors.green[100],
-        ),
-        RaisedButton(
-          key: Key('saveParkingType'),
-          onPressed: () {
-            setState(() {
-              _page = 3;
-            });
-          },
-          child: Text(
-            'Include additional details',
-            style: Theme.of(context).textTheme.display2,
-          ),
-          color: Colors.green[100],
         ),
       ];
     }
@@ -355,16 +317,17 @@ class _MyAddParkingState extends State<AddParking> {
         DropDownFormField(
         titleText: 'Other Parking',
         hintText: 'Select one:',
-        value: _streetParking,
+        //value: _streetParking,
+        value: _myData["_streetParking"],
         onSaved: (value) {
-        setState(() {
-        _streetParking = value;
-        });
+          setState(() {
+            _myData["_streetParking"] = value;
+          });
         },
         onChanged: (value) {
-        setState(() {
-        _streetParking = value;
-        });
+          setState(() {
+            _myData["_streetParking"] = value;
+          });
         },
         dataSource: _streetParkingData,
         textField: 'display',
@@ -374,49 +337,56 @@ class _MyAddParkingState extends State<AddParking> {
         DropDownFormField(
           titleText: 'Additional Parking Info',
           hintText: 'Select one:',
-          value: _spaceType,
+          //value: _spaceType,
+          value: _myData["_spaceType"],
           onSaved: (value) {
             setState(() {
-              _spaceType = value;
+              _myData["_spaceType"] = value;
             });
           },
           onChanged: (value) {
             setState(() {
-              _spaceType = value;
+              _myData["_spaceType"] = value;
             });
           },
           dataSource: _parkingSpaceTypeData,
           textField: 'display',
           valueField: 'value',
         ),
-        RaisedButton(
-          //key: Key('saveParkingType'),
-          onPressed: () {
-            setState(() {
-              _page = 1;
-            });
-          },
-          child: Text(
-            'Back',
-            style: Theme.of(context).textTheme.display2,
-          ),
-          color: Colors.green[100],
-        ),
-        RaisedButton(
-          key: Key('saveParkingType'),
-          onPressed: () {
-            setState(() {
-              _page = 3;
-            });
-          },
-          child: Text(
-            '$_state',
-            style: Theme.of(context).textTheme.display2,
-          ),
-          color: Colors.green[100],
-        ),
       ];
     }
+  }
+
+  List<Widget> pageButton(String buttonText, int pageNum) {
+    return [
+      RaisedButton(
+        onPressed: () {
+          validateAndSubmit();
+          setState(() {
+            _page = pageNum;
+          });
+        },
+        child: Text(
+          buttonText,
+          style: Theme.of(context).textTheme.display2,
+        ),
+        color: Colors.green[100],
+      ),
+    ];
+  }
+
+  List<Widget> review() {
+    return [
+      Text(
+        'Title: ' + _myData["_title"],
+      ),
+      Text(
+          'City: ' + _myData["_city"],
+      ),
+//      Text(
+//          'Driveway: $_myData["_driveway"]',
+//      ),
+    ];
   }
 
   List<Widget> buildSubmitButtons() {
@@ -444,6 +414,8 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   void validateAndSubmit() async {
+    _formKey.currentState.save();
+    print(_myData);
     if (validateAndSave()) {
       var snackBar = SnackBar(
         content: Text("Processing"),
@@ -465,6 +437,7 @@ class _MyAddParkingState extends State<AddParking> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
+      print(_myData);
       setState(() {
 
       });
