@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 ThemeData appTheme() {
   return ThemeData(
     primarySwatch: Colors.green,
-    backgroundColor: Colors.green[900],
+    backgroundColor: Colors.green[600],
     textTheme: TextTheme(
       headline: TextStyle(
         fontSize: 36.0,
@@ -19,7 +19,7 @@ ThemeData appTheme() {
       ),
       display2: TextStyle(
         fontSize: 20.0,
-        fontFamily: 'Georgia',
+        fontFamily: 'Montserrat',
       ),
     ),
   );
