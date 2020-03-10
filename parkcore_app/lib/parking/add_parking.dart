@@ -28,59 +28,48 @@ class _MyAddParkingState extends State<AddParking> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int _page = 1;
-  String _title;
-  String _address;
-  String _city;
-  String _state;
-  String _zip;
-  int _size;
-  int _type;
-  int _driveway;
-  int _spaceType;
+  String _title = '';
+  String _address = '';
+  String _city = '';
+  String _state = '';
+  String _zip = '';
+  String _size = '';
+  String _type = '';
+  String _driveway = '';
+  String _spaceType = '';
   List _myHighlights = [];
   String _myHighlightsResult = '';
-
-//  Map<String, dynamic> _myData = {
-//    "_title": null,
-//    "_address": null,
-//    "_city": null,
-//    "_state": null,
-//    "_zip": null,
-//    "_size": 0,
-//    "_type": 0,
-//    "_driveway": 0,
-//    "_spaceType": 0,
-//  };
+  String _details = '';
 
   final _stateData = [
     {"display": "California", "value": "CA"},
   ];
 
   final _sizeData = [
-    {"display": "Compact", "value": 0},
-    {"display": "Regular", "value": 1},
-    {"display": "Oversized", "value": 2},
+    {"display": "Compact", "value": "Compact"},
+    {"display": "Regular", "value": "Regular"},
+    {"display": "Oversized", "value": "Oversized"},
   ];
 
   final _typeData = [
-    {"display": "Driveway", "value": 0},
-    {"display": "In a Parking Lot", "value": 1},
-    {"display": "On the Street", "value": 2},
+    {"display": "Driveway", "value": "Driveway"},
+    {"display": "In a Parking Lot", "value": "Parking Lot"},
+    {"display": "On the Street", "value": "Street"},
   ];
 
   final _drivewayData = [
-    {"display": "N/A", "value": 0},
-    {"display": "Left side", "value": 1},
-    {"display": "Right side", "value": 2},
-    {"display": "Center", "value": 3},
-    {"display": "Whole Driveway", "value": 4},
+    {"display": "N/A", "value": "N/A"},
+    {"display": "Left side", "value": "Left"},
+    {"display": "Right side", "value": "Right"},
+    {"display": "Center", "value": "Center"},
+    {"display": "Whole Driveway", "value": "Whole Driveway"},
   ];
 
   final _parkingSpaceTypeData = [
-    {"display": "N/A", "value": 0},
-    {"display": "Angled", "value": 1},
-    {"display": "Parallel", "value": 2},
-    {"display": "Perpendicular", "value": 3},
+    {"display": "N/A", "value": "N/A"},
+    {"display": "Angled", "value": "Angled"},
+    {"display": "Parallel", "value": "Parallel"},
+    {"display": "Perpendicular", "value": "Perpendicular"},
   ];
 
   final _parkingHighlights = [
@@ -89,8 +78,6 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Security Camera", "value": "Security Camera"},
     {"display": "EV Charging", "value": "EV Charging"},
   ];
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -142,8 +129,10 @@ class _MyAddParkingState extends State<AddParking> {
     }
     else if(_page == 2){
 //      return buildParkingType() + addParkingSpaceInfo()
-      return buildParkingType()
-        + goBack() + pageButton('Next');
+      return buildParkingType() + goBack() + pageButton('Next');
+    }
+    else if(_page == 3){
+      return buildParkingDetails() + goBack() + pageButton('Next');
     }
     else{
       return review() + pageButton('Submit');
@@ -156,6 +145,8 @@ class _MyAddParkingState extends State<AddParking> {
         key: Key('title'),
         autofocus: true,
         validator: validateTitle,
+        keyboardType: TextInputType.multiline,
+        maxLines: 2,
         decoration: InputDecoration(
           labelText: 'Enter a descriptive title for your parking space:',
           focusedBorder: OutlineInputBorder(
@@ -262,7 +253,6 @@ class _MyAddParkingState extends State<AddParking> {
         onChanged: (value) {
           setState(() {
             _size = value;
-
           });
         },
         dataSource: _sizeData,
@@ -289,7 +279,7 @@ class _MyAddParkingState extends State<AddParking> {
         valueField: 'value',
       ),
       SizedBox(height: 10),
-      _type == 0 ?
+      _type == "Driveway" ?
       DropDownFormField(
         titleText: 'Driveway Parking Space',
         hintText: 'Select one:',
@@ -297,13 +287,13 @@ class _MyAddParkingState extends State<AddParking> {
         onSaved: (value) {
           setState(() {
             _driveway = value;
-            _spaceType = 0;
+            _spaceType = "N/A";
           });
         },
         onChanged: (value) {
           setState(() {
             _driveway = value;
-            _spaceType = 0;
+            _spaceType = "N/A";
           });
         },
         dataSource: _drivewayData,
@@ -317,13 +307,13 @@ class _MyAddParkingState extends State<AddParking> {
         onSaved: (value) {
           setState(() {
             _spaceType = value;
-            _driveway = 0;
+            _driveway = "N/A";
           });
         },
         onChanged: (value) {
           setState(() {
             _spaceType = value;
-            _driveway = 0;
+            _driveway = "N/A";
           });
         },
         dataSource: _parkingSpaceTypeData,
@@ -345,6 +335,34 @@ class _MyAddParkingState extends State<AddParking> {
         onSaved: (value) {
           setState(() {
             _myHighlights = value;
+          });
+        },
+      ),
+    ];
+  }
+
+  List<Widget> buildParkingDetails() {
+    return [
+      TextFormField(
+        key: Key('details'),
+        autofocus: true,
+        //validator: validateTitle,
+        keyboardType: TextInputType.multiline,
+        maxLines: 10,
+        decoration: InputDecoration(
+          labelText: 'Other important details about your space:',
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color: Colors.lightGreen
+            ),
+          ),
+        ),
+        onSaved: (value) {
+          if(value.isEmpty){
+            return;
+          }
+          setState(() {
+            _details = value;
           });
         },
       ),
@@ -389,16 +407,19 @@ class _MyAddParkingState extends State<AddParking> {
         'Review your information:',
         style: Theme.of(context).textTheme.display2,
       ),
+      SizedBox(height: 10),
       Text('Title: ' + _title),
       Text('Address: ' + _address),
       Text('City: ' + _city),
       Text('State: ' + _state),
       Text('Zip: ' + _zip),
-      Text('Size: ' + _sizeData[_size]["display"]),
-      Text('Type: ' + _typeData[_type]["display"]),
-      Text('Driveway: ' + _drivewayData[_driveway]["display"]),
-      Text('Space Type: ' + _parkingSpaceTypeData[_spaceType]["display"]),
+      Text('Size: ' + _size),
+      Text('Type: ' + _type),
+      Text('Driveway: ' + _driveway),
+      Text('Space Type: ' + _spaceType),
       Text('Highlights: ' + _myHighlightsResult),
+      Text('Additional Details:' + _details),
+      SizedBox(height: 10),
     ];
   }
 
@@ -451,9 +472,8 @@ class _MyAddParkingState extends State<AddParking> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      //print(_title);
+      //print(_size);
       //print(_page);
-      //print(_myData);
       setState(() {
         _myHighlightsResult = _myHighlights.toString();
         _page++;
