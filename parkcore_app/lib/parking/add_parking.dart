@@ -2,7 +2,6 @@
 //import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
-//import 'package:parkcore_app/model.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 
 
@@ -16,9 +15,6 @@ class AddParking extends StatefulWidget {
 
   final String title;
 
-  //final ParkingSpace parking_space;
-  //Result({this.model});
-
   @override
   _MyAddParkingState createState() => _MyAddParkingState();
 }
@@ -29,35 +25,28 @@ class _MyAddParkingState extends State<AddParking> {
   // Note: This is a `GlobalKey<FormState>`, not GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  //ParkingSpace parking_space = ParkingSpace(_title,_address);
-  //static Map parkingMap = jsonDecode(jsonData);
-//  var parking_space = ParkingSpace.fromJson(parkingMap);
-  //static String get jsonData => null;
 
   int _page = 1;
-//  String _title = "";
-//  static String _address;
-//  static String _city = "";
-//  String _state;
-  //int _size;
- // int _type = 0;
-//  int _driveway;
-//  int _streetParking;
-//  int _spaceType;
+  int _tmp_type = 0;
+  int _size;
+  int _type;
+  int _driveway;
+  int _spaceType;
+
 
   Map<String, dynamic> _myData = {
     "_title": null,
     "_address": null,
     "_city": null,
     "_state": null,
-    "_size": 0,
-    "_type": 0,
-    "_driveway": 0,
-    "_streetParking": 0,
-    "_spaceType": 0,
+    "_zip": null,
   };
-
-  //final Map<String, dynamic> formData = {'email': null, 'password': null};
+//    "_size": 0,
+//    "_type": 0,
+//    "_driveway": 0,
+//    //"_streetParking": 0,
+//    "_spaceType": 0,
+//  };
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -71,7 +60,8 @@ class _MyAddParkingState extends State<AddParking> {
 
   final _typeData = [
     {"display": "Driveway", "value": 0},
-    {"display": "Other", "value": 1},
+    {"display": "In a Parking Lot", "value": 1},
+    {"display": "On the Street", "value": 2},
   ];
 
   final _drivewayData = [
@@ -82,11 +72,11 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Whole Driveway", "value": 4},
   ];
 
-  final _streetParkingData = [
-    {"display": "N/A", "value": 0},
-    {"display": "In a Parking Lot", "value": 1},
-    {"display": "On the Street", "value": 2},
-  ];
+//  final _streetParkingData = [
+//    {"display": "N/A", "value": 0},
+//    {"display": "In a Parking Lot", "value": 1},
+//    {"display": "On the Street", "value": 2},
+//  ];
 
   final _parkingSpaceTypeData = [
     {"display": "N/A", "value": 0},
@@ -115,9 +105,7 @@ class _MyAddParkingState extends State<AddParking> {
         child: ConstrainedBox(
           constraints: BoxConstraints(),
           child: Padding(
-          //child: Padding(
             padding: const EdgeInsets.all(16.0),
-            //padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
             child: Column(
               children: <Widget> [
 //                _title == null ?
@@ -148,11 +136,12 @@ class _MyAddParkingState extends State<AddParking> {
       return buildAddress() + pageButton('Next: Parking Space Info');
     }
     else if(_page == 2){
-      return buildParkingType() + addParkingSpaceInfo()
+//      return buildParkingType() + addParkingSpaceInfo()
+      return buildParkingType()
         + goBack() + pageButton('Next');
     }
     else{
-      return review();
+      return review() + pageButton('Submit');
     }
   }
 
@@ -172,11 +161,7 @@ class _MyAddParkingState extends State<AddParking> {
         ),
         onSaved: (value) {
           setState(() {
-            //_title = value;
             _myData["_title"] = value;
-            //parking_space['title'] = value;
-            //String json = jsonEncode(user);
-
           });
         },
       ),
@@ -213,7 +198,6 @@ class _MyAddParkingState extends State<AddParking> {
         onSaved: (value) {
           setState(() {
             _myData["_city"] = value;
-            //_city = value;
           });
         },
       ),
@@ -239,6 +223,25 @@ class _MyAddParkingState extends State<AddParking> {
         textField: 'display',
         valueField: 'value',
       ),
+      SizedBox(height: 10),
+      TextFormField(
+        key: Key('zip'),
+        autofocus: true,
+        validator: validateZip,
+        decoration: InputDecoration(
+          labelText: 'Zip Code:',
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color: Colors.lightGreen
+            ),
+          ),
+        ),
+        onSaved: (value) {
+          setState(() {
+            _myData["_zip"] = value;
+          });
+        },
+      ),
     ];
   }
 
@@ -248,35 +251,19 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'Parking Space Size',
         hintText: 'Select one:',
-        //value: _size,
-        value: _myData["_size"],
+        value: _size,
+       // value: _myData["_size"],
         onSaved: (value) {
           setState(() {
-//            if(_size == 0){
-//              _myData["_size"] = "Compact";
-//            }
-//            else if(_size == 1){
-//              _myData["_size"] = "Regular";
-//            }
-//            else{
-//              _myData["_size"] = "Oversized";
-//            }
-            _myData["_size"] = value;
-            //_size = value;
+           // _myData["_size"] = value;
+            _size = value;
           });
         },
         onChanged: (value) {
           setState(() {
-//            if(_size == 0){
-//              _myData["_size"] = "Compact";
-//            }
-//            else if(_size == 1){
-//              _myData["_size"] = "Regular";
-//            }
-//            else{
-//              _myData["_size"] = "Oversized";
-//            }
-            _myData["_size"] = value;
+           // _myData["_size"] = value;
+            _size = value;
+
           });
         },
         dataSource: _sizeData,
@@ -287,117 +274,128 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'Type of Parking Space',
         hintText: 'Select one:',
-        //value: _type,
-        value: _myData["_type"],
+        value: _type,
+       // value: _myData["_type"],
         onSaved: (value) {
           setState(() {
-            _myData["_type"] = value;
+            //_myData["_type"] = value;
+            _type = value;
           });
         },
         onChanged: (value) {
           setState(() {
-            _myData["_type"] = value;
+           // _myData["_type"] = value;
+            _type = value;
           });
         },
         dataSource: _typeData,
         textField: 'display',
         valueField: 'value',
       ),
-    ];
-  }
-
-  List<Widget> addParkingSpaceInfo() {
-    if(_myData["_type"] == 0){
-      return [
-        SizedBox(height: 10),
-        DropDownFormField(
-          titleText: 'Driveway Parking Space',
-          hintText: 'Select one:',
-          //value: _driveway,
-          value: _myData["_driveway"],
-          onSaved: (value) {
-            setState(() {
-              _myData["_driveway"] = value;
-              //_driveway = value;
-            });
-          },
-          onChanged: (value) {
-            setState(() {
-              _myData["_driveway"] = value;
-            });
-          },
-          dataSource: _drivewayData,
-          textField: 'display',
-          valueField: 'value',
-        ),
-      ];
-    }
-    else{
-      return [
-        SizedBox(height: 10),
-        DropDownFormField(
-        titleText: 'Other Parking',
+      SizedBox(height: 10),
+      _type == 0 ?
+      DropDownFormField(
+        titleText: 'Driveway Parking Space',
         hintText: 'Select one:',
-        //value: _streetParking,
-        value: _myData["_streetParking"],
+        //value: _myData["_driveway"],
+        value: _driveway,
         onSaved: (value) {
           setState(() {
-            _myData["_streetParking"] = value;
+            _driveway = value;
+            _spaceType = 0;
+//            _myData["_driveway"] = value;
+//            _myData["_spaceType"] = 0;
           });
         },
         onChanged: (value) {
           setState(() {
-            _myData["_streetParking"] = value;
+            _driveway = value;
+            _spaceType = 0;
+//            _myData["_driveway"] = value;
+//            _myData["_spaceType"] = 0;
           });
         },
-        dataSource: _streetParkingData,
+        dataSource: _drivewayData,
         textField: 'display',
         valueField: 'value',
-        ),
-        SizedBox(height: 10),
-        DropDownFormField(
-          titleText: 'Additional Parking Info',
-          hintText: 'Select one:',
-          //value: _spaceType,
-          value: _myData["_spaceType"],
-          onSaved: (value) {
-            setState(() {
-              _myData["_spaceType"] = value;
-            });
-          },
-          onChanged: (value) {
-            setState(() {
-              _myData["_spaceType"] = value;
-            });
-          },
-          dataSource: _parkingSpaceTypeData,
-          textField: 'display',
-          valueField: 'value',
-        ),
-      ];
-    }
+      )
+      :DropDownFormField(
+        titleText: 'Additional Parking Info',
+        hintText: 'Select one:',
+        //value: _myData["_spaceType"],
+        value: _spaceType,
+        onSaved: (value) {
+          setState(() {
+            _spaceType = value;
+            _driveway = 0;
+//            _myData["_driveway"] = 0;
+//            _myData["_spaceType"] = value;
+          });
+        },
+        onChanged: (value) {
+          setState(() {
+            _spaceType = value;
+            _driveway = 0;
+//            _myData["_driveway"] = 0;
+//            _myData["_spaceType"] = value;
+          });
+        },
+        dataSource: _parkingSpaceTypeData,
+        textField: 'display',
+        valueField: 'value',
+      ),
+      //addParkingSpaceInfo(),
+    ];
   }
 
-
+ // List<Widget> addParkingSpaceInfo() {
+//  Widget addParkingSpaceInfo() {
+//    if(_myData["_type"] == 0){
+//      return DropDownFormField(
+//        titleText: 'Driveway Parking Space',
+//        hintText: 'Select one:',
+//        value: _myData["_driveway"],
+//        onSaved: (value) {
+//          setState(() {
+//            _myData["_driveway"] = value;
+//          });
+//        },
+//        onChanged: (value) {
+//          setState(() {
+//            _myData["_driveway"] = value;
+//          });
+//        },
+//        dataSource: _drivewayData,
+//        textField: 'display',
+//        valueField: 'value',
+//      );
+//    }
+//    else{
+//      return DropDownFormField(
+//        titleText: 'Additional Parking Info',
+//        hintText: 'Select one:',
+//        value: _myData["_spaceType"],
+//        onSaved: (value) {
+//          setState(() {
+//            _myData["_spaceType"] = value;
+//          });
+//        },
+//        onChanged: (value) {
+//          setState(() {
+//            _myData["_spaceType"] = value;
+//          });
+//        },
+//        dataSource: _parkingSpaceTypeData,
+//        textField: 'display',
+//        valueField: 'value',
+//      );
+//    }
+//  }
 
   List<Widget> pageButton(String buttonText) {
     return [
       RaisedButton(
         onPressed: validateAndSubmit,
-//        onPressed: () => [
-//          validateAndSubmit,
-//          setState(() {
-//            //changePage(pageNum);
-//            _page = pageNum;
-//          }),
-//        ],
-//        onPressed: () {
-//          validateAndSubmit;
-//          setState(() {
-//            //changePage(pageNum);
-//            _page = pageNum;
-//          });
-//        },
         child: Text(
           buttonText,
           style: Theme.of(context).textTheme.display2,
@@ -413,6 +411,7 @@ class _MyAddParkingState extends State<AddParking> {
         onPressed: () {
           setState(() {
             _page--;
+            _formKey.currentState.reset();
             print(_page);
           });
         },
@@ -423,22 +422,25 @@ class _MyAddParkingState extends State<AddParking> {
         color: Colors.green[100],
       ),
     ];
-//    _page--;
-//    print(_page);
-    //validateAndSubmit();
   }
 
   List<Widget> review() {
     return [
-      Text(
-        'Title: ' + _myData["_title"],
-      ),
-      Text(
-        'City: ' + _myData["_city"],
-      ),
-      Text(
-        'Size: ' + _sizeData[_myData["_size"]]["display"],
-      ),
+      Text('Review your information:'),
+      Text('Title: ' + _myData["_title"]),
+      Text('Address: ' + _myData["_address"]),
+      Text('City: ' + _myData["_city"]),
+      Text('State: ' + _myData["_state"]),
+      Text('Zip: ' + _myData["_zip"]),
+     // Text('Size: ' + _sizeData[0]["display"]),
+      Text('Size: ' + _sizeData[_size]["display"]),
+      Text('Type: ' + _typeData[_type]["display"]),
+      Text('Driveway: ' + _drivewayData[_driveway]["display"]),
+      Text('Space Type: ' + _parkingSpaceTypeData[_spaceType]["display"]),
+//      Text('Size: ' + _sizeData[_myData["_size"]]["display"]),
+//      Text('Type: ' + _typeData[_myData["_type"]]["display"]),
+//      Text('Driveway: ' + _drivewayData[_myData["_driveway"]]["display"]),
+//      Text('Space Type: ' + _parkingSpaceTypeData[_myData["_spaceType"]]["display"]),
 //      Text(
 //          'Driveway: $_myData["_driveway"]',
 //      ),
@@ -446,22 +448,25 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
 
-
-  List<Widget> buildSubmitButtons() {
+  List<Widget> submitParking() {
     return [
       RaisedButton(
         key: Key('submit'),
-        onPressed: validateAndSubmit,
-//        onPressed: () {
-          // Validate returns true if the form is valid, otherwise false.
-//          if (_formKey.currentState.validate()) {
-//            // If the form is valid, display a snackbar. In the real world,
-//            // you'd often call a server or save the information in a database.
-//            Scaffold.of(context).showSnackBar(new SnackBar(
-//              content: new Text('Processing Data...'),
-//            ));
+       // onPressed: validateAndSubmit,
+        onPressed: () {
+          final form = _formKey.currentState;
+          form.save();
+//          if (form.validate()) {
+//            form.save();
+//            //print(_page);
+//            //print(_myData);
+//            setState(() {
+//
+//            });
+//            return true;
 //          }
-//        },
+//          return false;
+        },
         child: Text(
           'Submit',
           style: Theme.of(context).textTheme.display2,
@@ -472,16 +477,6 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   void validateAndSubmit() async {
-//    final form = _formKey.currentState;
-//    if(form.validate()){
-//      form.save();
-//      _page++;
-//      print(_page);
-//    }
-//    else{
-//      print("validateAndSubmit not working");
-//    }
-   // print(_myData);
     if (validateAndSave()) {
       var snackBar = SnackBar(
         content: Text("Processing"),
@@ -492,10 +487,8 @@ class _MyAddParkingState extends State<AddParking> {
 //          },
 //        ),
       );
-
       // Find the Scaffold via key and use it to show a SnackBar!
  //     _scaffoldKey.currentState.showSnackBar(snackBar);
-
     }
   }
 
@@ -503,11 +496,10 @@ class _MyAddParkingState extends State<AddParking> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      _page++;
       print(_page);
       print(_myData);
       setState(() {
-
+        _page++;
       });
       return true;
     }
@@ -554,8 +546,27 @@ class _MyAddParkingState extends State<AddParking> {
     return null;
   }
 
-  _displaySnackBar(BuildContext context, String text) {
-    final snackBar = SnackBar(content: Text(text));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+  String validateZip(String value) {
+    if(value.isEmpty){
+      return 'Field can\'t be empty';
+    }
+    if(value.length != 5){
+      return 'Enter your 5 digit zip code';
+    }
+    if(value.contains(" ")){
+      return 'Field can\'t contain spaces';
+    }
+    for(int i=0; i<value.length; i++) {
+      if(!RegExp('[r0-9-]').hasMatch(value[i])){
+        return 'Enter a valid zip code';
+      }
+    }
+
+    return null;
   }
+
+//  _displaySnackBar(BuildContext context, String text) {
+//    final snackBar = SnackBar(content: Text(text));
+//    _scaffoldKey.currentState.showSnackBar(snackBar);
+//  }
 }
