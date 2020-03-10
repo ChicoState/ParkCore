@@ -128,11 +128,12 @@ class _MyAddParkingState extends State<AddParking> {
       return buildAddress() + pageButton('Next: Parking Space Info');
     }
     else if(_page == 2){
-//      return buildParkingType() + addParkingSpaceInfo()
-      return buildParkingType() + goBack() + pageButton('Next');
+      return buildParkingType() + pageButton('Next');
+      //return buildParkingType() + goBack() + pageButton('Next');
     }
     else if(_page == 3){
-      return buildParkingDetails() + goBack() + pageButton('Next');
+      return buildParkingDetails() + pageButton('Next');
+     // return buildParkingDetails() + goBack() + pageButton('Next');
     }
     else{
       return review() + pageButton('Submit');
@@ -201,10 +202,16 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'State',
         hintText: 'Currently only available in California:',
+        required: true,
         value: _state,
         onSaved: (value) {
           setState(() {
-            _state = value;
+            if(value.isEmpty){
+              _state = "CA";
+            }
+            else{
+              _state = value;
+            }
           });
         },
         onChanged: (value) {
@@ -244,10 +251,16 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'Parking Space Size',
         hintText: 'Select one:',
+        required: true,
         value: _size,
         onSaved: (value) {
           setState(() {
-            _size = value;
+            if(value.isEmpty){
+              _size = "Regular";
+            }
+            else{
+              _size = value;
+            }
           });
         },
         onChanged: (value) {
@@ -263,10 +276,16 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'Type of Parking Space',
         hintText: 'Select one:',
+        required: true,
         value: _type,
         onSaved: (value) {
           setState(() {
-            _type = value;
+            if(value.isEmpty){
+              _type = "Driveway";
+            }
+            else{
+              _type = value;
+            }
           });
         },
         onChanged: (value) {
@@ -286,14 +305,18 @@ class _MyAddParkingState extends State<AddParking> {
         value: _driveway,
         onSaved: (value) {
           setState(() {
-            _driveway = value;
+            if(value.isEmpty){
+              _driveway = "N/A";
+            }
+            else{
+              _driveway = value;
+            }
             _spaceType = "N/A";
           });
         },
         onChanged: (value) {
           setState(() {
             _driveway = value;
-            _spaceType = "N/A";
           });
         },
         dataSource: _drivewayData,
@@ -306,14 +329,18 @@ class _MyAddParkingState extends State<AddParking> {
         value: _spaceType,
         onSaved: (value) {
           setState(() {
-            _spaceType = value;
+            if(value.isEmpty){
+              _spaceType = "N/A";
+            }
+            else{
+              _spaceType = value;
+            }
             _driveway = "N/A";
           });
         },
         onChanged: (value) {
           setState(() {
             _spaceType = value;
-            _driveway = "N/A";
           });
         },
         dataSource: _parkingSpaceTypeData,
@@ -359,7 +386,7 @@ class _MyAddParkingState extends State<AddParking> {
         ),
         onSaved: (value) {
           if(value.isEmpty){
-            return;
+            _details = "";
           }
           setState(() {
             _details = value;
@@ -388,8 +415,8 @@ class _MyAddParkingState extends State<AddParking> {
         onPressed: () {
           setState(() {
             _page--;
-            _formKey.currentState.reset();
-            //print(_page);
+            //_formKey.currentState.reset();
+            print(_page);
           });
         },
         child: Text(
@@ -473,10 +500,10 @@ class _MyAddParkingState extends State<AddParking> {
     if (form.validate()) {
       form.save();
       //print(_size);
-      //print(_page);
       setState(() {
         _myHighlightsResult = _myHighlights.toString();
         _page++;
+        print(_page);
       });
       return true;
     }
