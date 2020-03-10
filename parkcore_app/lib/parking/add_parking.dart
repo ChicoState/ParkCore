@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 
 
 class AddParking extends StatefulWidget {
@@ -27,24 +28,27 @@ class _MyAddParkingState extends State<AddParking> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int _page = 1;
-  int _tmp_type = 0;
+  String _title;
+  String _address;
+  String _city;
+  String _state;
+  String _zip;
   int _size;
   int _type;
   int _driveway;
   int _spaceType;
+  List _myHighlights = [];
+  String _myHighlightsResult = '';
 
-
-  Map<String, dynamic> _myData = {
-    "_title": null,
-    "_address": null,
-    "_city": null,
-    "_state": null,
-    "_zip": null,
-  };
+//  Map<String, dynamic> _myData = {
+//    "_title": null,
+//    "_address": null,
+//    "_city": null,
+//    "_state": null,
+//    "_zip": null,
 //    "_size": 0,
 //    "_type": 0,
 //    "_driveway": 0,
-//    //"_streetParking": 0,
 //    "_spaceType": 0,
 //  };
 
@@ -72,17 +76,18 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Whole Driveway", "value": 4},
   ];
 
-//  final _streetParkingData = [
-//    {"display": "N/A", "value": 0},
-//    {"display": "In a Parking Lot", "value": 1},
-//    {"display": "On the Street", "value": 2},
-//  ];
-
   final _parkingSpaceTypeData = [
     {"display": "N/A", "value": 0},
     {"display": "Angled", "value": 1},
     {"display": "Parallel", "value": 2},
     {"display": "Perpendicular", "value": 3},
+  ];
+
+  final _parkingHighlights = [
+    {"display": "Lit", "value": "Lit"},
+    {"display": "Covered", "value": "Covered"},
+    {"display": "Security Camera", "value": "Security Camera"},
+    {"display": "EV Charging", "value": "EV Charging"},
   ];
 
 
@@ -161,7 +166,7 @@ class _MyAddParkingState extends State<AddParking> {
         ),
         onSaved: (value) {
           setState(() {
-            _myData["_title"] = value;
+            _title = value;
           });
         },
       ),
@@ -179,7 +184,7 @@ class _MyAddParkingState extends State<AddParking> {
         ),
         onSaved: (value) {
           setState(() {
-            _myData["_address"] = value;
+            _address = value;
           });
         },
       ),
@@ -197,7 +202,7 @@ class _MyAddParkingState extends State<AddParking> {
         ),
         onSaved: (value) {
           setState(() {
-            _myData["_city"] = value;
+            _city = value;
           });
         },
       ),
@@ -205,18 +210,15 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'State',
         hintText: 'Currently only available in California:',
-        //value: _state,
-        value: _myData["_state"],
+        value: _state,
         onSaved: (value) {
           setState(() {
-            //_state = value;
-            _myData["_state"] = value;
+            _state = value;
           });
         },
         onChanged: (value) {
           setState(() {
-            //_state = value;
-            _myData["_state"] = value;
+            _state = value;
           });
         },
         dataSource: _stateData,
@@ -238,7 +240,7 @@ class _MyAddParkingState extends State<AddParking> {
         ),
         onSaved: (value) {
           setState(() {
-            _myData["_zip"] = value;
+            _zip = value;
           });
         },
       ),
@@ -252,16 +254,13 @@ class _MyAddParkingState extends State<AddParking> {
         titleText: 'Parking Space Size',
         hintText: 'Select one:',
         value: _size,
-       // value: _myData["_size"],
         onSaved: (value) {
           setState(() {
-           // _myData["_size"] = value;
             _size = value;
           });
         },
         onChanged: (value) {
           setState(() {
-           // _myData["_size"] = value;
             _size = value;
 
           });
@@ -275,16 +274,13 @@ class _MyAddParkingState extends State<AddParking> {
         titleText: 'Type of Parking Space',
         hintText: 'Select one:',
         value: _type,
-       // value: _myData["_type"],
         onSaved: (value) {
           setState(() {
-            //_myData["_type"] = value;
             _type = value;
           });
         },
         onChanged: (value) {
           setState(() {
-           // _myData["_type"] = value;
             _type = value;
           });
         },
@@ -297,22 +293,17 @@ class _MyAddParkingState extends State<AddParking> {
       DropDownFormField(
         titleText: 'Driveway Parking Space',
         hintText: 'Select one:',
-        //value: _myData["_driveway"],
         value: _driveway,
         onSaved: (value) {
           setState(() {
             _driveway = value;
             _spaceType = 0;
-//            _myData["_driveway"] = value;
-//            _myData["_spaceType"] = 0;
           });
         },
         onChanged: (value) {
           setState(() {
             _driveway = value;
             _spaceType = 0;
-//            _myData["_driveway"] = value;
-//            _myData["_spaceType"] = 0;
           });
         },
         dataSource: _drivewayData,
@@ -322,75 +313,43 @@ class _MyAddParkingState extends State<AddParking> {
       :DropDownFormField(
         titleText: 'Additional Parking Info',
         hintText: 'Select one:',
-        //value: _myData["_spaceType"],
         value: _spaceType,
         onSaved: (value) {
           setState(() {
             _spaceType = value;
             _driveway = 0;
-//            _myData["_driveway"] = 0;
-//            _myData["_spaceType"] = value;
           });
         },
         onChanged: (value) {
           setState(() {
             _spaceType = value;
             _driveway = 0;
-//            _myData["_driveway"] = 0;
-//            _myData["_spaceType"] = value;
           });
         },
         dataSource: _parkingSpaceTypeData,
         textField: 'display',
         valueField: 'value',
       ),
-      //addParkingSpaceInfo(),
+      SizedBox(height: 10),
+      MultiSelectFormField(
+        autovalidate: false,
+        titleText: 'Parking Spot Highlights',
+        dataSource: _parkingHighlights,
+        textField: 'display',
+        valueField: 'value',
+        okButtonLabel: 'OK',
+        cancelButtonLabel: 'CANCEL',
+        //required: true,
+        hintText: 'Select all that apply',
+        value: _myHighlights,
+        onSaved: (value) {
+          setState(() {
+            _myHighlights = value;
+          });
+        },
+      ),
     ];
   }
-
- // List<Widget> addParkingSpaceInfo() {
-//  Widget addParkingSpaceInfo() {
-//    if(_myData["_type"] == 0){
-//      return DropDownFormField(
-//        titleText: 'Driveway Parking Space',
-//        hintText: 'Select one:',
-//        value: _myData["_driveway"],
-//        onSaved: (value) {
-//          setState(() {
-//            _myData["_driveway"] = value;
-//          });
-//        },
-//        onChanged: (value) {
-//          setState(() {
-//            _myData["_driveway"] = value;
-//          });
-//        },
-//        dataSource: _drivewayData,
-//        textField: 'display',
-//        valueField: 'value',
-//      );
-//    }
-//    else{
-//      return DropDownFormField(
-//        titleText: 'Additional Parking Info',
-//        hintText: 'Select one:',
-//        value: _myData["_spaceType"],
-//        onSaved: (value) {
-//          setState(() {
-//            _myData["_spaceType"] = value;
-//          });
-//        },
-//        onChanged: (value) {
-//          setState(() {
-//            _myData["_spaceType"] = value;
-//          });
-//        },
-//        dataSource: _parkingSpaceTypeData,
-//        textField: 'display',
-//        valueField: 'value',
-//      );
-//    }
-//  }
 
   List<Widget> pageButton(String buttonText) {
     return [
@@ -412,7 +371,7 @@ class _MyAddParkingState extends State<AddParking> {
           setState(() {
             _page--;
             _formKey.currentState.reset();
-            print(_page);
+            //print(_page);
           });
         },
         child: Text(
@@ -426,24 +385,20 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> review() {
     return [
-      Text('Review your information:'),
-      Text('Title: ' + _myData["_title"]),
-      Text('Address: ' + _myData["_address"]),
-      Text('City: ' + _myData["_city"]),
-      Text('State: ' + _myData["_state"]),
-      Text('Zip: ' + _myData["_zip"]),
-     // Text('Size: ' + _sizeData[0]["display"]),
+      Text(
+        'Review your information:',
+        style: Theme.of(context).textTheme.display2,
+      ),
+      Text('Title: ' + _title),
+      Text('Address: ' + _address),
+      Text('City: ' + _city),
+      Text('State: ' + _state),
+      Text('Zip: ' + _zip),
       Text('Size: ' + _sizeData[_size]["display"]),
       Text('Type: ' + _typeData[_type]["display"]),
       Text('Driveway: ' + _drivewayData[_driveway]["display"]),
       Text('Space Type: ' + _parkingSpaceTypeData[_spaceType]["display"]),
-//      Text('Size: ' + _sizeData[_myData["_size"]]["display"]),
-//      Text('Type: ' + _typeData[_myData["_type"]]["display"]),
-//      Text('Driveway: ' + _drivewayData[_myData["_driveway"]]["display"]),
-//      Text('Space Type: ' + _parkingSpaceTypeData[_myData["_spaceType"]]["display"]),
-//      Text(
-//          'Driveway: $_myData["_driveway"]',
-//      ),
+      Text('Highlights: ' + _myHighlightsResult),
     ];
   }
 
@@ -496,9 +451,11 @@ class _MyAddParkingState extends State<AddParking> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      print(_page);
-      print(_myData);
+      //print(_title);
+      //print(_page);
+      //print(_myData);
       setState(() {
+        _myHighlightsResult = _myHighlights.toString();
         _page++;
       });
       return true;
@@ -537,7 +494,7 @@ class _MyAddParkingState extends State<AddParking> {
     if(value.isEmpty){
       return 'Field can\'t be empty';
     }
-    if(value.toLowerCase() != 'chico'){
+    if(value.toUpperCase() != 'CHICO'){
       return 'Sorry, we are not operating in your town yet';
     }
 //    if(value.contains(" ")){
