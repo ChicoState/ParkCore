@@ -18,7 +18,6 @@ class FindParking extends StatefulWidget {
 }
 
 class _MyFindParkingState extends State<FindParking> {
-
   final Map<String, Marker> _markers = {};
   Future<void> _onMapCreated(GoogleMapController controller) async {
     final googleOffices = await locations.getGoogleOffices();
@@ -43,18 +42,122 @@ class _MyFindParkingState extends State<FindParking> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).backgroundColor,
-      ),
+          centerTitle: true,
+          backgroundColor: Theme.of(context).backgroundColor,
+          ),
       drawer: MenuDrawer(),
-      body: GoogleMap(
-        onMapCreated: _onMapCreated,
+      body: Stack(
+        children: <Widget>[
+          _googlemap(context),
+          _buildContainer(),
+        ],
+      )
+    );
+  }
+    Widget _buildContainer(){
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10.0),
+        height: 400.0,
+        child: ListView(
+        scrollDirection: Axis.vertical,
+        children: <Widget>[
+          SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: _boxes(
+              "https://www.architectureartdesigns.com/wp-content/uploads/2016/02/colored-brown-driveway-ozark-pattern-concrete-inc_67193-630x328.jpg",
+              'large', 'Daily/Monthly Rental',"345 Spear Street, San Fransisco, CA 94105"),
+          ),
+          SizedBox(height: 20.0),
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _boxes(
+                "https://photos.zillowstatic.com/p_h/ISjzmcek2fr14c1000000000.jpg",
+                'compact', 'Monthly Rental',"901 Cherry Avenue, San Bruno, CA 94066"),
+          ),
+          SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: _boxes(
+              "https://odis.homeaway.com/odis/listing/58e3a7a2-6413-4825-932a-f4e75342f599.f6.jpg",
+              'large', 'Daily Rental',"803 11th Avenue, Sunnyvale, CA 94089"),
+          ),
+          SizedBox(height: 20.0),
+          Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _boxes(
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRWN_FTF_T7fPWk6BQG_tR0C3VTnz699Dpsy_VmGmBnqrk_j-ls",
+            'compact', 'Daily/Monthly Rental', "1600 Amphitheatre Parkway, Chico, CA 94043"),
+          ),
+        ],
+        )
+      ),
+    );
+  }
+
+Widget _googlemap(BuildContext context){
+
+  return Container(
+    child: GoogleMap(
+      onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(
           target: const LatLng(39.7285, -121.8375),
           zoom: 7,
         ),
         markers: _markers.values.toSet(),
-      ),
-    );
-  }
+    )
+  );
 }
+
+ Widget _boxes(String _image, String size, String term, String name){
+    return GestureDetector(
+      onTap: () {
+          //_gotoLocation(lat,long);
+      },
+      child:Container(
+        child: FittedBox(
+          child: Material(
+            color: Colors.white,
+            elevation: 20.0,
+            borderRadius: BorderRadius.circular(14.0),
+            shadowColor: Color(0x802196F3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  width: 150,
+                  height: 125,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: Image(
+                      fit: BoxFit.fill,
+                      image: NetworkImage(_image),
+                    ),
+                  ),
+                ),
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(name),
+                        Text("Size: " + size),
+                        Text(term),
+                        Text("Available"),
+                      ],
+                    ),
+                  ),
+                  ),
+                ],)
+            ),
+          ),
+        ),
+      );
+  }
+
+}
+
