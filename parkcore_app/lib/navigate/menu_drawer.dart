@@ -8,12 +8,14 @@ class MenuDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text(
-              'ParkCore',
-              style: Theme.of(context).textTheme.headline,
-            ),
+            child: Text(''),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              //color: Colors.blue,
+              color: Colors.orange[200],
+              image: DecorationImage(
+                image: AssetImage("assets/parkcore_logo_green.jpg"),
+                fit: BoxFit.scaleDown,
+              ),
             ),
           ),
           _createMenuItem(
