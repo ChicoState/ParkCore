@@ -46,6 +46,7 @@ class _MyAddParkingState extends State<AddParking> {
   final format = DateFormat("HH:mm");
   String _startTime = '';
   String _endTime = '';
+  String _price = '';
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -436,6 +437,25 @@ class _MyAddParkingState extends State<AddParking> {
           return DateTimeField.convert(time);
         },
       ),
+      SizedBox(height: 10),
+      TextFormField(
+        key: Key('price'),
+        autofocus: true,
+        validator: validatePrice,
+        decoration: InputDecoration(
+          labelText: 'Price per month (\$):',
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color: Colors.lightGreen
+            ),
+          ),
+        ),
+        onSaved: (value) {
+          setState(() {
+            _price = value;
+          });
+        },
+      ),
     ];
   }
 
@@ -483,11 +503,12 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Type: ' + _type),
       Text('Driveway: ' + _driveway),
       Text('Space Type: ' + _spaceType),
-      Text('Highlights: ' + _myHighlightsResult.toString()),
+      Text('Highlights: ' + _myHighlights.toString()),
       Text('Additional Details: ' + _details),
       Text('Days Available: ' + _myDays.toString()),
       Text('Available Starting at: ' + _startTime),
       Text('Available Until: ' + _endTime),
+      Text('Price per month: \$' + _price),
       SizedBox(height: 10),
     ];
   }
@@ -543,7 +564,7 @@ class _MyAddParkingState extends State<AddParking> {
       form.save();
       //print(_size);
       setState(() {
-//        _myHighlightsResult = _myHighlights.toString();
+     //   _myHighlightsResult = _myHighlights.toString();
 //        _myHighlightsResult = _myHighlights.toString();
         _page++;
         print(_page);
@@ -604,6 +625,21 @@ class _MyAddParkingState extends State<AddParking> {
     for(int i = 0; i < value.length; i++) {
       if(!RegExp('[r0-9-]').hasMatch(value[i])){
         return 'Enter a valid zip code';
+      }
+    }
+    return null;
+  }
+
+  String validatePrice(String value) {
+    if(value.isEmpty){
+      return 'Field can\'t be empty';
+    }
+    if(value.contains(" ")){
+      return 'Field can\'t contain spaces';
+    }
+    for(int i = 0; i < value.length; i++) {
+      if(!RegExp('[r0-9-]').hasMatch(value[i])){
+        return 'Enter a valid dollar amount';
       }
     }
     return null;
