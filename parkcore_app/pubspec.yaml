@@ -34,6 +34,8 @@ dependencies:
 
   multiselect_formfield: ^0.1.2
 
+  datetime_picker_formfield: ^1.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

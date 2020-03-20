@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
+import 'package:intl/intl.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 
 class AddParking extends StatefulWidget {
@@ -40,6 +42,8 @@ class _MyAddParkingState extends State<AddParking> {
   List _myHighlights = [];
   String _myHighlightsResult = '';
   String _details = '';
+  List _myDays = [];
+  final format = DateFormat("HH:mm");
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -79,6 +83,16 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "EV Charging", "value": "EV Charging"},
   ];
 
+  final _days = [
+    {"display": "Sunday", "value": "SUN"},
+    {"display": "Monday", "value": "MON"},
+    {"display": "Tuesday", "value": "TUE"},
+    {"display": "Wednesday", "value": "WED"},
+    {"display": "Thursday", "value": "THU"},
+    {"display": "Friday", "value": "FRI"},
+    {"display": "Saturday", "value": "SAT"},
+  ];
+
   @override
   Widget build(BuildContext context) {
     // build(): rerun every time setState is called (e.g. for stateful methods)
@@ -100,13 +114,6 @@ class _MyAddParkingState extends State<AddParking> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: <Widget> [
-//                _title == null ?
-//                Text('Post Your Parking Space',
-//                  style: Theme.of(context).textTheme.display1,
-//                )
-//                :Text('$_title $_city',
-//                  style: Theme.of(context).textTheme.display1,
-//                ),
                 SizedBox(height: 10),
                 Form(
                   key: _formKey,
@@ -129,14 +136,12 @@ class _MyAddParkingState extends State<AddParking> {
     }
     else if(_page == 2){
       return buildParkingType() + pageButton('Next');
-      //return buildParkingType() + goBack() + pageButton('Next');
     }
     else if(_page == 3){
-      return buildParkingDetails() + pageButton('Next');
-     // return buildParkingDetails() + goBack() + pageButton('Next');
+      return buildAvailability() + pageButton('Next');
     }
     else{
-      return review() + pageButton('Submit');
+      return review() + restart() + pageButton('Submit');
     }
   }
 
@@ -201,17 +206,12 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       DropDownFormField(
         titleText: 'State',
-        hintText: 'Currently only available in California:',
+        hintText: '*Required*\nCurrently only available in California:',
         required: true,
         value: _state,
         onSaved: (value) {
           setState(() {
-            if(value.isEmpty){
-              _state = "CA";
-            }
-            else{
-              _state = value;
-            }
+            _state = value;
           });
         },
         onChanged: (value) {
@@ -250,17 +250,12 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       DropDownFormField(
         titleText: 'Parking Space Size',
-        hintText: 'Select one:',
+        hintText: '*Required*\nSelect one:',
         required: true,
         value: _size,
         onSaved: (value) {
           setState(() {
-            if(value.isEmpty){
-              _size = "Regular";
-            }
-            else{
-              _size = value;
-            }
+            _size = value;
           });
         },
         onChanged: (value) {
@@ -275,13 +270,13 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       DropDownFormField(
         titleText: 'Type of Parking Space',
-        hintText: 'Select one:',
+        hintText: '*Required*\nSelect one:',
         required: true,
         value: _type,
         onSaved: (value) {
           setState(() {
             if(value.isEmpty){
-              _type = "Driveway";
+              _type = "N/A";
             }
             else{
               _type = value;
@@ -356,7 +351,6 @@ class _MyAddParkingState extends State<AddParking> {
         valueField: 'value',
         okButtonLabel: 'OK',
         cancelButtonLabel: 'CANCEL',
-        //required: true,
         hintText: 'Select all that apply',
         value: _myHighlights,
         onSaved: (value) {
@@ -365,17 +359,12 @@ class _MyAddParkingState extends State<AddParking> {
           });
         },
       ),
-    ];
-  }
-
-  List<Widget> buildParkingDetails() {
-    return [
+      SizedBox(height: 10),
       TextFormField(
         key: Key('details'),
         autofocus: true,
-        //validator: validateTitle,
         keyboardType: TextInputType.multiline,
-        maxLines: 10,
+        maxLines: 6,
         decoration: InputDecoration(
           labelText: 'Other important details about your space:',
           focusedBorder: OutlineInputBorder(
@@ -396,6 +385,40 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
+  List<Widget> buildAvailability() {
+    return [
+      SizedBox(height: 10),
+      MultiSelectFormField(
+        autovalidate: false,
+        titleText: 'Days Available',
+        dataSource: _days,
+        textField: 'display',
+        valueField: 'value',
+        okButtonLabel: 'OK',
+        cancelButtonLabel: 'CANCEL',
+        hintText: 'Select all days your parking space\nwill be available',
+        value: _myDays,
+        onSaved: (value) {
+          setState(() {
+            _myDays = value;
+          });
+        },
+      ),
+      SizedBox(height: 10),
+      Text('Basic time field (${format.pattern})'),
+      DateTimeField(
+        format: format,
+        onShowPicker: (context, currentValue) async {
+          final time = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+          );
+          return DateTimeField.convert(time);
+        },
+      ),
+    ];
+  }
+
   List<Widget> pageButton(String buttonText) {
     return [
       RaisedButton(
@@ -409,18 +432,14 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
-  List<Widget> goBack(){
+  List<Widget> restart(){
     return [
       RaisedButton(
         onPressed: () {
-          setState(() {
-            _page--;
-            //_formKey.currentState.reset();
-            print(_page);
-          });
+          Navigator.pushReplacementNamed(context, '/add_parking');
         },
         child: Text(
-          'Back',
+          'Restart Form',
           style: Theme.of(context).textTheme.display2,
         ),
         color: Colors.green[100],
@@ -444,8 +463,9 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Type: ' + _type),
       Text('Driveway: ' + _driveway),
       Text('Space Type: ' + _spaceType),
-      Text('Highlights: ' + _myHighlightsResult),
-      Text('Additional Details:' + _details),
+      Text('Highlights: ' + _myHighlightsResult.toString()),
+      Text('Additional Details: ' + _details),
+      Text('Days Available: ' + _myDays.toString()),
       SizedBox(height: 10),
     ];
   }
@@ -501,7 +521,8 @@ class _MyAddParkingState extends State<AddParking> {
       form.save();
       //print(_size);
       setState(() {
-        _myHighlightsResult = _myHighlights.toString();
+//        _myHighlightsResult = _myHighlights.toString();
+//        _myHighlightsResult = _myHighlights.toString();
         _page++;
         print(_page);
       });
@@ -518,9 +539,6 @@ class _MyAddParkingState extends State<AddParking> {
     if(value.length > 60){
       return 'Title cannot be more than 60 characters';
     }
-//    if(value.contains(" ")){
-//      return 'Field can\'t contain spaces';
-//    }
     return null;
   }
 
@@ -531,9 +549,6 @@ class _MyAddParkingState extends State<AddParking> {
     if(value.length > 60){
       return 'Address cannot be more than 60 characters';
     }
-//    if(value.contains(" ")){
-//      return 'Field can\'t contain spaces';
-//    }
     return null;
   }
 
@@ -544,9 +559,13 @@ class _MyAddParkingState extends State<AddParking> {
     if(value.toUpperCase() != 'CHICO'){
       return 'Sorry, we are not operating in your town yet';
     }
-//    if(value.contains(" ")){
-//      return 'Field can\'t contain spaces';
-//    }
+    return null;
+  }
+
+  String validateState(String value) {
+    if(value.isEmpty){
+      return 'Field can\'t be empty';
+    }
     return null;
   }
 
@@ -560,12 +579,11 @@ class _MyAddParkingState extends State<AddParking> {
     if(value.contains(" ")){
       return 'Field can\'t contain spaces';
     }
-    for(int i=0; i<value.length; i++) {
+    for(int i = 0; i < value.length; i++) {
       if(!RegExp('[r0-9-]').hasMatch(value[i])){
         return 'Enter a valid zip code';
       }
     }
-
     return null;
   }
 
