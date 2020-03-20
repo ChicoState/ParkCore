@@ -44,6 +44,8 @@ class _MyAddParkingState extends State<AddParking> {
   String _details = '';
   List _myDays = [];
   final format = DateFormat("HH:mm");
+  String _startTime = '';
+  String _endTime = '';
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -405,7 +407,7 @@ class _MyAddParkingState extends State<AddParking> {
         },
       ),
       SizedBox(height: 10),
-      Text('Basic time field (${format.pattern})'),
+      Text('Parking Space Available Starting at:'),
       DateTimeField(
         format: format,
         onShowPicker: (context, currentValue) async {
@@ -413,6 +415,24 @@ class _MyAddParkingState extends State<AddParking> {
             context: context,
             initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
           );
+            setState(() {
+              _startTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
+            });
+          return DateTimeField.convert(time);
+        },
+      ),
+      SizedBox(height: 10),
+      Text('Parking Space Available Until:'),
+      DateTimeField(
+        format: format,
+        onShowPicker: (context, currentValue) async {
+          final time = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+          );
+          setState(() {
+            _endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
+          });
           return DateTimeField.convert(time);
         },
       ),
@@ -466,6 +486,8 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Highlights: ' + _myHighlightsResult.toString()),
       Text('Additional Details: ' + _details),
       Text('Days Available: ' + _myDays.toString()),
+      Text('Available Starting at: ' + _startTime),
+      Text('Available Until: ' + _endTime),
       SizedBox(height: 10),
     ];
   }
