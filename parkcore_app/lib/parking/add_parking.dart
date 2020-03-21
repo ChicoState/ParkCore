@@ -10,6 +10,9 @@ import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 
 class AddParking extends StatefulWidget {
@@ -171,7 +174,7 @@ class _MyAddParkingState extends State<AddParking> {
       return buildAvailability() + pageButton('Next: Add Image(s)');
     }
     else if(_page == 4){
-      return buildImages() + pageButton('Review');
+      return buildImages() + submitParking();
     }
     else{
       return review() + restart() + pageButton('Submit');
@@ -660,20 +663,18 @@ class _MyAddParkingState extends State<AddParking> {
     return [
       RaisedButton(
         key: Key('submit'),
-       // onPressed: validateAndSubmit,
         onPressed: () {
           final form = _formKey.currentState;
           form.save();
-//          if (form.validate()) {
-//            form.save();
-//            //print(_page);
-//            //print(_myData);
-//            setState(() {
-//
-//            });
-//            return true;
-//          }
-//          return false;
+
+          try{
+            createParkingSpace();
+            Navigator.pushReplacementNamed(context, '/home');
+            print("parking space added to database");
+          }
+          catch(e) {
+            print("Error occured: $e");
+          }
         },
         child: Text(
           'Submit',
@@ -682,6 +683,32 @@ class _MyAddParkingState extends State<AddParking> {
         color: Colors.green[100],
       ),
     ];
+  }
+
+  void createParkingSpace() async {
+    var parkingData = {
+      'title': _title,
+      'address':_address,
+      'city': _city,
+      'state': _state,
+      'zip': _zip,
+      'size': _size,
+      'type': _type,
+      'driveway': _driveway,
+      'spacetype': _spaceType,
+      'amenities': _myAmenities.toString(),
+      'spacedetails': _details,
+      'days': _myDays.toString(),
+      'starttime': _startTime,
+      'endtime': _endTime,
+      'monthprice': _price,
+      'coordinates': _coordinates,
+    };
+
+    await Firestore.instance.runTransaction((transaction) async {
+      CollectionReference ref = Firestore.instance.collection('parkingSpaces');
+      await ref.add(parkingData);
+    });
   }
 
   // Form Validation
