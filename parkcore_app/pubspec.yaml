@@ -30,11 +30,11 @@ dependencies:
   http: ^0.12.0+1
   json_serializable: ^2.0.2
 
+  # adds useful features for forms and location options
   dropdown_formfield: ^0.1.1
-
   multiselect_formfield: ^0.1.2
-
   datetime_picker_formfield: ^1.0.0
+  geocoder: ^0.2.1
 
 dev_dependencies:
   flutter_test:

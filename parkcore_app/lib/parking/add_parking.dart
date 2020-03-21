@@ -6,6 +6,7 @@ import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:geocoder/geocoder.dart';
 
 
 class AddParking extends StatefulWidget {
@@ -30,18 +31,22 @@ class _MyAddParkingState extends State<AddParking> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int _page = 1;
+
   String _title = '';
   String _address = '';
   String _city = '';
   String _state = '';
   String _zip = '';
+  String _geoAddress = '';
+  String _coordinates = '';
+
   String _size = '';
   String _type = '';
   String _driveway = '';
   String _spaceType = '';
   List _myHighlights = [];
-  String _myHighlightsResult = '';
   String _details = '';
+
   List _myDays = [];
   final format = DateFormat("HH:mm");
   String _startTime = '';
@@ -185,6 +190,7 @@ class _MyAddParkingState extends State<AddParking> {
         onSaved: (value) {
           setState(() {
             _address = value;
+            //_geoAddress = _address;
           });
         },
       ),
@@ -203,6 +209,8 @@ class _MyAddParkingState extends State<AddParking> {
         onSaved: (value) {
           setState(() {
             _city = value;
+           // _geoAddress += ", ";
+           // _geoAddress += _city;
           });
         },
       ),
@@ -215,6 +223,8 @@ class _MyAddParkingState extends State<AddParking> {
         onSaved: (value) {
           setState(() {
             _state = value;
+          //  _geoAddress += ", ";
+          //  _geoAddress += _state;
           });
         },
         onChanged: (value) {
@@ -242,6 +252,8 @@ class _MyAddParkingState extends State<AddParking> {
         onSaved: (value) {
           setState(() {
             _zip = value;
+          //  _geoAddress += ", ";
+          //  _geoAddress += _zip;
           });
         },
       ),
@@ -459,6 +471,34 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
+  List<Widget> review() {
+    return [
+      Text(
+        'Review your information:',
+        style: Theme.of(context).textTheme.display2,
+      ),
+      SizedBox(height: 10),
+      Text('Title: ' + _title),
+      Text('Address: ' + _address),
+      Text('City: ' + _city),
+      Text('State: ' + _state),
+      Text('Zip: ' + _zip),
+      Text('Parking Space Coordinates: ' + _coordinates),
+      Text('Size: ' + _size),
+      Text('Type: ' + _type),
+      Text('Driveway: ' + _driveway),
+      Text('Space Type: ' + _spaceType),
+      Text('Highlights: ' + _myHighlights.toString()),
+      Text('Additional Details: ' + _details),
+      Text('Days Available: ' + _myDays.toString()),
+      Text('Available Starting at: ' + _startTime),
+      Text('Available Until: ' + _endTime),
+      Text('Price per month: \$' + _price),
+    //print(first.addressLine + " : " + first.coordinates.toString() );
+      SizedBox(height: 10),
+    ];
+  }
+
   List<Widget> pageButton(String buttonText) {
     return [
       RaisedButton(
@@ -486,33 +526,6 @@ class _MyAddParkingState extends State<AddParking> {
       ),
     ];
   }
-
-  List<Widget> review() {
-    return [
-      Text(
-        'Review your information:',
-        style: Theme.of(context).textTheme.display2,
-      ),
-      SizedBox(height: 10),
-      Text('Title: ' + _title),
-      Text('Address: ' + _address),
-      Text('City: ' + _city),
-      Text('State: ' + _state),
-      Text('Zip: ' + _zip),
-      Text('Size: ' + _size),
-      Text('Type: ' + _type),
-      Text('Driveway: ' + _driveway),
-      Text('Space Type: ' + _spaceType),
-      Text('Highlights: ' + _myHighlights.toString()),
-      Text('Additional Details: ' + _details),
-      Text('Days Available: ' + _myDays.toString()),
-      Text('Available Starting at: ' + _startTime),
-      Text('Available Until: ' + _endTime),
-      Text('Price per month: \$' + _price),
-      SizedBox(height: 10),
-    ];
-  }
-
 
   List<Widget> submitParking() {
     return [
@@ -543,6 +556,14 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   void validateAndSubmit() async {
+    if(_page == 1){
+      _formKey.currentState.save();
+      _geoAddress = _address + ", " + _city + ", California " + _zip + ", USA";
+      var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
+      var first = addresses.first;
+      _coordinates = first.coordinates.toString();
+      // print(first.addressLine + " : " + first.coordinates.toString() );
+    }
     if (validateAndSave()) {
       var snackBar = SnackBar(
         content: Text("Processing"),
@@ -562,12 +583,10 @@ class _MyAddParkingState extends State<AddParking> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      //print(_size);
+      //print(_geoAddress);
       setState(() {
-     //   _myHighlightsResult = _myHighlights.toString();
-//        _myHighlightsResult = _myHighlights.toString();
         _page++;
-        print(_page);
+       // print(_page);
       });
       return true;
     }
@@ -599,9 +618,9 @@ class _MyAddParkingState extends State<AddParking> {
     if(value.isEmpty){
       return 'Field can\'t be empty';
     }
-    if(value.toUpperCase() != 'CHICO'){
-      return 'Sorry, we are not operating in your town yet';
-    }
+//    if(value.toUpperCase() != 'CHICO'){
+//      return 'Sorry, we are not operating in your town yet';
+//    }
     return null;
   }
 
