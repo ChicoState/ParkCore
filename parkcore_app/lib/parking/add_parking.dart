@@ -31,6 +31,8 @@ class _MyAddParkingState extends State<AddParking> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int _page = 1;
+  bool _incomplete = false;
+  String _errorMessage = '';
 
   String _title = '';
   String _address = '';
@@ -122,6 +124,12 @@ class _MyAddParkingState extends State<AddParking> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: <Widget> [
+                _incomplete ?
+                  Text(
+                    _errorMessage,
+                    style: TextStyle(color: Colors.red)
+                  )
+                  : Text("Part " + _page.toString() + " of 4"),
                 SizedBox(height: 10),
                 Form(
                   key: _formKey,
@@ -161,7 +169,12 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       getCity(),
       SizedBox(height: 10),
-      getState(),
+      Container(
+        decoration: BoxDecoration(
+          color: _incomplete ? Colors.red[50] : Colors.white10,
+        ),
+        child: getState(),
+      ),
       SizedBox(height: 10),
       getZip(),
       SizedBox(height: 10),
@@ -170,9 +183,19 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> buildParkingType() {
     return[
-      getSize(),
+      Container(
+        decoration: BoxDecoration(
+          color: _incomplete ? Colors.red[50] : Colors.white10,
+        ),
+        child: getSize(),
+      ),
       SizedBox(height: 10),
-      getType(),
+      Container(
+        decoration: BoxDecoration(
+          color: _incomplete ? Colors.red[50] : Colors.white10,
+        ),
+        child: getType(),
+      ),
       SizedBox(height: 10),
       _type == "Driveway" ? getDrivewayDetails() : getSpaceType(),
       SizedBox(height: 10),
@@ -271,7 +294,13 @@ class _MyAddParkingState extends State<AddParking> {
       value: _state,
       onSaved: (value) {
         setState(() {
-          _state = value;
+          if(_state.isEmpty){
+            _incomplete = true;
+          }
+          else{
+            _incomplete = false;
+            _state = value;
+          }
         });
       },
       onChanged: (value) {
@@ -316,7 +345,13 @@ class _MyAddParkingState extends State<AddParking> {
       value: _size,
       onSaved: (value) {
         setState(() {
-          _size = value;
+          if(_size.isEmpty){
+            _incomplete = true;
+          }
+          else{
+            _incomplete = false;
+            _size = value;
+          }
         });
       },
       onChanged: (value) {
@@ -338,10 +373,11 @@ class _MyAddParkingState extends State<AddParking> {
       value: _type,
       onSaved: (value) {
         setState(() {
-          if(value.isEmpty){
-            _type = "N/A";
+          if(_type.isEmpty){
+            _incomplete = true;
           }
           else{
+            _incomplete = false;
             _type = value;
           }
         });
@@ -616,26 +652,21 @@ class _MyAddParkingState extends State<AddParking> {
   // Form Validation
 
   void validateAndSubmit() async {
-    if(_page == 1){
-      _formKey.currentState.save();
-      _geoAddress = _address + ", " + _city + ", " + _state + " " + _zip + ", USA";
-      var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
-      var first = addresses.first;
-      _coordinates = first.coordinates.toString();
-      // print(first.addressLine + " : " + first.coordinates.toString() );
+    if(validateAndSave()){
+      if(_page == 2){
+        _geoAddress = _address + ", " + _city + ", " + _state + " " + _zip + ", USA";
+        var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
+        var first = addresses.first;
+        _coordinates = first.coordinates.toString();
+        print(_state);
+        print(first.addressLine + " : " + first.coordinates.toString() );
+      }
     }
-    if (validateAndSave()) {
-      var snackBar = SnackBar(
-        content: Text("Processing"),
-//        action: SnackBarAction(
-//          label: 'Return',
-//          onPressed: () {
-//            Navigator.pop(context);
-//          },
-//        ),
-      );
-      // Find the Scaffold via key and use it to show a SnackBar!
- //     _scaffoldKey.currentState.showSnackBar(snackBar);
+    else{
+      setState(() {
+        _errorMessage = "Make sure to fill out all required fields";
+        print(_errorMessage);
+      });
     }
   }
 
@@ -643,7 +674,9 @@ class _MyAddParkingState extends State<AddParking> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      //print(_geoAddress);
+      if(_incomplete){
+        return false;
+      }
       setState(() {
         _page++;
        // print(_page);
@@ -723,9 +756,4 @@ class _MyAddParkingState extends State<AddParking> {
     }
     return null;
   }
-
-//  _displaySnackBar(BuildContext context, String text) {
-//    final snackBar = SnackBar(content: Text(text));
-//    _scaffoldKey.currentState.showSnackBar(snackBar);
-//  }
 }
