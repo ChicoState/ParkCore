@@ -1,5 +1,7 @@
 //import 'dart:html';
 //import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
@@ -7,6 +9,7 @@ import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:image_picker/image_picker.dart';
 
 
 class AddParking extends StatefulWidget {
@@ -54,6 +57,8 @@ class _MyAddParkingState extends State<AddParking> {
   String _startTime = '';
   String _endTime = '';
   String _price = '';
+
+  File _image;
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -103,6 +108,14 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Saturday", "value": "SAT"},
   ];
 
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // build(): rerun every time setState is called (e.g. for stateful methods)
@@ -129,7 +142,7 @@ class _MyAddParkingState extends State<AddParking> {
                     _errorMessage,
                     style: TextStyle(color: Colors.red)
                   )
-                  : Text("Part " + _page.toString() + " of 4"),
+                  : Text("Part " + _page.toString() + " of 5"),
                 SizedBox(height: 10),
                 Form(
                   key: _formKey,
@@ -154,7 +167,10 @@ class _MyAddParkingState extends State<AddParking> {
       return buildParkingType() + pageButton('Next: Price & Availability');
     }
     else if(_page == 3){
-      return buildAvailability() + pageButton('Next: Review');
+      return buildAvailability() + pageButton('Next: Add Image(s)');
+    }
+    else if(_page == 4){
+      return buildImages() + pageButton('Review');
     }
     else{
       return review() + restart() + pageButton('Submit');
@@ -217,6 +233,23 @@ class _MyAddParkingState extends State<AddParking> {
       getEndTime(),
       SizedBox(height: 10),
       getPrice(),
+      SizedBox(height: 10),
+    ];
+  }
+
+  List<Widget> buildImages() {
+    return [
+      Center(
+        child: _image == null
+            ? Text('No image selected.')
+            : Image.file(_image),
+      ),
+      SizedBox(height: 10),
+      FloatingActionButton(
+        onPressed: getImage,
+        tooltip: 'Pick Image',
+        child: Icon(Icons.add_a_photo),
+      ),
       SizedBox(height: 10),
     ];
   }
@@ -576,7 +609,6 @@ class _MyAddParkingState extends State<AddParking> {
       Text('City: ' + _city),
       Text('State: ' + _state),
       Text('Zip: ' + _zip),
-      Text('Parking Space Coordinates: ' + _coordinates),
       Text('Size: ' + _size),
       Text('Type: ' + _type),
       Text('Driveway: ' + _driveway),
@@ -587,6 +619,8 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Available Starting at: ' + _startTime),
       Text('Available Until: ' + _endTime),
       Text('Price per month: \$' + _price),
+      Text('Generated info:'),
+      Text('Parking Space Coordinates: ' + _coordinates),
       SizedBox(height: 10),
     ];
   }
