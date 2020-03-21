@@ -35,6 +35,7 @@ class _MyAddParkingState extends State<AddParking> {
 
   int _page = 1;
   bool _incomplete = false;
+  bool _invalidLoc = false;
   String _errorMessage = '';
 
   String _title = '';
@@ -137,7 +138,7 @@ class _MyAddParkingState extends State<AddParking> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: <Widget> [
-                _incomplete ?
+                _incomplete || _invalidLoc ?
                   Text(
                     _errorMessage,
                     style: TextStyle(color: Colors.red)
@@ -686,21 +687,36 @@ class _MyAddParkingState extends State<AddParking> {
   // Form Validation
 
   void validateAndSubmit() async {
-    if(validateAndSave()){
-      if(_page == 2){
+    if(_page == 1){
+      try{
+        _formKey.currentState.save();
         _geoAddress = _address + ", " + _city + ", " + _state + " " + _zip + ", USA";
         var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
         var first = addresses.first;
         _coordinates = first.coordinates.toString();
-        print(_state);
         print(first.addressLine + " : " + first.coordinates.toString() );
+        setState(() {
+          _invalidLoc = false;
+        });
+      }
+      catch(e) {
+        print("Error occured: $e");
+        setState(() {
+          _invalidLoc = true;
+          _errorMessage = "We can't find you!\nPlease enter a valid location.";
+        });
       }
     }
-    else{
-      setState(() {
-        _errorMessage = "Make sure to fill out all required fields";
-        print(_errorMessage);
-      });
+    if(!_invalidLoc){
+      if(validateAndSave()){
+
+      }
+      else{
+        setState(() {
+          _errorMessage = "Make sure to fill out all required fields";
+          print(_errorMessage);
+        });
+      }
     }
   }
 
