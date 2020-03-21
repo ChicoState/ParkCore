@@ -44,7 +44,7 @@ class _MyAddParkingState extends State<AddParking> {
   String _type = '';
   String _driveway = '';
   String _spaceType = '';
-  List _myHighlights = [];
+  List _myAmenities = [];
   String _details = '';
 
   List _myDays = [];
@@ -84,7 +84,7 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Perpendicular", "value": "Perpendicular"},
   ];
 
-  final _parkingHighlights = [
+  final _parkingAmenities = [
     {"display": "Lit", "value": "Lit"},
     {"display": "Covered", "value": "Covered"},
     {"display": "Security Camera", "value": "Security Camera"},
@@ -143,10 +143,10 @@ class _MyAddParkingState extends State<AddParking> {
       return buildAddress() + pageButton('Next: Parking Space Info');
     }
     else if(_page == 2){
-      return buildParkingType() + pageButton('Next');
+      return buildParkingType() + pageButton('Next: Price & Availability');
     }
     else if(_page == 3){
-      return buildAvailability() + pageButton('Next');
+      return buildAvailability() + pageButton('Next: Review');
     }
     else{
       return review() + restart() + pageButton('Submit');
@@ -155,320 +155,377 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> buildAddress() {
     return [
-      TextFormField(
-        key: Key('title'),
-        autofocus: true,
-        validator: validateTitle,
-        keyboardType: TextInputType.multiline,
-        maxLines: 2,
-        decoration: InputDecoration(
-          labelText: 'Enter a descriptive title for your parking space:',
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.lightGreen
-            ),
-          ),
-        ),
-        onSaved: (value) {
-          setState(() {
-            _title = value;
-          });
-        },
-      ),
+      getTitle(),
       SizedBox(height: 10),
-      TextFormField(
-        key: Key('address'),
-        validator: validateAddress,
-        decoration: InputDecoration(
-          labelText: 'Street Address:',
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.lightGreen
-            ),
-          ),
-        ),
-        onSaved: (value) {
-          setState(() {
-            _address = value;
-            //_geoAddress = _address;
-          });
-        },
-      ),
+      getAddress(),
       SizedBox(height: 10),
-      TextFormField(
-        key: Key('city'),
-        validator: validateCity,
-        decoration: InputDecoration(
-          labelText: 'City:',
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.lightGreen
-            ),
-          ),
-        ),
-        onSaved: (value) {
-          setState(() {
-            _city = value;
-           // _geoAddress += ", ";
-           // _geoAddress += _city;
-          });
-        },
-      ),
+      getCity(),
       SizedBox(height: 10),
-      DropDownFormField(
-        titleText: 'State',
-        hintText: '*Required*\nCurrently only available in California:',
-        required: true,
-        value: _state,
-        onSaved: (value) {
-          setState(() {
-            _state = value;
-          //  _geoAddress += ", ";
-          //  _geoAddress += _state;
-          });
-        },
-        onChanged: (value) {
-          setState(() {
-            _state = value;
-          });
-        },
-        dataSource: _stateData,
-        textField: 'display',
-        valueField: 'value',
-      ),
+      getState(),
       SizedBox(height: 10),
-      TextFormField(
-        key: Key('zip'),
-        autofocus: true,
-        validator: validateZip,
-        decoration: InputDecoration(
-          labelText: 'Zip Code:',
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.lightGreen
-            ),
-          ),
-        ),
-        onSaved: (value) {
-          setState(() {
-            _zip = value;
-          //  _geoAddress += ", ";
-          //  _geoAddress += _zip;
-          });
-        },
-      ),
+      getZip(),
+      SizedBox(height: 10),
     ];
   }
 
   List<Widget> buildParkingType() {
     return[
+      getSize(),
       SizedBox(height: 10),
-      DropDownFormField(
-        titleText: 'Parking Space Size',
-        hintText: '*Required*\nSelect one:',
-        required: true,
-        value: _size,
-        onSaved: (value) {
-          setState(() {
-            _size = value;
-          });
-        },
-        onChanged: (value) {
-          setState(() {
-            _size = value;
-          });
-        },
-        dataSource: _sizeData,
-        textField: 'display',
-        valueField: 'value',
-      ),
+      getType(),
       SizedBox(height: 10),
-      DropDownFormField(
-        titleText: 'Type of Parking Space',
-        hintText: '*Required*\nSelect one:',
-        required: true,
-        value: _type,
-        onSaved: (value) {
-          setState(() {
-            if(value.isEmpty){
-              _type = "N/A";
-            }
-            else{
-              _type = value;
-            }
-          });
-        },
-        onChanged: (value) {
-          setState(() {
-            _type = value;
-          });
-        },
-        dataSource: _typeData,
-        textField: 'display',
-        valueField: 'value',
-      ),
+      _type == "Driveway" ? getDrivewayDetails() : getSpaceType(),
       SizedBox(height: 10),
-      _type == "Driveway" ?
-      DropDownFormField(
-        titleText: 'Driveway Parking Space',
-        hintText: 'Select one:',
-        value: _driveway,
-        onSaved: (value) {
-          setState(() {
-            if(value.isEmpty){
-              _driveway = "N/A";
-            }
-            else{
-              _driveway = value;
-            }
-            _spaceType = "N/A";
-          });
-        },
-        onChanged: (value) {
-          setState(() {
-            _driveway = value;
-          });
-        },
-        dataSource: _drivewayData,
-        textField: 'display',
-        valueField: 'value',
-      )
-      :DropDownFormField(
-        titleText: 'Additional Parking Info',
-        hintText: 'Select one:',
-        value: _spaceType,
-        onSaved: (value) {
-          setState(() {
-            if(value.isEmpty){
-              _spaceType = "N/A";
-            }
-            else{
-              _spaceType = value;
-            }
-            _driveway = "N/A";
-          });
-        },
-        onChanged: (value) {
-          setState(() {
-            _spaceType = value;
-          });
-        },
-        dataSource: _parkingSpaceTypeData,
-        textField: 'display',
-        valueField: 'value',
-      ),
+      getAmenities(),
       SizedBox(height: 10),
-      MultiSelectFormField(
-        autovalidate: false,
-        titleText: 'Parking Spot Highlights',
-        dataSource: _parkingHighlights,
-        textField: 'display',
-        valueField: 'value',
-        okButtonLabel: 'OK',
-        cancelButtonLabel: 'CANCEL',
-        hintText: 'Select all that apply',
-        value: _myHighlights,
-        onSaved: (value) {
-          setState(() {
-            _myHighlights = value;
-          });
-        },
-      ),
+      getDetails(),
       SizedBox(height: 10),
-      TextFormField(
-        key: Key('details'),
-        autofocus: true,
-        keyboardType: TextInputType.multiline,
-        maxLines: 6,
-        decoration: InputDecoration(
-          labelText: 'Other important details about your space:',
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.lightGreen
-            ),
-          ),
-        ),
-        onSaved: (value) {
-          if(value.isEmpty){
-            _details = "";
-          }
-          setState(() {
-            _details = value;
-          });
-        },
-      ),
     ];
   }
 
   List<Widget> buildAvailability() {
     return [
-      SizedBox(height: 10),
-      MultiSelectFormField(
-        autovalidate: false,
-        titleText: 'Days Available',
-        dataSource: _days,
-        textField: 'display',
-        valueField: 'value',
-        okButtonLabel: 'OK',
-        cancelButtonLabel: 'CANCEL',
-        hintText: 'Select all days your parking space\nwill be available',
-        value: _myDays,
-        onSaved: (value) {
-          setState(() {
-            _myDays = value;
-          });
-        },
-      ),
+      getDays(),
       SizedBox(height: 10),
       Text('Parking Space Available Starting at:'),
-      DateTimeField(
-        format: format,
-        onShowPicker: (context, currentValue) async {
-          final time = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-          );
-            setState(() {
-              _startTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
-            });
-          return DateTimeField.convert(time);
-        },
-      ),
+      getStartTime(),
       SizedBox(height: 10),
       Text('Parking Space Available Until:'),
-      DateTimeField(
-        format: format,
-        onShowPicker: (context, currentValue) async {
-          final time = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-          );
-          setState(() {
-            _endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
-          });
-          return DateTimeField.convert(time);
-        },
-      ),
+      getEndTime(),
       SizedBox(height: 10),
-      TextFormField(
-        key: Key('price'),
-        autofocus: true,
-        validator: validatePrice,
-        decoration: InputDecoration(
-          labelText: 'Price per month (\$):',
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.lightGreen
-            ),
+      getPrice(),
+      SizedBox(height: 10),
+    ];
+  }
+
+  // Page 1 Parking Form Widgets
+
+  Widget getTitle() {
+    return TextFormField(
+      key: Key('title'),
+      autofocus: true,
+      validator: validateTitle,
+      keyboardType: TextInputType.multiline,
+      maxLines: 2,
+      decoration: InputDecoration(
+        labelText: 'Enter a descriptive title for your parking space:',
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: Colors.lightGreen
           ),
         ),
-        onSaved: (value) {
-          setState(() {
-            _price = value;
-          });
-        },
       ),
-    ];
+      onSaved: (value) {
+        setState(() {
+          _title = value;
+        });
+      },
+    );
+  }
+
+  Widget getAddress() {
+    return TextFormField(
+      key: Key('address'),
+      validator: validateAddress,
+      decoration: InputDecoration(
+        labelText: 'Street Address:',
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: Colors.lightGreen
+          ),
+        ),
+      ),
+      onSaved: (value) {
+        setState(() {
+          _address = value;
+        });
+      },
+    );
+  }
+
+  Widget getCity() {
+    return TextFormField(
+      key: Key('city'),
+      validator: validateCity,
+      decoration: InputDecoration(
+        labelText: 'City:',
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: Colors.lightGreen
+          ),
+        ),
+      ),
+      onSaved: (value) {
+        setState(() {
+          _city = value;
+        });
+      },
+    );
+  }
+
+  Widget getState() {
+    return DropDownFormField(
+      titleText: 'State',
+      hintText: '*Required*\nCurrently only available in California:',
+      required: true,
+      value: _state,
+      onSaved: (value) {
+        setState(() {
+          _state = value;
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          _state = value;
+        });
+      },
+      dataSource: _stateData,
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget getZip() {
+    return TextFormField(
+      key: Key('zip'),
+      autofocus: true,
+      validator: validateZip,
+      decoration: InputDecoration(
+        labelText: 'Zip Code:',
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: Colors.lightGreen
+          ),
+        ),
+      ),
+      onSaved: (value) {
+        setState(() {
+          _zip = value;
+        });
+      },
+    );
+  }
+
+  // Page 2 Parking Form Widgets
+
+  Widget getSize() {
+    return DropDownFormField(
+      titleText: 'Parking Space Size',
+      hintText: '*Required*\nSelect one:',
+      required: true,
+      value: _size,
+      onSaved: (value) {
+        setState(() {
+          _size = value;
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          _size = value;
+        });
+      },
+      dataSource: _sizeData,
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget getType() {
+    return DropDownFormField(
+      titleText: 'Type of Parking Space',
+      hintText: '*Required*\nSelect one:',
+      required: true,
+      value: _type,
+      onSaved: (value) {
+        setState(() {
+          if(value.isEmpty){
+            _type = "N/A";
+          }
+          else{
+            _type = value;
+          }
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          _type = value;
+        });
+      },
+      dataSource: _typeData,
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget getDrivewayDetails() {
+    return DropDownFormField(
+      titleText: 'Driveway Parking Space:',
+      hintText: 'Select one:',
+      value: _driveway,
+      onSaved: (value) {
+        setState(() {
+          if(value.isEmpty){
+            _driveway = "N/A";
+          }
+          else{
+            _driveway = value;
+          }
+          _spaceType = "N/A";
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          _driveway = value;
+        });
+      },
+      dataSource: _drivewayData,
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget getSpaceType() {
+    return DropDownFormField(
+      titleText: 'Additional Parking Info',
+      hintText: 'Select one:',
+      value: _spaceType,
+      onSaved: (value) {
+        setState(() {
+          if(value.isEmpty){
+            _spaceType = "N/A";
+          }
+          else{
+            _spaceType = value;
+          }
+          _driveway = "N/A";
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          _spaceType = value;
+        });
+      },
+      dataSource: _parkingSpaceTypeData,
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget getAmenities() {
+    return MultiSelectFormField(
+      autovalidate: false,
+      titleText: 'Parking Spot Amenities',
+      dataSource: _parkingAmenities,
+      textField: 'display',
+      valueField: 'value',
+      okButtonLabel: 'OK',
+      cancelButtonLabel: 'CANCEL',
+      hintText: 'Select all that apply',
+      value: _myAmenities,
+      onSaved: (value) {
+        setState(() {
+          _myAmenities = value;
+        });
+      },
+    );
+  }
+
+  Widget getDetails() {
+    return TextFormField(
+      key: Key('details'),
+      autofocus: true,
+      keyboardType: TextInputType.multiline,
+      maxLines: 6,
+      decoration: InputDecoration(
+        labelText: 'Other important details about your space:',
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: Colors.lightGreen
+          ),
+        ),
+      ),
+      onSaved: (value) {
+        if(value.isEmpty){
+          _details = "";
+        }
+        setState(() {
+          _details = value;
+        });
+      },
+    );
+  }
+
+// Page 3 Parking Form Widgets
+
+  Widget getDays() {
+    return MultiSelectFormField(
+      autovalidate: false,
+      titleText: 'Days Available',
+      dataSource: _days,
+      textField: 'display',
+      valueField: 'value',
+      okButtonLabel: 'OK',
+      cancelButtonLabel: 'CANCEL',
+      hintText: 'Select all days your parking space\nwill be available',
+      value: _myDays,
+      onSaved: (value) {
+        setState(() {
+          _myDays = value;
+        });
+      },
+    );
+  }
+
+  Widget getStartTime() {
+    return DateTimeField(
+      format: format,
+      onShowPicker: (context, currentValue) async {
+        final time = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+        );
+        setState(() {
+          _startTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
+        });
+        return DateTimeField.convert(time);
+      },
+    );
+  }
+
+  Widget getEndTime() {
+    return DateTimeField(
+      format: format,
+      onShowPicker: (context, currentValue) async {
+        final time = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+        );
+        setState(() {
+          _endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
+        });
+        return DateTimeField.convert(time);
+      },
+    );
+  }
+
+  Widget getPrice() {
+    return TextFormField(
+      key: Key('price'),
+      validator: validatePrice,
+      decoration: InputDecoration(
+        labelText: 'Price per month (\$):',
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+              color: Colors.lightGreen
+          ),
+        ),
+      ),
+      onSaved: (value) {
+        setState(() {
+          _price = value;
+        });
+      },
+    );
   }
 
   List<Widget> review() {
@@ -488,16 +545,17 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Type: ' + _type),
       Text('Driveway: ' + _driveway),
       Text('Space Type: ' + _spaceType),
-      Text('Highlights: ' + _myHighlights.toString()),
+      Text('Amenities: ' + _myAmenities.toString()),
       Text('Additional Details: ' + _details),
       Text('Days Available: ' + _myDays.toString()),
       Text('Available Starting at: ' + _startTime),
       Text('Available Until: ' + _endTime),
       Text('Price per month: \$' + _price),
-    //print(first.addressLine + " : " + first.coordinates.toString() );
       SizedBox(height: 10),
     ];
   }
+
+  // Parking Form Buttons
 
   List<Widget> pageButton(String buttonText) {
     return [
@@ -555,10 +613,12 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
+  // Form Validation
+
   void validateAndSubmit() async {
     if(_page == 1){
       _formKey.currentState.save();
-      _geoAddress = _address + ", " + _city + ", California " + _zip + ", USA";
+      _geoAddress = _address + ", " + _city + ", " + _state + " " + _zip + ", USA";
       var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
       var first = addresses.first;
       _coordinates = first.coordinates.toString();
