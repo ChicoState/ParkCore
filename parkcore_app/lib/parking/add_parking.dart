@@ -1,7 +1,4 @@
-//import 'dart:html';
-//import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
@@ -113,15 +110,6 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Saturday", "value": "SAT"},
   ];
 
-
-//  Future getImage() async {
-//    var image = await ImagePicker.pickImage(source: ImageSource.camera);
-//
-//    setState(() {
-//      _image = image;
-//    });
-//  }
-
   // Select an image via gallery or camera
   Future<void> getImage(ImageSource source) async {
     File selected = await ImagePicker.pickImage(source: source);
@@ -131,13 +119,13 @@ class _MyAddParkingState extends State<AddParking> {
     });
   }
 
+  // Get a unique ID for each image upload
   Future<void> getUniqueFile() async {
     final String uuid = Uuid().v1();
     _downloadURL = await _uploadFile(uuid);
-
-    //await _addItem(downloadURL);
   }
 
+  // get download URL for image files
   Future<String> _uploadFile(filename) async {
     final StorageReference ref = FirebaseStorage.instance.ref().child('$filename.jpg');
     final StorageUploadTask uploadTask = ref.putFile(
@@ -149,14 +137,6 @@ class _MyAddParkingState extends State<AddParking> {
 
     final downloadURL = await (await uploadTask.onComplete).ref.getDownloadURL();
     return downloadURL.toString();
-  }
-
-
-
-
-  // Remove image
-  void _clear() {
-    setState(() => _imageFile = null);
   }
 
   @override
@@ -236,7 +216,7 @@ class _MyAddParkingState extends State<AddParking> {
       ),
       SizedBox(height: 10),
       getZip(),
-      SizedBox(height: 10),
+      SizedBox(height: 30),
     ];
   }
 
@@ -261,7 +241,7 @@ class _MyAddParkingState extends State<AddParking> {
       getAmenities(),
       SizedBox(height: 10),
       getDetails(),
-      SizedBox(height: 10),
+      SizedBox(height: 30),
     ];
   }
 
@@ -276,42 +256,18 @@ class _MyAddParkingState extends State<AddParking> {
       getEndTime(),
       SizedBox(height: 10),
       getPrice(),
-      SizedBox(height: 10),
+      SizedBox(height: 30),
     ];
   }
 
   List<Widget> buildImages() {
     return [
-      Center(
-        child: _imageFile == null
-            ? Text('No image selected.')
-            : Image.file(_imageFile),
-      ),
+      showImage(),
       SizedBox(height: 10),
       Row(
         children: <Widget> [
-          Expanded(
-            child: FormField<File>(
-              //validator: validateImage,
-              builder: (FormFieldState<File> state) {
-                return RaisedButton(
-                  child: Icon(Icons.photo_camera),
-                  onPressed: () => getImage(ImageSource.camera),
-                );
-              },
-            ),
-          ),
-          Expanded(
-            child: FormField<File>(
-              //validator: validateImage,
-              builder: (FormFieldState<File> state) {
-                return RaisedButton(
-                  child: Icon(Icons.photo_library),
-                  onPressed: () => getImage(ImageSource.gallery),
-                );
-              },
-            ),
-          ),
+          getCameraImage(),
+          getGalleryImage(),
         ],
       ),
       SizedBox(height: 30),
@@ -331,7 +287,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Enter a descriptive title for your parking space:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Colors.lightGreen
+              color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -351,7 +307,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Street Address:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Colors.lightGreen
+              color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -371,7 +327,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'City:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Colors.lightGreen
+              color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -420,7 +376,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Zip Code:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Colors.lightGreen
+              color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -573,7 +529,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Other important details about your space:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Colors.lightGreen
+              color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -649,7 +605,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Price per month (\$):',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Colors.lightGreen
+              color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -658,6 +614,44 @@ class _MyAddParkingState extends State<AddParking> {
           _price = value;
         });
       },
+    );
+  }
+
+  // Page 4 Parking Form Widgets
+
+  Widget showImage() {
+    return Center(
+      child: _imageFile == null
+          ? Text('No image selected.')
+          : Image.file(_imageFile),
+    );
+  }
+
+  Widget getCameraImage() {
+    return Expanded(
+      child: FormField<File>(
+        //validator: validateImage,
+        builder: (FormFieldState<File> state) {
+          return RaisedButton(
+            child: Icon(Icons.photo_camera),
+            onPressed: () => getImage(ImageSource.camera),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget getGalleryImage() {
+    return Expanded(
+      child: FormField<File>(
+        //validator: validateImage,
+        builder: (FormFieldState<File> state) {
+          return RaisedButton(
+            child: Icon(Icons.photo_library),
+            onPressed: () => getImage(ImageSource.gallery),
+          );
+        },
+      ),
     );
   }
 
@@ -685,7 +679,6 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Price per month: \$' + _price),
       Text('Generated info:'),
       Text('Parking Space Coordinates: ' + _coordinates),
-      //Text('download url:' + _downloadURL),
       SizedBox(height: 10),
     ];
   }
@@ -703,7 +696,7 @@ class _MyAddParkingState extends State<AddParking> {
               buttonText,
               style: Theme.of(context).textTheme.display2,
             ),
-            color: Colors.green[100],
+            color: Theme.of(context).accentColor,
           ),
         ],
       ),
@@ -712,41 +705,51 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> restart(){
     return [
-      RaisedButton(
-        onPressed: () {
-          Navigator.pushReplacementNamed(context, '/add_parking');
-        },
-        child: Text(
-          'Restart Form',
-          style: Theme.of(context).textTheme.display2,
-        ),
-        color: Colors.green[100],
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RaisedButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/add_parking');
+            },
+            child: Text(
+              'Restart Form',
+              style: Theme.of(context).textTheme.display2,
+            ),
+            color: Theme.of(context).accentColor,
+          ),
+        ],
       ),
     ];
   }
 
   List<Widget> submitParking() {
     return [
-      RaisedButton(
-        key: Key('submit'),
-        onPressed: () {
-          final form = _formKey.currentState;
-          form.save();
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RaisedButton(
+            key: Key('submit'),
+            onPressed: () {
+              final form = _formKey.currentState;
+              form.save();
 
-          try{
-            createParkingSpace();
-            Navigator.pushReplacementNamed(context, '/home');
-            print("parking space added to database");
-          }
-          catch(e) {
-            print("Error occured: $e");
-          }
-        },
-        child: Text(
-          'Submit',
-          style: Theme.of(context).textTheme.display2,
-        ),
-        color: Colors.green[100],
+              try{
+                createParkingSpace();
+                Navigator.pushReplacementNamed(context, '/home');
+                print("parking space added to database");
+              }
+              catch(e) {
+                print("Error occured: $e");
+              }
+            },
+            child: Text(
+              'Submit',
+              style: Theme.of(context).textTheme.display2,
+            ),
+            color: Theme.of(context).accentColor,
+          ),
+        ],
       ),
     ];
   }
