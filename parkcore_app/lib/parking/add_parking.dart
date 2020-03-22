@@ -12,7 +12,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
+import 'package:uuid/uuid.dart';
 
 
 class AddParking extends StatefulWidget {
@@ -62,7 +62,8 @@ class _MyAddParkingState extends State<AddParking> {
   String _endTime = '';
   String _price = '';
 
-  File _image;
+  File _imageFile;
+  String _downloadURL;
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -112,12 +113,50 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Saturday", "value": "SAT"},
   ];
 
-  Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+//  Future getImage() async {
+//    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+//
+//    setState(() {
+//      _image = image;
+//    });
+//  }
+
+  // Select an image via gallery or camera
+  Future<void> getImage(ImageSource source) async {
+    File selected = await ImagePicker.pickImage(source: source);
 
     setState(() {
-      _image = image;
+      _imageFile = selected;
     });
+  }
+
+  Future<void> getUniqueFile() async {
+    final String uuid = Uuid().v1();
+    _downloadURL = await _uploadFile(uuid);
+
+    //await _addItem(downloadURL);
+  }
+
+  Future<String> _uploadFile(filename) async {
+    final StorageReference ref = FirebaseStorage.instance.ref().child('$filename.jpg');
+    final StorageUploadTask uploadTask = ref.putFile(
+      _imageFile,
+      StorageMetadata(
+        contentLanguage: 'en',
+      ),
+    );
+
+    final downloadURL = await (await uploadTask.onComplete).ref.getDownloadURL();
+    return downloadURL.toString();
+  }
+
+
+
+
+  // Remove image
+  void _clear() {
+    setState(() => _imageFile = null);
   }
 
   @override
@@ -171,13 +210,13 @@ class _MyAddParkingState extends State<AddParking> {
       return buildParkingType() + pageButton('Next: Price & Availability');
     }
     else if(_page == 3){
-      return buildAvailability() + pageButton('Next: Add Image(s)');
+      return buildAvailability() + pageButton('Review');
     }
     else if(_page == 4){
-      return buildImages() + submitParking();
+      return review() + restart() + pageButton('Add Image & Submit');
     }
     else{
-      return review() + restart() + pageButton('Submit');
+      return buildImages() + submitParking();
     }
   }
 
@@ -244,17 +283,38 @@ class _MyAddParkingState extends State<AddParking> {
   List<Widget> buildImages() {
     return [
       Center(
-        child: _image == null
+        child: _imageFile == null
             ? Text('No image selected.')
-            : Image.file(_image),
+            : Image.file(_imageFile),
       ),
       SizedBox(height: 10),
-      FloatingActionButton(
-        onPressed: getImage,
-        tooltip: 'Pick Image',
-        child: Icon(Icons.add_a_photo),
+      Row(
+        children: <Widget> [
+          Expanded(
+            child: FormField<File>(
+              //validator: validateImage,
+              builder: (FormFieldState<File> state) {
+                return RaisedButton(
+                  child: Icon(Icons.photo_camera),
+                  onPressed: () => getImage(ImageSource.camera),
+                );
+              },
+            ),
+          ),
+          Expanded(
+            child: FormField<File>(
+              //validator: validateImage,
+              builder: (FormFieldState<File> state) {
+                return RaisedButton(
+                  child: Icon(Icons.photo_library),
+                  onPressed: () => getImage(ImageSource.gallery),
+                );
+              },
+            ),
+          ),
+        ],
       ),
-      SizedBox(height: 10),
+      SizedBox(height: 30),
     ];
   }
 
@@ -625,6 +685,7 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Price per month: \$' + _price),
       Text('Generated info:'),
       Text('Parking Space Coordinates: ' + _coordinates),
+      //Text('download url:' + _downloadURL),
       SizedBox(height: 10),
     ];
   }
@@ -633,13 +694,18 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> pageButton(String buttonText) {
     return [
-      RaisedButton(
-        onPressed: validateAndSubmit,
-        child: Text(
-          buttonText,
-          style: Theme.of(context).textTheme.display2,
-        ),
-        color: Colors.green[100],
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          RaisedButton(
+            onPressed: validateAndSubmit,
+            child: Text(
+              buttonText,
+              style: Theme.of(context).textTheme.display2,
+            ),
+            color: Colors.green[100],
+          ),
+        ],
       ),
     ];
   }
@@ -685,7 +751,14 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
-  void createParkingSpace() async {
+  Future<void> createParkingSpace() async {
+    try{
+      await getUniqueFile();
+    }
+    catch(e){
+      print("Error occured: $e");
+    }
+
     var parkingData = {
       'title': _title,
       'address':_address,
@@ -703,6 +776,7 @@ class _MyAddParkingState extends State<AddParking> {
       'endtime': _endTime,
       'monthprice': _price,
       'coordinates': _coordinates,
+      'downloadURL': _downloadURL,
     };
 
     await Firestore.instance.runTransaction((transaction) async {
