@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 
 class AddParking extends StatefulWidget {
@@ -58,6 +59,10 @@ class _MyAddParkingState extends State<AddParking> {
   String _startTime = '';
   String _endTime = '';
   String _price = '';
+  var priceController = MoneyMaskedTextController(
+      decimalSeparator: '.',
+      thousandSeparator: ',',
+  );
 
   File _imageFile;
   String _downloadURL;
@@ -210,7 +215,7 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       Container(
         decoration: BoxDecoration(
-          color: _incomplete ? Colors.red[50] : Colors.white10,
+          color: _incomplete ? Colors.red[50] : Colors.green[50],
         ),
         child: getState(),
       ),
@@ -224,21 +229,32 @@ class _MyAddParkingState extends State<AddParking> {
     return[
       Container(
         decoration: BoxDecoration(
-          color: _incomplete ? Colors.red[50] : Colors.white10,
+          color: _incomplete ? Colors.red[50] : Colors.green[50],
         ),
         child: getSize(),
       ),
       SizedBox(height: 10),
       Container(
         decoration: BoxDecoration(
-          color: _incomplete ? Colors.red[50] : Colors.white10,
+          color: _incomplete ? Colors.red[50] : Colors.green[50],
         ),
         child: getType(),
       ),
       SizedBox(height: 10),
-      _type == "Driveway" ? getDrivewayDetails() : getSpaceType(),
+      _type == "Driveway" ?
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getDrivewayDetails(),
+      ):
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getSpaceType(),
+      ),
       SizedBox(height: 10),
-      getAmenities(),
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getAmenities(),
+      ),
       SizedBox(height: 10),
       getDetails(),
       SizedBox(height: 30),
@@ -247,12 +263,13 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> buildAvailability() {
     return [
-      getDays(),
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getDays(),
+      ),
       SizedBox(height: 10),
-      Text('Parking Space Available Starting at:'),
       getStartTime(),
       SizedBox(height: 10),
-      Text('Parking Space Available Until:'),
       getEndTime(),
       SizedBox(height: 10),
       getPrice(),
@@ -569,6 +586,9 @@ class _MyAddParkingState extends State<AddParking> {
   Widget getStartTime() {
     return DateTimeField(
       format: format,
+      decoration: InputDecoration(
+        labelText: 'Parking Space Available Starting at:',
+      ),
       onShowPicker: (context, currentValue) async {
         final time = await showTimePicker(
           context: context,
@@ -585,6 +605,9 @@ class _MyAddParkingState extends State<AddParking> {
   Widget getEndTime() {
     return DateTimeField(
       format: format,
+      decoration: InputDecoration(
+        labelText: 'Parking Space Available Until:',
+      ),
       onShowPicker: (context, currentValue) async {
         final time = await showTimePicker(
           context: context,
@@ -602,6 +625,8 @@ class _MyAddParkingState extends State<AddParking> {
     return TextFormField(
       key: Key('price'),
       validator: validatePrice,
+      controller: priceController,
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: 'Price per month (\$):',
         focusedBorder: OutlineInputBorder(
@@ -903,11 +928,6 @@ class _MyAddParkingState extends State<AddParking> {
     }
     if(value.contains(" ")){
       return 'Field can\'t contain spaces';
-    }
-    for(int i = 0; i < value.length; i++) {
-      if(!RegExp('[r0-9-]').hasMatch(value[i])){
-        return 'Enter a valid dollar amount';
-      }
     }
     return null;
   }
