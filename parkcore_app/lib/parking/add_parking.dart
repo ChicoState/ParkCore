@@ -626,7 +626,7 @@ class _MyAddParkingState extends State<AddParking> {
       ),
       onSaved: (value) {
         setState(() {
-          _price = value;
+          _price = priceController.text;
         });
       },
     );
