@@ -261,6 +261,7 @@ class _MyAddParkingState extends State<AddParking> {
       Row(
         children: <Widget>[
           getCameraImage(),
+          SizedBox(width: 10),
           getGalleryImage(),
         ],
       ),
@@ -624,6 +625,7 @@ class _MyAddParkingState extends State<AddParking> {
           return RaisedButton(
             child: Icon(Icons.photo_camera),
             onPressed: () => getImage(ImageSource.camera),
+            color: Theme.of(context).backgroundColor,
           );
         },
       ),
@@ -638,6 +640,7 @@ class _MyAddParkingState extends State<AddParking> {
           return RaisedButton(
             child: Icon(Icons.photo_library),
             onPressed: () => getImage(ImageSource.gallery),
+            color: Theme.of(context).backgroundColor,
           );
         },
       ),
@@ -874,10 +877,8 @@ class _MyAddParkingState extends State<AddParking> {
     if (value.contains(" ")) {
       return 'Field can\'t contain spaces';
     }
-    for (int i = 0; i < value.length; i++) {
-      if (!RegExp('[r0-9-]').hasMatch(value[i])) {
-        return 'Enter a valid zip code';
-      }
+    if(!RegExp("^[0-9]{5}\$").hasMatch(value)){
+      return 'Enter a valid 5 digit US zip code';
     }
     return null;
   }
