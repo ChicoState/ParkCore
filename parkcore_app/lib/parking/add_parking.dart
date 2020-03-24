@@ -753,9 +753,10 @@ class _MyAddParkingState extends State<AddParking> {
 
               try {
                 createParkingSpace();
-                Navigator.pushReplacementNamed(context, '/home');
                 print("parking space added to database");
-              } catch (e) {
+                Navigator.pushReplacementNamed(context, '/form_success');
+              }
+              catch(e) {
                 print("Error occured: $e");
               }
             },
