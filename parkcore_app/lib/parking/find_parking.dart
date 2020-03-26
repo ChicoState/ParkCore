@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+//this the original 
 class Spot{
 
 //Spot(String title, String address, String amentities, String coordinates, String city, String driveway, String monthPrice,
@@ -63,12 +63,6 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
       .getDocuments()
       .then((QuerySnapshot snapshot) {
     snapshot.documents.forEach((f) => 
-
-    //num.parse(f.data['coordinates'].substring(1, f.data['coordinates'].indexOf(',')))
-    //num.parse(f.data['coordinates'].substring(f.data['coordinates'].indexOf(',') + 1, f.data['coordinates'].length))
-    //commaPos = coord.indexOf(','),
-    //coordinatesLat = coord.substring(1, commaPos),
-    //coordinatesLong = coord.substring(commaPos + 1, coord.length),
 
     allMarkers.add(
       Marker(
