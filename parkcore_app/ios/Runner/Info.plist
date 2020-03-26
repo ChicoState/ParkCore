@@ -43,29 +43,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
-	<!-- Google Sign-in Section -->
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
-				<string>com.googleusercontent.apps.229550166850-fqs8mlaubcbdetem5cbjisa2k304ghvj</string>
-			</array>
-		</dict>
-	</array>
-	<!-- End of the Google Sign-in Section -->
-
     <key>NSCameraUsageDescription</key>
     <string>To take photos.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>To get photos.</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>To record video.</string>
-
-
 </dict>
 </plist>
