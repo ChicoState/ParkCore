@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 class AddParking extends StatefulWidget {
@@ -115,6 +116,12 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Saturday", "value": "SAT"},
   ];
 
+  // Get the UID of the current user
+  Future<String> getUser() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    return user.uid;
+  }
+
   // Select an image via gallery or camera
   Future<void> getImage(ImageSource source) async {
     File selected = await ImagePicker.pickImage(source: source);
@@ -132,7 +139,8 @@ class _MyAddParkingState extends State<AddParking> {
 
   // get download URL for image files
   Future<String> _uploadFile(filename) async {
-    final StorageReference ref = FirebaseStorage.instance.ref().child('$filename.jpg');
+    final StorageReference ref =
+        FirebaseStorage.instance.ref().child('$filename.jpg');
     final StorageUploadTask uploadTask = ref.putFile(
       _imageFile,
       StorageMetadata(
@@ -140,7 +148,8 @@ class _MyAddParkingState extends State<AddParking> {
       ),
     );
 
-    final downloadURL = await (await uploadTask.onComplete).ref.getDownloadURL();
+    final downloadURL =
+        await (await uploadTask.onComplete).ref.getDownloadURL();
     return downloadURL.toString();
   }
 
@@ -164,13 +173,10 @@ class _MyAddParkingState extends State<AddParking> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: <Widget> [
-                _incomplete || _invalidLoc ?
-                  Text(
-                    _errorMessage,
-                    style: TextStyle(color: Colors.red)
-                  )
-                  : Text("Part " + _page.toString() + " of 5"),
+              children: <Widget>[
+                _incomplete || _invalidLoc
+                    ? Text(_errorMessage, style: TextStyle(color: Colors.red))
+                    : Text("Part " + _page.toString() + " of 5"),
                 SizedBox(height: 10),
                 Form(
                   key: _formKey,
@@ -188,19 +194,15 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   List<Widget> formPages() {
-    if(_page == 1){
+    if (_page == 1) {
       return buildAddress() + pageButton('Next: Parking Space Info');
-    }
-    else if(_page == 2){
+    } else if (_page == 2) {
       return buildParkingType() + pageButton('Next: Price & Availability');
-    }
-    else if(_page == 3){
+    } else if (_page == 3) {
       return buildAvailability() + pageButton('Review');
-    }
-    else if(_page == 4){
+    } else if (_page == 4) {
       return review() + restart() + pageButton('Add Image & Submit');
-    }
-    else{
+    } else {
       return buildImages() + submitParking();
     }
   }
@@ -226,7 +228,7 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   List<Widget> buildParkingType() {
-    return[
+    return [
       Container(
         decoration: BoxDecoration(
           color: _incomplete ? Colors.red[50] : Colors.green[50],
@@ -282,7 +284,7 @@ class _MyAddParkingState extends State<AddParking> {
       showImage(),
       SizedBox(height: 10),
       Row(
-        children: <Widget> [
+        children: <Widget>[
           getCameraImage(),
           SizedBox(width: 10),
           getGalleryImage(),
@@ -305,7 +307,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Enter a descriptive title for your parking space:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -325,7 +327,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Street Address:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -345,7 +347,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'City:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -365,10 +367,9 @@ class _MyAddParkingState extends State<AddParking> {
       value: _state,
       onSaved: (value) {
         setState(() {
-          if(_state.isEmpty){
+          if (_state.isEmpty) {
             _incomplete = true;
-          }
-          else{
+          } else {
             _incomplete = false;
             _state = value;
           }
@@ -394,7 +395,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Zip Code:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -416,10 +417,9 @@ class _MyAddParkingState extends State<AddParking> {
       value: _size,
       onSaved: (value) {
         setState(() {
-          if(_size.isEmpty){
+          if (_size.isEmpty) {
             _incomplete = true;
-          }
-          else{
+          } else {
             _incomplete = false;
             _size = value;
           }
@@ -444,10 +444,9 @@ class _MyAddParkingState extends State<AddParking> {
       value: _type,
       onSaved: (value) {
         setState(() {
-          if(_type.isEmpty){
+          if (_type.isEmpty) {
             _incomplete = true;
-          }
-          else{
+          } else {
             _incomplete = false;
             _type = value;
           }
@@ -471,10 +470,9 @@ class _MyAddParkingState extends State<AddParking> {
       value: _driveway,
       onSaved: (value) {
         setState(() {
-          if(value.isEmpty){
+          if (value.isEmpty) {
             _driveway = "N/A";
-          }
-          else{
+          } else {
             _driveway = value;
           }
           _spaceType = "N/A";
@@ -498,10 +496,9 @@ class _MyAddParkingState extends State<AddParking> {
       value: _spaceType,
       onSaved: (value) {
         setState(() {
-          if(value.isEmpty){
+          if (value.isEmpty) {
             _spaceType = "N/A";
-          }
-          else{
+          } else {
             _spaceType = value;
           }
           _driveway = "N/A";
@@ -547,12 +544,12 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Other important details about your space:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
       onSaved: (value) {
-        if(value.isEmpty){
+        if (value.isEmpty) {
           _details = "";
         }
         setState(() {
@@ -631,7 +628,7 @@ class _MyAddParkingState extends State<AddParking> {
         labelText: 'Price per month (\$):',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).backgroundColor,
           ),
         ),
       ),
@@ -731,7 +728,7 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
-  List<Widget> restart(){
+  List<Widget> restart() {
     return [
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -762,12 +759,12 @@ class _MyAddParkingState extends State<AddParking> {
               final form = _formKey.currentState;
               form.save();
 
-              try{
+              try {
                 createParkingSpace();
                 print("parking space added to database");
                 Navigator.pushReplacementNamed(context, '/form_success');
-              }
-              catch(e) {
+              } 
+              catch (e) {
                 print("Error occured: $e");
               }
             },
@@ -783,16 +780,15 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   Future<void> createParkingSpace() async {
-    try{
+    try {
       await getUniqueFile();
-    }
-    catch(e){
+    } catch (e) {
       print("Error occured: $e");
     }
 
     var parkingData = {
       'title': _title,
-      'address':_address,
+      'address': _address,
       'city': _city,
       'state': _state,
       'zip': _zip,
@@ -808,6 +804,7 @@ class _MyAddParkingState extends State<AddParking> {
       'monthprice': _price,
       'coordinates': _coordinates,
       'downloadURL': _downloadURL,
+      'uid': await getUser(),
     };
 
     await Firestore.instance.runTransaction((transaction) async {
@@ -819,19 +816,20 @@ class _MyAddParkingState extends State<AddParking> {
   // Form Validation
 
   void validateAndSubmit() async {
-    if(_page == 1){
-      try{
+    if (_page == 1) {
+      try {
         _formKey.currentState.save();
-        _geoAddress = _address + ", " + _city + ", " + _state + " " + _zip + ", USA";
-        var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
+        _geoAddress =
+            _address + ", " + _city + ", " + _state + " " + _zip + ", USA";
+        var addresses =
+            await Geocoder.local.findAddressesFromQuery(_geoAddress);
         var first = addresses.first;
         _coordinates = first.coordinates.toString();
-        print(first.addressLine + " : " + first.coordinates.toString() );
+        print(first.addressLine + " : " + first.coordinates.toString());
         setState(() {
           _invalidLoc = false;
         });
-      }
-      catch(e) {
+      } catch (e) {
         print("Error occured: $e");
         setState(() {
           _invalidLoc = true;
@@ -839,11 +837,10 @@ class _MyAddParkingState extends State<AddParking> {
         });
       }
     }
-    if(!_invalidLoc){
-      if(validateAndSave()){
-
-      }
-      else{
+    if (!_invalidLoc) {
+      if (validateAndSave()) {
+        //print("User: " + await getUser());
+      } else {
         setState(() {
           _errorMessage = "Make sure to fill out all required fields";
           print(_errorMessage);
@@ -856,12 +853,12 @@ class _MyAddParkingState extends State<AddParking> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      if(_incomplete){
+      if (_incomplete) {
         return false;
       }
       setState(() {
         _page++;
-       // print(_page);
+        // print(_page);
       });
       return true;
     }
@@ -869,28 +866,28 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   String validateTitle(String value) {
-    if(value.isEmpty){
+    if (value.isEmpty) {
       return 'Field can\'t be empty; \n'
           'This is what potential renters will see instead of your address';
     }
-    if(value.length > 60){
+    if (value.length > 60) {
       return 'Title cannot be more than 60 characters';
     }
     return null;
   }
 
   String validateAddress(String value) {
-    if(value.isEmpty){
+    if (value.isEmpty) {
       return 'Field can\'t be empty';
     }
-    if(value.length > 60){
+    if (value.length > 60) {
       return 'Address cannot be more than 60 characters';
     }
     return null;
   }
 
   String validateCity(String value) {
-    if(value.isEmpty){
+    if (value.isEmpty) {
       return 'Field can\'t be empty';
     }
 //    if(value.toUpperCase() != 'CHICO'){
@@ -900,20 +897,20 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   String validateState(String value) {
-    if(value.isEmpty){
+    if (value.isEmpty) {
       return 'Field can\'t be empty';
     }
     return null;
   }
 
   String validateZip(String value) {
-    if(value.isEmpty){
+    if (value.isEmpty) {
       return 'Field can\'t be empty';
     }
-    if(value.length != 5){
+    if (value.length != 5) {
       return 'Enter your 5 digit zip code';
     }
-    if(value.contains(" ")){
+    if (value.contains(" ")) {
       return 'Field can\'t contain spaces';
     }
     if(!RegExp("^[0-9]{5}\$").hasMatch(value)){
@@ -923,10 +920,10 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   String validatePrice(String value) {
-    if(value.isEmpty){
+    if (value.isEmpty) {
       return 'Field can\'t be empty';
     }
-    if(value.contains(" ")){
+    if (value.contains(" ")) {
       return 'Field can\'t contain spaces';
     }
     return null;
