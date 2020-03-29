@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
@@ -113,6 +114,12 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Friday", "value": "FRI"},
     {"display": "Saturday", "value": "SAT"},
   ];
+
+  // Get the UID of the current user
+  Future<String> getUser() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    return user.uid;
+  }
 
   // Select an image via gallery or camera
   Future<void> getImage(ImageSource source) async {
@@ -756,7 +763,7 @@ class _MyAddParkingState extends State<AddParking> {
                 print("parking space added to database");
                 Navigator.pushReplacementNamed(context, '/form_success');
               }
-              catch(e) {
+              catch (e) {
                 print("Error occured: $e");
               }
             },
@@ -796,6 +803,7 @@ class _MyAddParkingState extends State<AddParking> {
       'monthprice': _price,
       'coordinates': _coordinates,
       'downloadURL': _downloadURL,
+      'uid': await getUser(),
     };
 
     await Firestore.instance.runTransaction((transaction) async {
@@ -830,6 +838,7 @@ class _MyAddParkingState extends State<AddParking> {
     }
     if (!_invalidLoc) {
       if (validateAndSave()) {
+        //print("User: " + await getUser());
       } else {
         setState(() {
           _errorMessage = "Make sure to fill out all required fields";
