@@ -13,7 +13,6 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
   // This widget is the "add parking" page of the app. It is stateful: it has a
@@ -34,6 +33,21 @@ class _MyAddParkingState extends State<AddParking> {
   // Note: This is a `GlobalKey<FormState>`, not GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  FirebaseUser currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+
+  void _loadCurrentUser() {
+    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      setState(() {
+        this.currentUser = user;
+      });
+    });
+  }
 
   int _page = 1;
   bool _incomplete = false;
@@ -67,6 +81,22 @@ class _MyAddParkingState extends State<AddParking> {
 
   File _imageFile;
   String _downloadURL;
+
+  String getUserName() {
+    if (currentUser != null) {
+      return currentUser.displayName;
+    } else {
+      return "no current user";
+    }
+  }
+
+  String getUserID() {
+    if (currentUser != null) {
+      return currentUser.uid;
+    } else {
+      return "no current user";
+    }
+  }
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -209,6 +239,15 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> buildAddress() {
     return [
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.green[50],
+        ),
+        child: Text('Adding a parking space owned by: ' + getUserName()),
+      ),
+      SizedBox(height: 20),
       getTitle(),
       SizedBox(height: 10),
       getAddress(),
@@ -702,7 +741,9 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Available Starting at: ' + _startTime),
       Text('Available Until: ' + _endTime),
       Text('Price per month: \$' + _price),
-      Text('Generated info:'),
+      SizedBox(height: 10),
+      Text('Additional info connected to this parking space:'),
+      Text('Parking Space Owner: ' + getUserName()),
       Text('Parking Space Coordinates: ' + _coordinates),
       SizedBox(height: 10),
     ];
@@ -763,7 +804,7 @@ class _MyAddParkingState extends State<AddParking> {
                 createParkingSpace();
                 print("parking space added to database");
                 Navigator.pushReplacementNamed(context, '/form_success');
-              } 
+              }
               catch (e) {
                 print("Error occured: $e");
               }
@@ -804,7 +845,7 @@ class _MyAddParkingState extends State<AddParking> {
       'monthprice': _price,
       'coordinates': _coordinates,
       'downloadURL': _downloadURL,
-      'uid': await getUser(),
+      'uid': getUserID(),
     };
 
     await Firestore.instance.runTransaction((transaction) async {
@@ -839,7 +880,7 @@ class _MyAddParkingState extends State<AddParking> {
     }
     if (!_invalidLoc) {
       if (validateAndSave()) {
-        //print("User: " + await getUser());
+       // print("User: " + _displayName);
       } else {
         setState(() {
           _errorMessage = "Make sure to fill out all required fields";

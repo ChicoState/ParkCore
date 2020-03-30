@@ -27,6 +27,11 @@ dependencies:
   firebase_core: ^0.4.0+9
 
   cloud_firestore: ^0.13.2+1
+  
+  # login and auth
+  firebase_auth: ^0.15.5
+  google_sign_in: ^4.2.0
+  rxdart: 0.20.0
 
   # login and auth
   firebase_auth: ^0.15.5
