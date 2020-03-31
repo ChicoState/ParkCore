@@ -6,13 +6,17 @@ class FormSuccess extends StatelessWidget {
 
   Widget showSnackBar(){
     return IconButton(
-      icon: Icon(Icons.cake),
+      icon: Icon(
+        Icons.cake,
+        size: 50.0,
+        color: Colors.deepPurple[900],
+      ),
       onPressed: () {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text(
             'Thank you!',
             style: TextStyle(
-              color: Colors.orange[200],
+              color: Colors.deepPurple[200],
               fontSize: 20,
             ),
           ),
@@ -40,10 +44,9 @@ class FormSuccess extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(50.0),
               child: Image.asset(
-                  'assets/parkcore_logo_orange2.jpg',
-                  // width: 300,
-                  height: 200,
-                  fit:BoxFit.fill
+                'assets/parkcore_logo_green2.jpg',
+                height: 150,
+                fit:BoxFit.fill,
               ),
             ),
             SizedBox(height: 10),
@@ -57,13 +60,17 @@ class FormSuccess extends StatelessWidget {
             ),
             SizedBox(height: 10),
             showSnackBar(),
+            SizedBox(height: 20),
+            Text(
+              'thank you for joining the scurry!',
+              style: Theme.of(context).textTheme.display2,
+            ),
             ClipRRect(
               borderRadius: BorderRadius.circular(50.0),
               child: Image.asset(
-                  'assets/parkcore_logo_green2.jpg',
-                  // width: 300,
-                  height: 200,
-                  fit:BoxFit.fill
+                'assets/parkcore_logo_green2.jpg',
+                height: 150,
+                fit:BoxFit.fill,
               ),
             ),
           ],

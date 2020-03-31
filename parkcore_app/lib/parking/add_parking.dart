@@ -231,7 +231,7 @@ class _MyAddParkingState extends State<AddParking> {
     } else if (_page == 3) {
       return buildAvailability() + pageButton('Review');
     } else if (_page == 4) {
-      return review() + restart() + pageButton('Add Image & Submit');
+      return review() + pageButton('Add Image & Submit');
     } else {
       return buildImages() + submitParking();
     }
@@ -245,7 +245,11 @@ class _MyAddParkingState extends State<AddParking> {
         decoration: BoxDecoration(
           color: Colors.green[50],
         ),
-        child: Text('Adding a parking space owned by: ' + getUserName()),
+        child: Text(
+          'Adding a parking space owned by: ' + getUserName()
+          + '\n\nRequired fields marked with *',
+          textAlign: TextAlign.center,
+        ),
       ),
       SizedBox(height: 20),
       getTitle(),
@@ -343,7 +347,7 @@ class _MyAddParkingState extends State<AddParking> {
       keyboardType: TextInputType.multiline,
       maxLines: 2,
       decoration: InputDecoration(
-        labelText: 'Enter a descriptive title for your parking space:',
+        labelText: '* Enter a descriptive title for your parking space:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -363,7 +367,7 @@ class _MyAddParkingState extends State<AddParking> {
       key: Key('address'),
       validator: validateAddress,
       decoration: InputDecoration(
-        labelText: 'Street Address:',
+        labelText: '* Street Address:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -383,7 +387,7 @@ class _MyAddParkingState extends State<AddParking> {
       key: Key('city'),
       validator: validateCity,
       decoration: InputDecoration(
-        labelText: 'City:',
+        labelText: '* City:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -401,7 +405,7 @@ class _MyAddParkingState extends State<AddParking> {
   Widget getState() {
     return DropDownFormField(
       titleText: 'State',
-      hintText: '*Required*\nCurrently only available in California:',
+      hintText: '* Currently only available in California:',
       required: true,
       value: _state,
       onSaved: (value) {
@@ -431,7 +435,7 @@ class _MyAddParkingState extends State<AddParking> {
       autofocus: true,
       validator: validateZip,
       decoration: InputDecoration(
-        labelText: 'Zip Code:',
+        labelText: '* Zip Code:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -450,8 +454,8 @@ class _MyAddParkingState extends State<AddParking> {
 
   Widget getSize() {
     return DropDownFormField(
-      titleText: 'Parking Space Size',
-      hintText: '*Required*\nSelect one:',
+      titleText: '* Parking Space Size',
+      hintText: 'Select one:',
       required: true,
       value: _size,
       onSaved: (value) {
@@ -477,8 +481,8 @@ class _MyAddParkingState extends State<AddParking> {
 
   Widget getType() {
     return DropDownFormField(
-      titleText: 'Type of Parking Space',
-      hintText: '*Required*\nSelect one:',
+      titleText: '* Type of Parking Space',
+      hintText: 'Select one:',
       required: true,
       value: _type,
       onSaved: (value) {
@@ -504,7 +508,7 @@ class _MyAddParkingState extends State<AddParking> {
 
   Widget getDrivewayDetails() {
     return DropDownFormField(
-      titleText: 'Driveway Parking Space:',
+      titleText: '* Driveway Parking Space:',
       hintText: 'Select one:',
       value: _driveway,
       onSaved: (value) {
@@ -530,7 +534,7 @@ class _MyAddParkingState extends State<AddParking> {
 
   Widget getSpaceType() {
     return DropDownFormField(
-      titleText: 'Additional Parking Info',
+      titleText: '* Additional Parking Space Info',
       hintText: 'Select one:',
       value: _spaceType,
       onSaved: (value) {
@@ -603,7 +607,7 @@ class _MyAddParkingState extends State<AddParking> {
   Widget getDays() {
     return MultiSelectFormField(
       autovalidate: false,
-      titleText: 'Days Available',
+      titleText: '* Days Available',
       dataSource: _days,
       textField: 'display',
       valueField: 'value',
@@ -664,7 +668,7 @@ class _MyAddParkingState extends State<AddParking> {
       controller: priceController,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        labelText: 'Price per month (\$):',
+        labelText: '* Price per month (\$):',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -684,8 +688,11 @@ class _MyAddParkingState extends State<AddParking> {
   Widget showImage() {
     return Center(
       child: _imageFile == null
-          ? Text('No image selected.')
-          : Image.file(_imageFile),
+        ? Text(
+          'No image selected.',
+          style: Theme.of(context).textTheme.display2,
+        )
+        : Image.file(_imageFile),
     );
   }
 
@@ -698,6 +705,7 @@ class _MyAddParkingState extends State<AddParking> {
             child: Icon(Icons.photo_camera),
             onPressed: () => getImage(ImageSource.camera),
             color: Theme.of(context).backgroundColor,
+            textColor: Colors.white,
           );
         },
       ),
@@ -713,6 +721,7 @@ class _MyAddParkingState extends State<AddParking> {
             child: Icon(Icons.photo_library),
             onPressed: () => getImage(ImageSource.gallery),
             color: Theme.of(context).backgroundColor,
+            textColor: Colors.white,
           );
         },
       ),
@@ -746,6 +755,8 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Parking Space Owner: ' + getUserName()),
       Text('Parking Space Coordinates: ' + _coordinates),
       SizedBox(height: 10),
+      restart(),
+      SizedBox(height: 50),
     ];
   }
 
@@ -760,7 +771,7 @@ class _MyAddParkingState extends State<AddParking> {
             onPressed: validateAndSubmit,
             child: Text(
               buttonText,
-              style: Theme.of(context).textTheme.display2,
+              style: Theme.of(context).textTheme.display3,
             ),
             color: Theme.of(context).accentColor,
           ),
@@ -769,24 +780,22 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
-  List<Widget> restart() {
-    return [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/add_parking');
-            },
-            child: Text(
-              'Restart Form',
-              style: Theme.of(context).textTheme.display2,
-            ),
-            color: Theme.of(context).accentColor,
+  Widget restart() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        RaisedButton(
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/add_parking');
+          },
+          child: Text(
+            'Restart Form',
+            style: Theme.of(context).textTheme.display3,
           ),
-        ],
-      ),
-    ];
+          color: Theme.of(context).backgroundColor,
+        ),
+      ],
+    );
   }
 
   List<Widget> submitParking() {
@@ -811,7 +820,7 @@ class _MyAddParkingState extends State<AddParking> {
             },
             child: Text(
               'Submit',
-              style: Theme.of(context).textTheme.display2,
+              style: Theme.of(context).textTheme.display3,
             ),
             color: Theme.of(context).accentColor,
           ),
