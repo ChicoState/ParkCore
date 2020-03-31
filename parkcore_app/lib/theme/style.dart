@@ -4,7 +4,7 @@ ThemeData appTheme() {
   return ThemeData(
     primarySwatch: Colors.green,
     backgroundColor: Colors.green[300],
-    accentColor: Colors.orange[300],
+    accentColor: Colors.deepPurple[400],
     textTheme: TextTheme(
       headline: TextStyle(
         fontSize: 36.0,
@@ -22,6 +22,11 @@ ThemeData appTheme() {
         fontSize: 20.0,
         fontFamily: 'Montserrat',
         color: Colors.grey[800],
+      ),
+      display3: TextStyle(
+        fontSize: 18.0,
+        fontFamily: 'Montserrat',
+        color: Colors.white,
       ),
     ),
   );
