@@ -12,6 +12,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:parkcore_app/parking/random_coordinates.dart';
 
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
@@ -61,6 +62,7 @@ class _MyAddParkingState extends State<AddParking> {
   String _zip = '';
   String _geoAddress = '';
   String _coordinates = '';
+  String _coord_rand = '';
 
   String _size = '';
   String _type = '';
@@ -853,6 +855,7 @@ class _MyAddParkingState extends State<AddParking> {
       'endtime': _endTime,
       'monthprice': _price,
       'coordinates': _coordinates,
+      'coordinates_r': _coord_rand,
       'downloadURL': _downloadURL,
       'uid': getUserID(),
     };
@@ -875,7 +878,11 @@ class _MyAddParkingState extends State<AddParking> {
             await Geocoder.local.findAddressesFromQuery(_geoAddress);
         var first = addresses.first;
         _coordinates = first.coordinates.toString();
+        _coord_rand = getRandomCoordinates(_coordinates);
+
         print(first.addressLine + " : " + first.coordinates.toString());
+        print("random coordinates : " + _coord_rand);
+
         setState(() {
           _invalidLoc = false;
         });
