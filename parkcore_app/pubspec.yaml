@@ -76,8 +76,6 @@ flutter:
   assets:
     - assets/parkcore_logo_green.jpg
     - assets/parkcore_logo_green2.jpg
-    - assets/parkcore_logo_orange.jpg
-    - assets/parkcore_logo_orange2.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
