@@ -10,6 +10,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:parkcore_app/parking/random_coordinates.dart';
 
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
@@ -31,6 +34,21 @@ class _MyAddParkingState extends State<AddParking> {
   // Note: This is a `GlobalKey<FormState>`, not GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  FirebaseUser currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+
+  void _loadCurrentUser() {
+    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      setState(() {
+        this.currentUser = user;
+      });
+    });
+  }
 
   int _page = 1;
   bool _incomplete = false;
@@ -44,6 +62,7 @@ class _MyAddParkingState extends State<AddParking> {
   String _zip = '';
   String _geoAddress = '';
   String _coordinates = '';
+  String _coord_rand = '';
 
   String _size = '';
   String _type = '';
@@ -57,9 +76,29 @@ class _MyAddParkingState extends State<AddParking> {
   String _startTime = '';
   String _endTime = '';
   String _price = '';
+  var priceController = MoneyMaskedTextController(
+      decimalSeparator: '.',
+      thousandSeparator: ',',
+  );
 
   File _imageFile;
   String _downloadURL;
+
+  String getUserName() {
+    if (currentUser != null) {
+      return currentUser.displayName;
+    } else {
+      return "no current user";
+    }
+  }
+
+  String getUserID() {
+    if (currentUser != null) {
+      return currentUser.uid;
+    } else {
+      return "no current user";
+    }
+  }
 
   final _stateData = [
     {"display": "California", "value": "CA"},
@@ -108,6 +147,12 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Friday", "value": "FRI"},
     {"display": "Saturday", "value": "SAT"},
   ];
+
+  // Get the UID of the current user
+  Future<String> getUser() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    return user.uid;
+  }
 
   // Select an image via gallery or camera
   Future<void> getImage(ImageSource source) async {
@@ -188,7 +233,7 @@ class _MyAddParkingState extends State<AddParking> {
     } else if (_page == 3) {
       return buildAvailability() + pageButton('Review');
     } else if (_page == 4) {
-      return review() + restart() + pageButton('Add Image & Submit');
+      return review() + pageButton('Add Image & Submit');
     } else {
       return buildImages() + submitParking();
     }
@@ -196,6 +241,19 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> buildAddress() {
     return [
+      Container(
+        padding: const EdgeInsets.all(8.0),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.green[50],
+        ),
+        child: Text(
+          'Adding a parking space owned by: ' + getUserName()
+          + '\n\nRequired fields marked with *',
+          textAlign: TextAlign.center,
+        ),
+      ),
+      SizedBox(height: 20),
       getTitle(),
       SizedBox(height: 10),
       getAddress(),
@@ -204,7 +262,7 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       Container(
         decoration: BoxDecoration(
-          color: _incomplete ? Colors.red[50] : Colors.white10,
+          color: _incomplete ? Colors.red[50] : Colors.green[50],
         ),
         child: getState(),
       ),
@@ -218,21 +276,32 @@ class _MyAddParkingState extends State<AddParking> {
     return [
       Container(
         decoration: BoxDecoration(
-          color: _incomplete ? Colors.red[50] : Colors.white10,
+          color: _incomplete ? Colors.red[50] : Colors.green[50],
         ),
         child: getSize(),
       ),
       SizedBox(height: 10),
       Container(
         decoration: BoxDecoration(
-          color: _incomplete ? Colors.red[50] : Colors.white10,
+          color: _incomplete ? Colors.red[50] : Colors.green[50],
         ),
         child: getType(),
       ),
       SizedBox(height: 10),
-      _type == "Driveway" ? getDrivewayDetails() : getSpaceType(),
+      _type == "Driveway" ?
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getDrivewayDetails(),
+      ):
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getSpaceType(),
+      ),
       SizedBox(height: 10),
-      getAmenities(),
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getAmenities(),
+      ),
       SizedBox(height: 10),
       getDetails(),
       SizedBox(height: 30),
@@ -241,12 +310,13 @@ class _MyAddParkingState extends State<AddParking> {
 
   List<Widget> buildAvailability() {
     return [
-      getDays(),
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getDays(),
+      ),
       SizedBox(height: 10),
-      Text('Parking Space Available Starting at:'),
       getStartTime(),
       SizedBox(height: 10),
-      Text('Parking Space Available Until:'),
       getEndTime(),
       SizedBox(height: 10),
       getPrice(),
@@ -261,6 +331,7 @@ class _MyAddParkingState extends State<AddParking> {
       Row(
         children: <Widget>[
           getCameraImage(),
+          SizedBox(width: 10),
           getGalleryImage(),
         ],
       ),
@@ -278,7 +349,7 @@ class _MyAddParkingState extends State<AddParking> {
       keyboardType: TextInputType.multiline,
       maxLines: 2,
       decoration: InputDecoration(
-        labelText: 'Enter a descriptive title for your parking space:',
+        labelText: '* Enter a descriptive title for your parking space:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -298,7 +369,7 @@ class _MyAddParkingState extends State<AddParking> {
       key: Key('address'),
       validator: validateAddress,
       decoration: InputDecoration(
-        labelText: 'Street Address:',
+        labelText: '* Street Address:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -318,7 +389,7 @@ class _MyAddParkingState extends State<AddParking> {
       key: Key('city'),
       validator: validateCity,
       decoration: InputDecoration(
-        labelText: 'City:',
+        labelText: '* City:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -336,7 +407,7 @@ class _MyAddParkingState extends State<AddParking> {
   Widget getState() {
     return DropDownFormField(
       titleText: 'State',
-      hintText: '*Required*\nCurrently only available in California:',
+      hintText: '* Currently only available in California:',
       required: true,
       value: _state,
       onSaved: (value) {
@@ -366,7 +437,7 @@ class _MyAddParkingState extends State<AddParking> {
       autofocus: true,
       validator: validateZip,
       decoration: InputDecoration(
-        labelText: 'Zip Code:',
+        labelText: '* Zip Code:',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -385,8 +456,8 @@ class _MyAddParkingState extends State<AddParking> {
 
   Widget getSize() {
     return DropDownFormField(
-      titleText: 'Parking Space Size',
-      hintText: '*Required*\nSelect one:',
+      titleText: '* Parking Space Size',
+      hintText: 'Select one:',
       required: true,
       value: _size,
       onSaved: (value) {
@@ -412,8 +483,8 @@ class _MyAddParkingState extends State<AddParking> {
 
   Widget getType() {
     return DropDownFormField(
-      titleText: 'Type of Parking Space',
-      hintText: '*Required*\nSelect one:',
+      titleText: '* Type of Parking Space',
+      hintText: 'Select one:',
       required: true,
       value: _type,
       onSaved: (value) {
@@ -439,7 +510,7 @@ class _MyAddParkingState extends State<AddParking> {
 
   Widget getDrivewayDetails() {
     return DropDownFormField(
-      titleText: 'Driveway Parking Space:',
+      titleText: '* Driveway Parking Space:',
       hintText: 'Select one:',
       value: _driveway,
       onSaved: (value) {
@@ -465,7 +536,7 @@ class _MyAddParkingState extends State<AddParking> {
 
   Widget getSpaceType() {
     return DropDownFormField(
-      titleText: 'Additional Parking Info',
+      titleText: '* Additional Parking Space Info',
       hintText: 'Select one:',
       value: _spaceType,
       onSaved: (value) {
@@ -538,7 +609,7 @@ class _MyAddParkingState extends State<AddParking> {
   Widget getDays() {
     return MultiSelectFormField(
       autovalidate: false,
-      titleText: 'Days Available',
+      titleText: '* Days Available',
       dataSource: _days,
       textField: 'display',
       valueField: 'value',
@@ -557,6 +628,9 @@ class _MyAddParkingState extends State<AddParking> {
   Widget getStartTime() {
     return DateTimeField(
       format: format,
+      decoration: InputDecoration(
+        labelText: 'Parking Space Available Starting at:',
+      ),
       onShowPicker: (context, currentValue) async {
         final time = await showTimePicker(
           context: context,
@@ -573,6 +647,9 @@ class _MyAddParkingState extends State<AddParking> {
   Widget getEndTime() {
     return DateTimeField(
       format: format,
+      decoration: InputDecoration(
+        labelText: 'Parking Space Available Until:',
+      ),
       onShowPicker: (context, currentValue) async {
         final time = await showTimePicker(
           context: context,
@@ -590,8 +667,10 @@ class _MyAddParkingState extends State<AddParking> {
     return TextFormField(
       key: Key('price'),
       validator: validatePrice,
+      controller: priceController,
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        labelText: 'Price per month (\$):',
+        labelText: '* Price per month (\$):',
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Theme.of(context).backgroundColor,
@@ -600,7 +679,7 @@ class _MyAddParkingState extends State<AddParking> {
       ),
       onSaved: (value) {
         setState(() {
-          _price = value;
+          _price = priceController.text;
         });
       },
     );
@@ -611,8 +690,11 @@ class _MyAddParkingState extends State<AddParking> {
   Widget showImage() {
     return Center(
       child: _imageFile == null
-          ? Text('No image selected.')
-          : Image.file(_imageFile),
+        ? Text(
+          'No image selected.',
+          style: Theme.of(context).textTheme.display2,
+        )
+        : Image.file(_imageFile),
     );
   }
 
@@ -624,6 +706,8 @@ class _MyAddParkingState extends State<AddParking> {
           return RaisedButton(
             child: Icon(Icons.photo_camera),
             onPressed: () => getImage(ImageSource.camera),
+            color: Theme.of(context).backgroundColor,
+            textColor: Colors.white,
           );
         },
       ),
@@ -638,6 +722,8 @@ class _MyAddParkingState extends State<AddParking> {
           return RaisedButton(
             child: Icon(Icons.photo_library),
             onPressed: () => getImage(ImageSource.gallery),
+            color: Theme.of(context).backgroundColor,
+            textColor: Colors.white,
           );
         },
       ),
@@ -666,9 +752,13 @@ class _MyAddParkingState extends State<AddParking> {
       Text('Available Starting at: ' + _startTime),
       Text('Available Until: ' + _endTime),
       Text('Price per month: \$' + _price),
-      Text('Generated info:'),
+      SizedBox(height: 10),
+      Text('Additional info connected to this parking space:'),
+      Text('Parking Space Owner: ' + getUserName()),
       Text('Parking Space Coordinates: ' + _coordinates),
       SizedBox(height: 10),
+      restart(),
+      SizedBox(height: 50),
     ];
   }
 
@@ -683,7 +773,7 @@ class _MyAddParkingState extends State<AddParking> {
             onPressed: validateAndSubmit,
             child: Text(
               buttonText,
-              style: Theme.of(context).textTheme.display2,
+              style: Theme.of(context).textTheme.display3,
             ),
             color: Theme.of(context).accentColor,
           ),
@@ -692,24 +782,22 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
-  List<Widget> restart() {
-    return [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/add_parking');
-            },
-            child: Text(
-              'Restart Form',
-              style: Theme.of(context).textTheme.display2,
-            ),
-            color: Theme.of(context).accentColor,
+  Widget restart() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        RaisedButton(
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/add_parking');
+          },
+          child: Text(
+            'Restart Form',
+            style: Theme.of(context).textTheme.display3,
           ),
-        ],
-      ),
-    ];
+          color: Theme.of(context).backgroundColor,
+        ),
+      ],
+    );
   }
 
   List<Widget> submitParking() {
@@ -725,15 +813,16 @@ class _MyAddParkingState extends State<AddParking> {
 
               try {
                 createParkingSpace();
-                Navigator.pushReplacementNamed(context, '/home');
                 print("parking space added to database");
-              } catch (e) {
+                Navigator.pushReplacementNamed(context, '/form_success');
+              }
+              catch (e) {
                 print("Error occured: $e");
               }
             },
             child: Text(
               'Submit',
-              style: Theme.of(context).textTheme.display2,
+              style: Theme.of(context).textTheme.display3,
             ),
             color: Theme.of(context).accentColor,
           ),
@@ -766,7 +855,9 @@ class _MyAddParkingState extends State<AddParking> {
       'endtime': _endTime,
       'monthprice': _price,
       'coordinates': _coordinates,
+      'coordinates_r': _coord_rand,
       'downloadURL': _downloadURL,
+      'uid': getUserID(),
     };
 
     await Firestore.instance.runTransaction((transaction) async {
@@ -787,7 +878,11 @@ class _MyAddParkingState extends State<AddParking> {
             await Geocoder.local.findAddressesFromQuery(_geoAddress);
         var first = addresses.first;
         _coordinates = first.coordinates.toString();
+        _coord_rand = getRandomCoordinates(_coordinates);
+
         print(first.addressLine + " : " + first.coordinates.toString());
+        print("random coordinates : " + _coord_rand);
+
         setState(() {
           _invalidLoc = false;
         });
@@ -801,6 +896,7 @@ class _MyAddParkingState extends State<AddParking> {
     }
     if (!_invalidLoc) {
       if (validateAndSave()) {
+       // print("User: " + _displayName);
       } else {
         setState(() {
           _errorMessage = "Make sure to fill out all required fields";
@@ -874,10 +970,8 @@ class _MyAddParkingState extends State<AddParking> {
     if (value.contains(" ")) {
       return 'Field can\'t contain spaces';
     }
-    for (int i = 0; i < value.length; i++) {
-      if (!RegExp('[r0-9-]').hasMatch(value[i])) {
-        return 'Enter a valid zip code';
-      }
+    if(!RegExp("^[0-9]{5}\$").hasMatch(value)){
+      return 'Enter a valid 5 digit US zip code';
     }
     return null;
   }
@@ -888,11 +982,6 @@ class _MyAddParkingState extends State<AddParking> {
     }
     if (value.contains(" ")) {
       return 'Field can\'t contain spaces';
-    }
-    for (int i = 0; i < value.length; i++) {
-      if (!RegExp('[r0-9-]').hasMatch(value[i])) {
-        return 'Enter a valid dollar amount';
-      }
     }
     return null;
   }
