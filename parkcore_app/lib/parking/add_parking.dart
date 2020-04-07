@@ -13,6 +13,8 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:parkcore_app/parking/random_coordinates.dart';
+import 'package:parkcore_app/navigate/parkcore_button.dart';
+
 
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
@@ -197,6 +199,9 @@ class _MyAddParkingState extends State<AddParking> {
         title: Text(widget.title),
         centerTitle: true,
         backgroundColor: Theme.of(context).backgroundColor,
+        actions: <Widget>[
+          LogoButton(),
+        ],
       ),
       drawer: MenuDrawer(),
       body: SingleChildScrollView(
