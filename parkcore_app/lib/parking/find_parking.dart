@@ -2,31 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//this the original 
-class Spot{
+import 'parking_details.dart';
 
-//Spot(String title, String address, String amentities, String coordinates, String city, String driveway, String monthPrice,
-  //String spacetype,
-  //String image,
-  //String type);
+class Spot{
 
   Spot.fromMap(Map<String, dynamic>map, {this.reference})
     : title = map['title'], address = map['address'], 
-    amentities = map['amentities'],
+    amenities = map['amenities'],
     coordinates = map['coordinates'],
     city = map['city'], 
     driveway = map['driveway'],
-    monthPrice = map['monthPrice'],
+    monthPrice = map['monthprice'],
     spacetype = map['spacetype'],
     image = map['downloadURL'],
-    type = map['type'];
+    type = map['type'],
+    size = map['size'],
+    days = map['days'],
+    spacedetails = map['spacedetails'],
+    starttime = map['starttime'],
+    endtime = map['endtime'],
+    state = map['state'],
+    zip = map['zip'];
+
 
   Spot.fromSnapshot(DocumentSnapshot snapshot)
     : this.fromMap(snapshot.data, reference: snapshot.reference);
   
   String title;
   String address;
-  String amentities;
+  String amenities;
   String coordinates;
   String city;
   String driveway;
@@ -34,6 +38,13 @@ class Spot{
   String spacetype;
   String image;
   String type;
+  String size;
+  String days;
+  String spacedetails;
+  String starttime;
+  String endtime;
+  String state;
+  String zip;
   final DocumentReference reference;
 
 }//end of class
@@ -59,7 +70,7 @@ class _MyFindParkingState extends State<FindParking> {
   
 Future<void> _onMapCreated(GoogleMapController controller) async {
 
-    await Firestore.instance.collection("parkingSpaces")
+    await Firestore.instance.collection('parkingSpaces')
       .getDocuments()
       .then((QuerySnapshot snapshot) {
     snapshot.documents.forEach((f) => 
@@ -115,12 +126,6 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
     )
   );
 }
-  /*Future<void> _gotoLocation(double lat,double long) async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(target: LatLng(lat, long), zoom: 15,tilt: 50.0,
-      bearing: 45.0,)));
-  }*/
 
   Widget _buildBody(BuildContext context) {
    return StreamBuilder<QuerySnapshot>(
@@ -153,25 +158,26 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
    final parkingSpot = Spot.fromSnapshot(data);
    
    return Padding(
-     key: ValueKey(parkingSpot.address),
+     //key: ValueKey(parkingSpot.address),
      padding: const EdgeInsets.all(8.0),
-       child: _boxes(parkingSpot.image, parkingSpot.title, parkingSpot.amentities, parkingSpot.coordinates, parkingSpot.city,
-       parkingSpot.driveway, parkingSpot.monthPrice, parkingSpot.spacetype, parkingSpot.type) 
+       child: GestureDetector(
+         onTap: () {
+           Navigator.push(
+            context,
+            MaterialPageRoute(
+            builder: (context) => DetailScreen(spot: parkingSpot),
+            ),
+          );
+         },
+         child: _boxes(parkingSpot.image, parkingSpot.title, parkingSpot.city, parkingSpot.state, parkingSpot.zip,
+       parkingSpot.monthPrice, parkingSpot.type) 
+       )
     );
  }
 
- Widget _boxes(String image, String title, String amentities, String coordinates, String city, String driveway, String monthprice, String spacetype, String type){
+ Widget _boxes(String image, String title, String city, String state, String zip, String monthprice, String type){
     
-    /*var commaPos = coordinates.indexOf(',');
-    double lat = num.parse(coordinates.substring(1, commaPos));
-    double long = num.parse(coordinates.substring(commaPos + 1, coordinates.length-1));
-    */
-    
-    return GestureDetector(
-      onTap: () {
-          //_gotoLocation(lat,long);
-      },
-      child:Container(
+  return Container(
         child: FittedBox(
           child: Material(
             elevation: 20.0,
@@ -182,40 +188,40 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
               children: <Widget>[
                 Container(
                   width: 100,
-                  height: 75,
+                  height: 90,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15.0),
                     child: Image(
                       fit: BoxFit.fill,
-                      image: NetworkImage(image ?? "https://homestaymatch.com/images/no-image-available.png"),
+                      image: NetworkImage(image ?? 'https://homestaymatch.com/images/no-image-available.png'),
                     ),
                   ),
                 ),
                 Container(
                   width: 275,
-                  //height: 20,
+                  height: 90,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text(title ?? "N/A", style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                        //Text(amentities ?? "N/A", textAlign: TextAlign.center),
-                        Text("City: " + city ?? "N/A", textAlign: TextAlign.center),
-                        //Text(coordinates ?? "N/A", textAlign: TextAlign.center),
-                        //Text(driveway ?? "N/A", textAlign: TextAlign.center),
-                        //Text("Price: " + monthprice ?? "N/A", textAlign: TextAlign.right),
-                        Text("Space type: " + spacetype ?? "N/A", textAlign: TextAlign.center),
-                        Text(type ?? "N/A", textAlign: TextAlign.center)
+                        Text(title ?? 'N/A', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0), textAlign: TextAlign.center),
+                        Text(city + ', ' + state + ', ' + zip, style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
+                        Text(type ?? 'N/A', style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center)
                       ],
                     ),
                   ),
                   ),
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text('\$' + monthprice, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                  ),
+                )
                 ],)
             ),
           ),
-        ),
       );
   }
 }//end of parking space class
