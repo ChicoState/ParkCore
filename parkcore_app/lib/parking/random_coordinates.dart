@@ -10,8 +10,6 @@ String getRandomCoordinates(String loc){
   final midIndex = loc.indexOf(mid, startIndex + start.length);
   final endIndex = loc.indexOf(end, startIndex + start.length + mid.length);
 
-//    print("lat: "+ loc.substring(startIndex + start.length, midIndex));
-//    print("long: "+ loc.substring(midIndex + mid.length, endIndex));
   var rng = math.Random();
   var rand1 = 0.0;
   var rand2 = 0.0;
@@ -26,10 +24,7 @@ String getRandomCoordinates(String loc){
   var y = w * math.sin(t);
   var lat = x + double.parse(loc.substring(startIndex + start.length, midIndex));
   var long = y + double.parse(loc.substring(midIndex + mid.length, endIndex));
-//    print(lat);
-//    print(long);
-//    rand_loc = "{" + loc.substring(startIndex + start.length, midIndex) + ","
-//      + loc.substring(midIndex + mid.length, endIndex) + "}";
+
   rand_loc = "{" + lat.toString() + "," + long.toString() + "}";
   return rand_loc;
 }
