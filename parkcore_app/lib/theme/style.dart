@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 ThemeData appTheme() {
   return ThemeData(
     primarySwatch: Colors.green,
-    backgroundColor: Colors.green[300],
-    accentColor: Colors.deepPurple[400],
+    backgroundColor: Color(0xFF67BE88),
+    accentColor: Color(0xFF7E57C2),
     textTheme: TextTheme(
       headline: TextStyle(
         fontSize: 36.0,
