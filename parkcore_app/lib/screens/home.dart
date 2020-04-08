@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:parkcore_app/screens/parkcore_text.dart';
 
@@ -19,45 +19,149 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //int _counter = 0;
-
-  void _incrementCounter() {
-//     setState(() {
-//       // Call to setState tells Flutter framework that something has changed in
-//       // this State. Then the build method is rerun so that the display can
-//       // reflect the updated values. If we changed _counter without calling
-//       // setState(), then the build method would not be called again, and so
-//       // nothing would appear to happen.
-//       _counter++;
-//     });
-
-    Firestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot freshSnap = await Firestore.instance
-          .collection('test')
-          .document('IpejvjqCkEsjvHGp71xk')
-          .get();
-      await transaction.update(freshSnap.reference, {
-        'count': freshSnap['count'] + 1,
-      });
-    });
-  }
+  final _searchKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    // build(): rerun every time setState is called (e.g. for_incrementCounter)
-    // Rebuild anything that needs updating instead of having to individually
-    // change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme
+            .of(context)
+            .backgroundColor,
         actions: <Widget>[LogoButton()],
       ),
       drawer: MenuDrawer(),
-      body: Center(
-        child: ParkCoreText(),
-      )
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+            child: Column(
+              children: <Widget>[
+                Form(
+                  key: _searchKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: SearchBar(context),
+                  ),
+                ),
+                SizedBox(height: 50),
+                ParkCoreText(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+List<Widget> SearchBar(BuildContext context) {
+  return [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Flexible(
+          flex: 5,
+          fit: FlexFit.tight,
+          child: Column(
+            children: [
+              TextFormField(
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Search by location (address, city, zip)',
+                  hintStyle: TextStyle(
+                    fontSize: 18.0,
+                    color: Theme.of(context).backgroundColor,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).accentColor,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        ),
+        Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+          child: Column(
+            children: [
+              SearchButton(context),
+            ],
+          ),
+        )
+      ],
+    ),
+  ];
+}
+
+Widget SearchButton(BuildContext context) {
+  return Ink(
+    padding: EdgeInsets.all(3.0),
+    decoration: const ShapeDecoration(
+      color: Color(0xFF4D2C91),
+      shape: CircleBorder(),
+    ),
+    child: IconButton(
+      icon: Icon(
+        Icons.search,
+        size: 35.0,
+      ),
+      color: Colors.white,
+      tooltip: 'Search for parking space locations',
+      onPressed: () {
+        // Navigator.pushReplacementNamed(context, '/home');
+      },
+    ),
+  );
+}
+
+//class _MyHomePageState extends State<MyHomePage> {
+//  //int _counter = 0;
+//
+//  void _incrementCounter() {
+////     setState(() {
+////       // Call to setState tells Flutter framework that something has changed in
+////       // this State. Then the build method is rerun so that the display can
+////       // reflect the updated values. If we changed _counter without calling
+////       // setState(), then the build method would not be called again, and so
+////       // nothing would appear to happen.
+////       _counter++;
+////     });
+//
+//    Firestore.instance.runTransaction((transaction) async {
+//      DocumentSnapshot freshSnap = await Firestore.instance
+//          .collection('test')
+//          .document('IpejvjqCkEsjvHGp71xk')
+//          .get();
+//      await transaction.update(freshSnap.reference, {
+//        'count': freshSnap['count'] + 1,
+//      });
+//    });
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    // build(): rerun every time setState is called (e.g. for_incrementCounter)
+//    // Rebuild anything that needs updating instead of having to individually
+//    // change instances of widgets.
+//    return Scaffold(
+//      appBar: AppBar(
+//        title: Text(widget.title),
+//        centerTitle: true,
+//        backgroundColor: Theme.of(context).backgroundColor,
+//        actions: <Widget>[LogoButton()],
+//      ),
+//      drawer: MenuDrawer(),
+//      body: Center(
+//        child: ParkCoreText(),
+//    )
 //        child: Column(
 //            mainAxisAlignment: MainAxisAlignment.center,
 //            children: <Widget>[
@@ -114,6 +218,6 @@ class _MyHomePageState extends State<MyHomePage> {
 //        child: Icon(Icons.add),
 //        backgroundColor: Theme.of(context).backgroundColor,
 //      ),
-    );
-  }
-}
+//    );
+//  }
+//}
