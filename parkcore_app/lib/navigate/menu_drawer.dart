@@ -16,12 +16,6 @@ class MenuDrawer extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor,
-              border: Border(
-                bottom: BorderSide(
-                  width: 5.0,
-                  color: Theme.of(context).accentColor,
-                ),
-              ),
             ),
           ),
           _createMenuItem(
@@ -53,7 +47,10 @@ Widget _createMenuItem(
   return ListTile(
     title: Row(
       children: <Widget>[
-        Icon(icon),
+        Icon(
+          icon,
+          color: Color(0xFF4D2C91),
+        ),
         Padding(
           padding: EdgeInsets.only(left: 8.0),
           child: Text(
@@ -63,7 +60,10 @@ Widget _createMenuItem(
         )
       ],
     ),
-    trailing: Icon(Icons.arrow_forward),
+    trailing: Icon(
+      Icons.arrow_forward,
+      color: Theme.of(context).accentColor,
+    ),
     onTap: () {
       // Update the state of the app, then close the drawer.
       Navigator.pushReplacementNamed(context, route);
