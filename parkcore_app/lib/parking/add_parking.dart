@@ -344,7 +344,7 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
-  // Page 1 Parking Form Widgets
+  // Page 1 Parking Form Widgets (title, full address)
 
   Widget getTitle() {
     return TextFormField(
@@ -457,7 +457,7 @@ class _MyAddParkingState extends State<AddParking> {
     );
   }
 
-  // Page 2 Parking Form Widgets
+  // Page 2 Parking Form Widgets (Parking Space Information)
 
   Widget getSize() {
     return DropDownFormField(
@@ -609,7 +609,7 @@ class _MyAddParkingState extends State<AddParking> {
     );
   }
 
-// Page 3 Parking Form Widgets
+// Page 3 Parking Form Widgets (Availability and Price)
 
   Widget getDays() {
     return MultiSelectFormField(
@@ -690,7 +690,7 @@ class _MyAddParkingState extends State<AddParking> {
     );
   }
 
-  // Page 4 Parking Form Widgets
+  // Page 4 Parking Form Widgets (Image and Submit)
 
   Widget showImage() {
     return Center(
@@ -822,7 +822,7 @@ class _MyAddParkingState extends State<AddParking> {
                 Navigator.pushReplacementNamed(context, '/form_success');
               }
               catch (e) {
-                print("Error occured: $e");
+                print("Error occurred: $e");
               }
             },
             child: Text(
@@ -836,11 +836,12 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
+  // Create ParkingSpaces database entry
   Future<void> createParkingSpace() async {
     try {
       await getUniqueFile();
     } catch (e) {
-      print("Error occured: $e");
+      print("Error occurred: $e");
     }
 
     var parkingData = {
@@ -874,6 +875,7 @@ class _MyAddParkingState extends State<AddParking> {
   // Form Validation
 
   void validateAndSubmit() async {
+    // After address info is input, create associated coordinates (if possible)
     if (_page == 1) {
       try {
         _formKey.currentState.save();
@@ -892,13 +894,14 @@ class _MyAddParkingState extends State<AddParking> {
           _invalidLoc = false;
         });
       } catch (e) {
-        print("Error occured: $e");
+        print("Error occurred: $e");
         setState(() {
           _invalidLoc = true;
           _errorMessage = "We can't find you!\nPlease enter a valid location.";
         });
       }
     }
+    // if location was valid, check additional validators
     if (!_invalidLoc) {
       if (validateAndSave()) {
        // print("User: " + _displayName);
@@ -911,6 +914,7 @@ class _MyAddParkingState extends State<AddParking> {
     }
   }
 
+  // Check individual form validators, go to next page
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -920,7 +924,6 @@ class _MyAddParkingState extends State<AddParking> {
       }
       setState(() {
         _page++;
-        // print(_page);
       });
       return true;
     }
@@ -952,9 +955,6 @@ class _MyAddParkingState extends State<AddParking> {
     if (value.isEmpty) {
       return 'Field can\'t be empty';
     }
-//    if(value.toUpperCase() != 'CHICO'){
-//      return 'Sorry, we are not operating in your town yet';
-//    }
     return null;
   }
 
