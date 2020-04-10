@@ -20,6 +20,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _searchKey = GlobalKey<FormState>();
+  final _searchController = TextEditingController();
+
+  String _input = "none";
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +54,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   key: _searchKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: SearchBar(context),
+                    children: SearchBar(),
                   ),
+                ),
+                SizedBox(height: 10),
+                _input == "none"
+                ? Text("")
+                : Text(
+                    "Find parking near: $_input",
+                    style: Theme.of(context).textTheme.display2,
                 ),
                 SizedBox(height: 50),
                 ParkCoreText(),
@@ -56,71 +73,115 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
 
-List<Widget> SearchBar(BuildContext context) {
-  return [
-    Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Flexible(
-          flex: 5,
-          fit: FlexFit.tight,
-          child: Column(
-            children: [
-              TextFormField(
-                autofocus: true,
-                decoration: InputDecoration(
-                  hintText: 'Search by location (address, city, zip)',
-                  hintStyle: TextStyle(
-                    fontSize: 18.0,
-                    color: Theme.of(context).backgroundColor,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).accentColor,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          )
-        ),
-        Flexible(
-          flex: 1,
-          fit: FlexFit.tight,
-          child: Column(
-            children: [
-              SearchButton(context),
-            ],
+  List<Widget> SearchBar() {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Flexible(
+            flex: 5,
+            fit: FlexFit.tight,
+            child: Column(
+              children: [
+                SearchField(),
+              ],
+            ),
           ),
-        )
-      ],
-    ),
-  ];
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: Column(
+              children: [
+                SearchButton(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  Widget SearchField() {
+    return TextFormField(
+      autofocus: true,
+      controller: _searchController,
+      decoration: InputDecoration(
+        hintText: 'Search by address, city, or zip',
+        hintStyle: TextStyle(
+          fontSize: 18.0,
+          color: Theme.of(context).backgroundColor,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Theme.of(context).accentColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget SearchButton() {
+    return Ink(
+      padding: EdgeInsets.all(3.0),
+      decoration: const ShapeDecoration(
+        color: Color(0xFF4D2C91),
+        shape: CircleBorder(),
+      ),
+      child: IconButton(
+        icon: Icon(
+          Icons.search,
+          size: 35.0,
+        ),
+        color: Colors.white,
+        tooltip: 'Search for parking space locations',
+        //     onPressed:() => submitSearch(),
+        onPressed: () {
+          submitSearch(_searchController.text);
+          // Navigator.pushReplacementNamed(context, '/home');
+        },
+      ),
+    );
+  }
+
+  void submitSearch(String search) async {
+    try {
+      setState(() {
+        _input = search;
+      });
+    } catch (e) {
+      setState(() {
+        _input = "No search results";
+      });
+      print("Error occurred: $e");
+    }
+//    if(search == "chico"){
+//      try {
+//        setState(() {
+//          _input = search;
+//        });
+//      } catch (e) {
+//        print("Error occured: $e");
+//      }
+//    }
+//    else{
+//      await showDialog(
+//        context: context,
+//        builder: (context) {
+//          return AlertDialog(
+//            // Retrieve the text the user has entered by using the
+//            // TextEditingController.
+//            // content: Text(_searchController.text),
+//            content: Text("Sorry, we could not find anything for your search"),
+//          );
+//        },
+//      );
+//    }
+  }
+
 }
 
-Widget SearchButton(BuildContext context) {
-  return Ink(
-    padding: EdgeInsets.all(3.0),
-    decoration: const ShapeDecoration(
-      color: Color(0xFF4D2C91),
-      shape: CircleBorder(),
-    ),
-    child: IconButton(
-      icon: Icon(
-        Icons.search,
-        size: 35.0,
-      ),
-      color: Colors.white,
-      tooltip: 'Search for parking space locations',
-      onPressed: () {
-        // Navigator.pushReplacementNamed(context, '/home');
-      },
-    ),
-  );
-}
 
 //class _MyHomePageState extends State<MyHomePage> {
 //  //int _counter = 0;
