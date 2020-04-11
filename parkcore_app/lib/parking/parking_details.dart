@@ -4,6 +4,7 @@ import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'find_parking.dart';
+import 'package:parkcore_app/navigate/parkcore_button.dart';
 
 /*class User {
 
@@ -36,7 +37,7 @@ class DetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[300],
+        backgroundColor: Theme.of(context).backgroundColor,
         elevation: 10,
         leading: Builder(
           builder: (BuildContext context){
@@ -47,7 +48,10 @@ class DetailScreen extends StatelessWidget {
               },
             );
           },
-        )
+        ),
+        actions: <Widget>[
+          LogoButton(),
+        ],
       ),
       body: SingleChildScrollView(
       scrollDirection: Axis.vertical,

@@ -3,6 +3,7 @@ import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'parking_details.dart';
+import 'package:parkcore_app/navigate/parkcore_button.dart';
 
 class Spot{
 
@@ -101,9 +102,12 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-          centerTitle: true,
-          backgroundColor: Theme.of(context).backgroundColor,
-          ),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).backgroundColor,
+        actions: <Widget>[
+          LogoButton(),
+        ],
+      ),
       drawer: MenuDrawer(),
       body: Stack(
         children: <Widget>[

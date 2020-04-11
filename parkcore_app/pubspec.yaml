@@ -51,6 +51,9 @@ dependencies:
   firebase_storage: ^3.1.3
   uuid: 2.0.4
 
+  # for SVG images
+  flutter_svg: ^0.17.3+1
+
 dev_dependencies:
   pedantic: ^1.4.0
   build_runner: ^1.2.7
@@ -76,6 +79,8 @@ flutter:
   assets:
     - assets/parkcore_logo_green.jpg
     - assets/parkcore_logo_green2.jpg
+    - assets/ParkCore_WHITE_SQUIRREL_ONLY.svg
+    - assets/ParkCore_WHITE_SQUIRREL.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MenuDrawer extends StatelessWidget {
   @override
@@ -8,13 +9,18 @@ class MenuDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text(''),
+            child: SvgPicture.asset(
+              'assets/ParkCore_WHITE_SQUIRREL.svg',
+              fit: BoxFit.contain,
+              semanticsLabel: 'ParkCore Logo',
+            ),
             decoration: BoxDecoration(
-              color: Theme.of(context).accentColor,
-              //color: Colors.orange[200],
-              image: DecorationImage(
-                image: AssetImage("assets/parkcore_logo_green.jpg"),
-                fit: BoxFit.scaleDown,
+              color: Theme.of(context).backgroundColor,
+              border: Border(
+                bottom: BorderSide(
+                  width: 5.0,
+                  color: Theme.of(context).accentColor,
+                ),
               ),
             ),
           ),

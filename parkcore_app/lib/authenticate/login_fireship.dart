@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'auth_fireship.dart';
+import 'package:parkcore_app/navigate/parkcore_button.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -9,7 +10,10 @@ class LoginPage extends StatelessWidget {
         home: Scaffold(
             appBar: AppBar(
               title: Text('Parkcore'),
-              backgroundColor: Colors.amber,
+              backgroundColor: Theme.of(context).backgroundColor,
+              actions: <Widget>[
+                LogoButton(),
+              ],
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
