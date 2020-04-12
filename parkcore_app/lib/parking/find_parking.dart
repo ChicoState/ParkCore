@@ -71,14 +71,12 @@ class _MyFindParkingState extends State<FindParking> {
   List<Marker> allMarkers = [];
   
   Future<void> _onMapCreated(GoogleMapController controller) async {
-
     await Firestore.instance.collection('parkingSpaces')
       .getDocuments()
       .then((QuerySnapshot snapshot) {
         snapshot.documents.forEach((f) =>
         allMarkers.add(
           Marker(
-
             markerId: MarkerId('${f.data['title']}'),
             position: LatLng(
               num.parse(f.data['coordinates'].substring(1, f.data['coordinates'].indexOf(','))),
@@ -86,18 +84,39 @@ class _MyFindParkingState extends State<FindParking> {
                   f.data['coordinates'].length-1)),
             ),
             infoWindow: InfoWindow(title: '${f.data['title']}',
-            snippet: '${f.data['address']}'),
+            snippet: '${f.data['zip']}'),
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen,),
-
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('${f.data['title']}'),
+                  content: Text("Want to know more about this location?"),
+                  actions: [
+                    FlatButton(
+                      child: Text("Visit the details page for this spot"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailScreen(
+                              spot: Spot.fromSnapshot(f),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                )
+              );
+            },
           ),
         ),
       );
     });
     setState(() {
       for(int i = 0; i < allMarkers.length; i++){
-
         _markers[allMarkers[i].markerId] = allMarkers[i];
-
       }
     });
   }
@@ -191,7 +210,7 @@ class _MyFindParkingState extends State<FindParking> {
           );
          },
          child: _boxes(parkingSpot.image, parkingSpot.title, parkingSpot.city,
-           parkingSpot.state, parkingSpot.zip, parkingSpot.monthPrice, parkingSpot.type)
+           parkingSpot.state, parkingSpot.zip, parkingSpot.monthPrice, parkingSpot.type),
        )
     );
   }
