@@ -246,12 +246,20 @@ class _MyHomePageState extends State<MyHomePage> {
       var addresses =
       await Geocoder.local.findAddressesFromQuery(_searchController.text);
       var first = addresses.first;
+      var addr = first.addressLine.split(", ");
+
       print(first.addressLine + " : " + first.coordinates.toString());
 
       setState(() {
         _found = true;
+        // geocoder has different results depending on details given
+        if(addr.length <= 3){
+          _city = addr[0];  // when addr is: city, state, country
+        }
+        else{
+          _city = addr[1]; // when addr is: address, city, state, country
+        }
         _loc = "${first.addressLine}";
-        _city = first.addressLine.substring(0, first.addressLine.indexOf(','));
         _coordinates = first.coordinates.toString();
       });
     }
