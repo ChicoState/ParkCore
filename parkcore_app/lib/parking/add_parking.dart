@@ -60,6 +60,7 @@ class _MyAddParkingState extends State<AddParking> {
   String _title = '';
   String _address = '';
   String _city = '';
+  String _city_format = '';
   String _state = '';
   String _zip = '';
   String _geoAddress = '';
@@ -744,7 +745,7 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       Text('Title: ' + _title),
       Text('Address: ' + _address),
-      Text('City: ' + _city),
+      Text('City: ' + _city_format),
       Text('State: ' + _state),
       Text('Zip: ' + _zip),
       Text('Size: ' + _size),
@@ -847,7 +848,7 @@ class _MyAddParkingState extends State<AddParking> {
     var parkingData = {
       'title': _title,
       'address': _address,
-      'city': _city,
+      'city': _city_format,
       'state': _state,
       'zip': _zip,
       'size': _size,
@@ -890,7 +891,10 @@ class _MyAddParkingState extends State<AddParking> {
         print(first.addressLine + " : " + first.coordinates.toString());
         print("random coordinates : " + _coord_rand);
 
+        var addr = first.addressLine.split(", ");
+
         setState(() {
+          _city_format = addr[1];
           _invalidLoc = false;
         });
       } catch (e) {
