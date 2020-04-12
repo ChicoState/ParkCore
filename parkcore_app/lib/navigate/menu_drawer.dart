@@ -32,6 +32,12 @@ class MenuDrawer extends StatelessWidget {
             route: '/add_parking',
           ),
           DefaultMap(context),
+          CreateMenuItem(
+            context: context,
+            icon: Icons.contacts,
+            text: 'Contact Us',
+            route: '/contact',
+          ),
         ],
       ),
     );

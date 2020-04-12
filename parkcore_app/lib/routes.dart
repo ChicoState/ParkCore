@@ -4,6 +4,7 @@ import 'package:parkcore_app/authenticate/login_fireship.dart';
 import 'package:parkcore_app/parking/add_parking.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
 import 'package:parkcore_app/screens/form_success.dart';
+import 'package:parkcore_app/screens/contact.dart';
 
 final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
   '/': (context) => LoginPage(),
@@ -13,4 +14,5 @@ final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
     title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}',
   ),
   '/form_success': (context) => FormSuccess(),
+  '/contact': (context) => ContactUs(),
 };
