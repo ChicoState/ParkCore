@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:parkcore_app/navigate/menu_drawer.dart';
+//import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'parking_details.dart';
@@ -51,7 +51,7 @@ class Spot{
 }//end of class
 
 class FindParking extends StatefulWidget {
-  FindParking({Key key, this.title}) : super(key: key);
+  FindParking({Key key, this.title, this.city, this.latlong}) : super(key: key);
   // This widget is the "find parking" page of the app. It is stateful: it has a
   // State object (defined below) that contains fields that affect how it looks.
   // This class is the configuration for the state. It holds the values (title)
@@ -59,7 +59,8 @@ class FindParking extends StatefulWidget {
   // State. Fields in a Widget subclass are always marked "final".
 
   final String title;
-  
+  final String city;
+  final String latlong;
 
   @override
   _MyFindParkingState createState() => _MyFindParkingState();
@@ -108,7 +109,7 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
           LogoButton(),
         ],
       ),
-      drawer: MenuDrawer(),
+      //drawer: MenuDrawer(),
       body: Stack(
         children: <Widget>[
           _googlemap(context),
@@ -123,7 +124,11 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
     child: GoogleMap(
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(
-          target: const LatLng(39.7285, -121.8375),
+          target: LatLng(
+            num.parse(widget.latlong.substring(1, widget.latlong.indexOf(','))),
+            num.parse(widget.latlong.substring(widget.latlong.indexOf(',') + 1,
+            widget.latlong.length-1)),
+          ),
           zoom: 15,
         ),
         markers: _markers.values.toSet(),
@@ -133,7 +138,10 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
 
   Widget _buildBody(BuildContext context) {
    return StreamBuilder<QuerySnapshot>(
-     stream: Firestore.instance.collection('parkingSpaces').snapshots(),
+     // stream: Firestore.instance.collection('parkingSpaces').snapshots(),
+     stream: Firestore.instance.collection('parkingSpaces')
+        .where('city', isEqualTo: widget.city)
+        .snapshots(),
      builder: (context, snapshot) {
        if (!snapshot.hasData) return LinearProgressIndicator();
 
