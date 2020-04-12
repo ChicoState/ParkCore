@@ -3,6 +3,9 @@ import 'package:parkcore_app/navigate/menu_drawer.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:parkcore_app/screens/parkcore_text.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:parkcore_app/parking/find_parking.dart';
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -23,6 +26,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final _searchController = TextEditingController();
 
   String _input = "none";
+  String _loc = "";
+  String _city = "";
+  String _coordinates = "";
+  bool _found = false;
 
   @override
   void dispose() {
@@ -37,9 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
-        backgroundColor: Theme
-            .of(context)
-            .backgroundColor,
+        backgroundColor: Theme.of(context).backgroundColor,
         actions: <Widget>[LogoButton()],
       ),
       drawer: MenuDrawer(),
@@ -58,12 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 SizedBox(height: 10),
-                _input == "none"
-                ? Text("")
-                : Text(
-                    "Find parking near: $_input",
-                    style: Theme.of(context).textTheme.display2,
-                ),
+                _input == "none" ? Text("") : SearchReturn(),
                 SizedBox(height: 50),
                 ParkCoreText(),
               ],
@@ -74,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Search Bar includes Search By Location field and Search Button
   List<Widget> SearchBar() {
     return [
       Row(
@@ -103,12 +104,13 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
+  // Search By Location field
   Widget SearchField() {
     return TextFormField(
       autofocus: true,
       controller: _searchController,
       decoration: InputDecoration(
-        hintText: 'Search by address, city, or zip',
+        hintText: 'Search by location',
         hintStyle: TextStyle(
           fontSize: 18.0,
           color: Theme.of(context).backgroundColor,
@@ -122,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Search By Location Button
   Widget SearchButton() {
     return Ink(
       padding: EdgeInsets.all(3.0),
@@ -136,51 +139,134 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         color: Colors.white,
         tooltip: 'Search for parking space locations',
-        //     onPressed:() => submitSearch(),
         onPressed: () {
           submitSearch(_searchController.text);
-          // Navigator.pushReplacementNamed(context, '/home');
         },
       ),
     );
   }
 
+  // When Search Button is clicked, try to find a location (set of coordinates)
   void submitSearch(String search) async {
     try {
+      validateLocation();
       setState(() {
-        _input = search;
+        _input = "Find parking near: " + search;
       });
     } catch (e) {
-      setState(() {
-        _input = "No search results";
-      });
       print("Error occurred: $e");
     }
-//    if(search == "chico"){
-//      try {
-//        setState(() {
-//          _input = search;
-//        });
-//      } catch (e) {
-//        print("Error occured: $e");
-//      }
-//    }
-//    else{
-//      await showDialog(
-//        context: context,
-//        builder: (context) {
-//          return AlertDialog(
-//            // Retrieve the text the user has entered by using the
-//            // TextEditingController.
-//            // content: Text(_searchController.text),
-//            content: Text("Sorry, we could not find anything for your search"),
-//          );
-//        },
-//      );
-//    }
+  }
+
+  // Show Search Results
+  Widget SearchReturn() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text("$_input"),
+        SizedBox(height: 10.0),
+        Divider(
+          color: Colors.black,
+          height: 20,
+        ),
+        _found ? FoundResults() : FailedSearch(),
+        Divider(
+          color: Colors.black,
+          height: 20,
+        ),
+      ],
+    );
+  }
+
+  // If Search was successful, show the location that was found
+  Widget FoundResults() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Flexible(
+          flex: 5,
+          fit: FlexFit.tight,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  _loc,
+                  style: Theme.of(context).textTheme.display2,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+          child: Column(
+            children: [
+              RaisedButton(
+                child: Text("Go!"),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FindParking(
+                        title: 'Find Parking',
+                        city: _city,
+                        latlong: _coordinates == null ?
+                        '{39.7285,-121.8375}' : _coordinates,
+                      ),
+                    ),
+                  );
+                },
+                color: Theme.of(context).backgroundColor,
+                textColor: Colors.white,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // If Search was not successful, show error message
+  Widget FailedSearch() {
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Text(
+        _loc,
+        style: Theme.of(context).textTheme.display2,
+      ),
+    );
+  }
+
+  // Use geocoder to search for a location that matches search result input
+  void validateLocation() async {
+    try {
+      var addresses =
+      await Geocoder.local.findAddressesFromQuery(_searchController.text);
+      var first = addresses.first;
+      print(first.addressLine + " : " + first.coordinates.toString());
+
+      setState(() {
+        _found = true;
+        _loc = "${first.addressLine}";
+        _city = first.addressLine.substring(0, first.addressLine.indexOf(','));
+        _coordinates = first.coordinates.toString();
+      });
+    }
+    catch (e) {
+      print("Error occurred: $e");
+      setState(() {
+        _found = false;
+        _loc = "Sorry, no search results for '" + _searchController.text + "'.";
+      });
+    }
   }
 
 }
+
+
 
 
 //class _MyHomePageState extends State<MyHomePage> {
