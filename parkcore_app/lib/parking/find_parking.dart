@@ -139,12 +139,14 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
   Widget _buildBody(BuildContext context) {
    return StreamBuilder<QuerySnapshot>(
      // stream: Firestore.instance.collection('parkingSpaces').snapshots(),
-     stream: Firestore.instance.collection('parkingSpaces')
+    stream: Firestore.instance.collection('parkingSpaces')
         .where('city', isEqualTo: widget.city)
         .snapshots(),
      builder: (context, snapshot) {
        if (!snapshot.hasData) return LinearProgressIndicator();
-
+       if(snapshot.data.documents.isEmpty){
+         return _noSpaces(context);
+       }
        return _buildList(context, snapshot.data.documents);
      },
    );
@@ -155,7 +157,7 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
       alignment: Alignment.bottomCenter,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10.0),
-        height: 400.0, 
+        height: 400.0,
         child: ListView(
           scrollDirection: Axis.vertical,
           padding: const EdgeInsets.only(top: 20.0),
@@ -235,5 +237,44 @@ Future<void> _onMapCreated(GoogleMapController controller) async {
             ),
           ),
       );
+  }
+
+  Widget _noSpaces(BuildContext context){
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10.0),
+        height: 110.0,
+        color: Theme.of(context).backgroundColor.withOpacity(0.7),
+        child: ListView(
+          scrollDirection: Axis.vertical,
+          padding: const EdgeInsets.only(top: 15.0),
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: ListTile(
+                title: Row(
+                  children: <Widget>[
+                    Text(
+                      "We're not yet in:\n" + widget.city +
+                          "\nLet us know you're interested!",
+                      style: Theme.of(context).textTheme.display3,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white,
+                ),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/contact');
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }//end of parking space class
