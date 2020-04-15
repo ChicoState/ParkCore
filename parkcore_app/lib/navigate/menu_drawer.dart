@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:parkcore_app/parking/find_parking.dart';
 
 class MenuDrawer extends StatelessWidget {
   @override
@@ -16,31 +17,26 @@ class MenuDrawer extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor,
-              border: Border(
-                bottom: BorderSide(
-                  width: 5.0,
-                  color: Theme.of(context).accentColor,
-                ),
-              ),
             ),
           ),
-          _createMenuItem(
+          CreateMenuItem(
             context: context,
             icon: Icons.home,
             text: 'Home',
             route: '/home',
           ),
-          _createMenuItem(
+          CreateMenuItem(
             context: context,
             icon: Icons.directions_car,
             text: 'Post a Parking Space',
             route: '/add_parking',
           ),
-          _createMenuItem(
+          DefaultMap(context),
+          CreateMenuItem(
             context: context,
-            icon: Icons.add_location,
-            text: 'Find Parking',
-            route: '/find_parking',
+            icon: Icons.contacts,
+            text: 'Contact Us',
+            route: '/contact',
           ),
         ],
       ),
@@ -48,12 +44,15 @@ class MenuDrawer extends StatelessWidget {
   }
 }
 
-Widget _createMenuItem(
+Widget CreateMenuItem(
     {BuildContext context, IconData icon, String text, String route}) {
   return ListTile(
     title: Row(
       children: <Widget>[
-        Icon(icon),
+        Icon(
+          icon,
+          color: Color(0xFF4D2C91),
+        ),
         Padding(
           padding: EdgeInsets.only(left: 8.0),
           child: Text(
@@ -63,10 +62,51 @@ Widget _createMenuItem(
         )
       ],
     ),
-    trailing: Icon(Icons.arrow_forward),
+    trailing: Icon(
+      Icons.arrow_forward,
+      color: Theme.of(context).accentColor,
+    ),
     onTap: () {
       // Update the state of the app, then close the drawer.
       Navigator.pushReplacementNamed(context, route);
+    },
+  );
+}
+
+Widget DefaultMap(BuildContext context) {
+  return ListTile(
+    title: Row(
+      children: <Widget>[
+        Icon(
+          Icons.location_on,
+          color: Color(0xFF4D2C91),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Visit Our Hometown!',
+            style: Theme.of(context).textTheme.display2,
+          ),
+        ),
+      ],
+    ),
+    trailing: Icon(
+      Icons.arrow_forward,
+      color: Theme.of(context).accentColor,
+    ),
+    onTap: () {
+      // Update the state of the app, then close the drawer.
+      //Navigator.pushReplacementNamed(context, );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FindParking(
+            title: 'Find Parking',
+            city: 'Chico',
+            latlong: '{39.7285,-121.8375}',
+          ),
+        ),
+      );
     },
   );
 }
