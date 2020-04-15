@@ -206,25 +206,24 @@ class _MyAddParkingState extends State<AddParking> {
       ),
       drawer: MenuDrawer(),
       body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-                _incomplete || _invalidLoc
-                    ? Text(_errorMessage, style: TextStyle(color: Colors.red))
-                    : Text("Part " + _page.toString() + " of 5"),
-                SizedBox(height: 10),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: formPages(),
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              _incomplete || _invalidLoc
+                ? Text(_errorMessage, style: TextStyle(color: Colors.red))
+                : Text("Part " + _page.toString() + " of 5"),
+              SizedBox(height: 10),
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: formPages(),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -773,15 +772,22 @@ class _MyAddParkingState extends State<AddParking> {
   List<Widget> pageButton(String buttonText) {
     return [
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          RaisedButton(
-            onPressed: validateAndSubmit,
-            child: Text(
-              buttonText,
-              style: Theme.of(context).textTheme.display3,
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                RaisedButton(
+                  onPressed: validateAndSubmit,
+                  child: Text(
+                    buttonText,
+                    style: Theme.of(context).textTheme.display3,
+                  ),
+                  color: Theme.of(context).accentColor,
+                ),
+              ],
             ),
-            color: Theme.of(context).accentColor,
           ),
         ],
       ),
