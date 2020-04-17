@@ -13,6 +13,8 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:parkcore_app/parking/random_coordinates.dart';
+import 'package:parkcore_app/navigate/parkcore_button.dart';
+
 
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
@@ -58,6 +60,7 @@ class _MyAddParkingState extends State<AddParking> {
   String _title = '';
   String _address = '';
   String _city = '';
+  String _city_format = '';
   String _state = '';
   String _zip = '';
   String _geoAddress = '';
@@ -197,28 +200,30 @@ class _MyAddParkingState extends State<AddParking> {
         title: Text(widget.title),
         centerTitle: true,
         backgroundColor: Theme.of(context).backgroundColor,
+        actions: <Widget>[
+          LogoButton(),
+        ],
       ),
       drawer: MenuDrawer(),
       body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-                _incomplete || _invalidLoc
-                    ? Text(_errorMessage, style: TextStyle(color: Colors.red))
-                    : Text("Part " + _page.toString() + " of 5"),
-                SizedBox(height: 10),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: formPages(),
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              _incomplete || _invalidLoc
+                ? Text(_errorMessage, style: TextStyle(color: Colors.red))
+                : Text("Part " + _page.toString() + " of 5"),
+              SizedBox(height: 10),
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: formPages(),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -339,7 +344,7 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
-  // Page 1 Parking Form Widgets
+  // Page 1 Parking Form Widgets (title, full address)
 
   Widget getTitle() {
     return TextFormField(
@@ -452,7 +457,7 @@ class _MyAddParkingState extends State<AddParking> {
     );
   }
 
-  // Page 2 Parking Form Widgets
+  // Page 2 Parking Form Widgets (Parking Space Information)
 
   Widget getSize() {
     return DropDownFormField(
@@ -604,7 +609,7 @@ class _MyAddParkingState extends State<AddParking> {
     );
   }
 
-// Page 3 Parking Form Widgets
+// Page 3 Parking Form Widgets (Availability and Price)
 
   Widget getDays() {
     return MultiSelectFormField(
@@ -685,7 +690,7 @@ class _MyAddParkingState extends State<AddParking> {
     );
   }
 
-  // Page 4 Parking Form Widgets
+  // Page 4 Parking Form Widgets (Image and Submit)
 
   Widget showImage() {
     return Center(
@@ -739,7 +744,7 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       Text('Title: ' + _title),
       Text('Address: ' + _address),
-      Text('City: ' + _city),
+      Text('City: ' + _city_format),
       Text('State: ' + _state),
       Text('Zip: ' + _zip),
       Text('Size: ' + _size),
@@ -767,15 +772,22 @@ class _MyAddParkingState extends State<AddParking> {
   List<Widget> pageButton(String buttonText) {
     return [
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          RaisedButton(
-            onPressed: validateAndSubmit,
-            child: Text(
-              buttonText,
-              style: Theme.of(context).textTheme.display3,
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                RaisedButton(
+                  onPressed: validateAndSubmit,
+                  child: Text(
+                    buttonText,
+                    style: Theme.of(context).textTheme.display3,
+                  ),
+                  color: Theme.of(context).accentColor,
+                ),
+              ],
             ),
-            color: Theme.of(context).accentColor,
           ),
         ],
       ),
@@ -817,7 +829,7 @@ class _MyAddParkingState extends State<AddParking> {
                 Navigator.pushReplacementNamed(context, '/form_success');
               }
               catch (e) {
-                print("Error occured: $e");
+                print("Error occurred: $e");
               }
             },
             child: Text(
@@ -831,17 +843,18 @@ class _MyAddParkingState extends State<AddParking> {
     ];
   }
 
+  // Create ParkingSpaces database entry
   Future<void> createParkingSpace() async {
     try {
       await getUniqueFile();
     } catch (e) {
-      print("Error occured: $e");
+      print("Error occurred: $e");
     }
 
     var parkingData = {
       'title': _title,
       'address': _address,
-      'city': _city,
+      'city': _city_format,
       'state': _state,
       'zip': _zip,
       'size': _size,
@@ -854,10 +867,12 @@ class _MyAddParkingState extends State<AddParking> {
       'starttime': _startTime,
       'endtime': _endTime,
       'monthprice': _price,
-      'coordinates': _coordinates,
-      'coordinates_r': _coord_rand,
-      'downloadURL': _downloadURL,
-      'uid': getUserID(),
+      'coordinates': _coordinates, // generated from the input address
+      'coordinates_r': _coord_rand, // random coordinates near actual address
+      'downloadURL': _downloadURL, // for the image (put in firebase storage)
+      'uid': getUserID(), // parkingSpace owner is the current user
+      'reserved': [].toString(), // list of UIDs (if reserved, starts empty)
+      'cur_tenant': '', // current tenant (a UID, or empty if spot is available)
     };
 
     await Firestore.instance.runTransaction((transaction) async {
@@ -869,6 +884,7 @@ class _MyAddParkingState extends State<AddParking> {
   // Form Validation
 
   void validateAndSubmit() async {
+    // After address info is input, create associated coordinates (if possible)
     if (_page == 1) {
       try {
         _formKey.currentState.save();
@@ -883,17 +899,21 @@ class _MyAddParkingState extends State<AddParking> {
         print(first.addressLine + " : " + first.coordinates.toString());
         print("random coordinates : " + _coord_rand);
 
+        var addr = first.addressLine.split(", ");
+
         setState(() {
+          _city_format = addr[1];
           _invalidLoc = false;
         });
       } catch (e) {
-        print("Error occured: $e");
+        print("Error occurred: $e");
         setState(() {
           _invalidLoc = true;
           _errorMessage = "We can't find you!\nPlease enter a valid location.";
         });
       }
     }
+    // if location was valid, check additional validators
     if (!_invalidLoc) {
       if (validateAndSave()) {
        // print("User: " + _displayName);
@@ -906,6 +926,7 @@ class _MyAddParkingState extends State<AddParking> {
     }
   }
 
+  // Check individual form validators, go to next page
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -915,7 +936,6 @@ class _MyAddParkingState extends State<AddParking> {
       }
       setState(() {
         _page++;
-        // print(_page);
       });
       return true;
     }
@@ -947,9 +967,6 @@ class _MyAddParkingState extends State<AddParking> {
     if (value.isEmpty) {
       return 'Field can\'t be empty';
     }
-//    if(value.toUpperCase() != 'CHICO'){
-//      return 'Sorry, we are not operating in your town yet';
-//    }
     return null;
   }
 

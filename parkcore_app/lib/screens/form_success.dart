@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
+import 'package:parkcore_app/navigate/parkcore_button.dart';
 
 class FormSuccess extends StatelessWidget {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -35,6 +36,9 @@ class FormSuccess extends StatelessWidget {
         title: Text('Form Submitted. Success!'),
         centerTitle: true,
         backgroundColor: Theme.of(context).backgroundColor,
+        actions: <Widget>[
+          LogoButton(),
+        ],
       ),
       drawer: MenuDrawer(),
       body: Center(
