@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:parkcore_app/screens/home.dart';
+import 'package:parkcore_app/parking/add_parking.dart';
+import 'package:dropdown_formfield/dropdown_formfield.dart';
+//import 'package:geocoder/geocoder.dart';
+
 
 //void main() {
 //  testWidgets('MyHomePage has a title', (WidgetTester tester) async {
@@ -22,22 +26,78 @@ import 'package:parkcore_app/screens/home.dart';
 //}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+
+  testWidgets('My Home Page Widget', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "title"),
+      home: MyHomePage(title: "ParkCore"),
     ));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Create the finders
+    final titleFinder = find.text('ParkCore');
+    final Finder searchinput = find.widgetWithText(TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Use the `findsNWidgets` matcher provided by flutter_test to
+    // verify this Text widget appears exactly 2 times in the widget tree.
+    expect(titleFinder, findsNWidgets(2));
+
+    // Finds 1 TextFormField Widget (for search input field in 1 Form)
+    expect(find.byType(TextFormField),findsOneWidget);
+    expect(find.byType(Form),findsOneWidget);
+
+    // Finds 3 IconButton Widgets (search, ParkCore logo, and menu icons)
+    expect(find.byType(IconButton),findsNWidgets(3));
+
+    // Test form search field input
+    await tester.enterText(searchinput, 'Chico, CA');
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Expect Text Widget message
+    expect(find.text('Find parking near: Chico, CA'), findsOneWidget);
+
+  });
+
+  testWidgets('My Add Parking Widget', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking(title: 'Post Your Parking Space'),
+    ));
+
+    // Create the finders
+    final titleFinder = find.text('Post Your Parking Space');
+    final Finder title = find.byKey(Key('title'));
+    final Finder address = find.byKey(Key('address'));
+    final Finder city = find.byKey(Key('city'));
+    final Finder zip = find.byKey(Key('zip'));
+
+    final Finder submit = find.widgetWithText(RaisedButton, 'Next: Parking Space Info');
+
+    // Use the `findsNWidgets` matcher provided by flutter_test to
+    // verify this Text widget appears exactly 2 times in the widget tree.
+    expect(titleFinder, findsOneWidget);
+    expect(find.text("Part 1 of 5"), findsOneWidget);
+
+    // expect to find 1 form
+    expect(find.byType(Form),findsOneWidget);
+    // On 1st page of form, find 4 TextFormField Widgets, 1 DropDownFormField
+    // Widget, and 1 Raised Button
+    expect(find.byType(TextFormField),findsNWidgets(4));
+    expect(find.byType(DropDownFormField),findsOneWidget);
+    expect(find.byType(RaisedButton),findsOneWidget);
+
+    // Test text field form input
+    await tester.enterText(title, '');
+    await tester.enterText(address, '');
+    await tester.enterText(city, '');
+    await tester.enterText(zip, '');
+
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+    // Expect Text Widget message
+    //expect(find.text("We can't find you!\nPlease enter a valid location."), findsOneWidget);
   });
 }
