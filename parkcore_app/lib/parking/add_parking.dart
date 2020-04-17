@@ -867,10 +867,12 @@ class _MyAddParkingState extends State<AddParking> {
       'starttime': _startTime,
       'endtime': _endTime,
       'monthprice': _price,
-      'coordinates': _coordinates,
-      'coordinates_r': _coord_rand,
-      'downloadURL': _downloadURL,
-      'uid': getUserID(),
+      'coordinates': _coordinates, // generated from the input address
+      'coordinates_r': _coord_rand, // random coordinates near actual address
+      'downloadURL': _downloadURL, // for the image (put in firebase storage)
+      'uid': getUserID(), // parkingSpace owner is the current user
+      'reserved': [].toString(), // list of UIDs (if reserved, starts empty)
+      'cur_tenant': '', // current tenant (a UID, or empty if spot is available)
     };
 
     await Firestore.instance.runTransaction((transaction) async {
