@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:geocoder/model.dart';
 //import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'parking_details.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
+import 'parking_details.dart';
 
 class Spot{
 
@@ -23,7 +26,8 @@ class Spot{
     starttime = map['starttime'],
     endtime = map['endtime'],
     state = map['state'],
-    zip = map['zip'];
+    zip = map['zip'],
+    uid = map['uid'];
 
 
   Spot.fromSnapshot(DocumentSnapshot snapshot)
@@ -46,9 +50,38 @@ class Spot{
   String endtime;
   String state;
   String zip;
+  String uid;
   final DocumentReference reference;
 
 }//end of class
+class DistanceMatrix {
+  List<dynamic> destination_addresses;
+  List<dynamic> origin_addresses;
+  List<dynamic> rows;
+  //String title;
+  //String body;
+
+  DistanceMatrix({
+    this.destination_addresses,
+    this.origin_addresses,
+    this.rows,
+    //this.body,
+  });
+
+  ///This method is to deserialize your JSON
+  ///Basically converting a string response to an object model
+  ///Here key is always a String type and value can be of any type
+  ///so we create a map of String and dynamic.
+  factory DistanceMatrix.fromJson(Map<String, dynamic> json) => DistanceMatrix(
+    destination_addresses: json['destination_addresses'],
+    origin_addresses: json['origin_addresses'],
+    rows: json['rows'],
+  );
+}
+DistanceMatrix responseFromJson(String jsonString) {
+  final jsonData = json.decode(jsonString);
+  return DistanceMatrix.fromJson(jsonData);
+}
 
 class FindParking extends StatefulWidget {
   FindParking({Key key, this.title, this.city, this.latlong}) : super(key: key);
@@ -69,6 +102,10 @@ class FindParking extends StatefulWidget {
 class _MyFindParkingState extends State<FindParking> {
   final Map<MarkerId, Marker> _markers = {};
   List<Marker> allMarkers = [];
+  Future<DistanceMatrix> futureAlbum;
+  String tempOrigin = 'csuchico';
+  String tempDestination = 'csuchico';
+  String distanceApiKey = 'AIzaSyCK2y9692dLUn-MAVgZX02hd4VF_et-URw';
   
   Future<void> _onMapCreated(GoogleMapController controller) async {
     await Firestore.instance.collection('parkingSpaces')
@@ -91,10 +128,10 @@ class _MyFindParkingState extends State<FindParking> {
                 context: context,
                 builder: (context) => AlertDialog(
                   title: Text('${f.data['title']}'),
-                  content: Text("Want to know more about this location?"),
+                  content: Text('Want to know more about this location?'),
                   actions: [
                     FlatButton(
-                      child: Text("Visit the details page for this spot"),
+                      child: Text('Visit the details page for this spot'),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -121,6 +158,26 @@ class _MyFindParkingState extends State<FindParking> {
     });
   }
 
+  Future<DistanceMatrix> getMatrixResponse(String coordinates) async{
+
+    final response = await http.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=' + coordinates + '&destinations=' + tempDestination + '&mode=walking&key=' + distanceApiKey);
+    if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return DistanceMatrix.fromJson(json.decode(response.body));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load album');
+  }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    futureAlbum = getMatrixResponse(tempOrigin);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,6 +198,7 @@ class _MyFindParkingState extends State<FindParking> {
       )
     );
   }
+
   Widget _googlemap(BuildContext context){
     return Container(
       child: GoogleMap(
@@ -192,13 +250,36 @@ class _MyFindParkingState extends State<FindParking> {
       ),
     );
   }
+  Widget _fetchDistance(String coordinates) {
+    
+    return FutureBuilder<DistanceMatrix>(
+      future: getMatrixResponse(coordinates),
+      builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        return Container(
+          padding: EdgeInsets.all(5.0),
+        child: Row(
+          children: <Widget> [
+            Text(snapshot.data.rows[0]['elements'][0]['duration']['text'] ?? 'null',style: TextStyle(fontSize: 15)),
+            Icon(Icons.directions_walk, size: 20,)
+        ]));
+      } else if (snapshot.hasError) {
+        return Text('${snapshot.error}');
+      }
+      // By default, show a loading spinner.
+      return SizedBox(
+        height: 15,
+        width: 15,
+        child:CircularProgressIndicator());
+    },
+    );
+  }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
 
     final parkingSpot = Spot.fromSnapshot(data);
 
     return Padding(
-     //key: ValueKey(parkingSpot.address),
      padding: const EdgeInsets.all(8.0),
        child: GestureDetector(
          onTap: () {
@@ -210,81 +291,65 @@ class _MyFindParkingState extends State<FindParking> {
           );
          },
          child: _boxes(parkingSpot.image, parkingSpot.title, parkingSpot.city,
-           parkingSpot.state, parkingSpot.zip, parkingSpot.monthPrice, parkingSpot.type),
+           parkingSpot.state, parkingSpot.zip, parkingSpot.monthPrice, parkingSpot.type, parkingSpot.coordinates),
        )
     );
   }
+  Widget _boxes(String image, String title, String city, String state, String zip, String monthprice, String type, String coordinates){
 
-  Widget _boxes(String image, String title, String city, String state, String zip,
-      String monthprice, String type){
+    var roundedPrice = (num.parse(monthprice)).round();
 
     return Container(
-      child: FittedBox(
-        child: Material(
-          elevation: 20.0,
-          borderRadius: BorderRadius.circular(14.0),
-          shadowColor: Color(0x802196F3),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                width: 100,
-                height: 90,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15.0),
-                  child: Image(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(image ?? 'https://homestaymatch.com/images/no-image-available.png'),
-                  ),
-                ),
-              ),
-              Container(
-                width: 275,
-                height: 90,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        title ?? 'N/A',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        city + ', ' + state + ', ' + zip,
-                        style: TextStyle(fontSize: 15.0),
-                        textAlign: TextAlign.center),
-                      Text(
-                        type ?? 'N/A',
-                        style: TextStyle(fontSize: 15.0),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Text(
-                    '\$' + monthprice,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
+        child: FittedBox(
+          child: Material(
+            elevation: 20.0,
+            borderRadius: BorderRadius.circular(14.0),
+            shadowColor: Color(0x802196F3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  width: 100,
+                  height: 90,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0),
+                    child: Image(
+                      fit: BoxFit.fill,
+                      image: NetworkImage(image ?? 'https://homestaymatch.com/images/no-image-available.png'),
                     ),
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  width: 275,
+                  height: 90,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(title ?? 'N/A', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0), textAlign: TextAlign.center),
+                        Text(city + ', ' + state + ', ' + zip, style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
+                        Text(type ?? 'N/A', style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
+                      ],
+                    ),
+                  ),
+                  ),
+                Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                    children: <Widget>[
+                    _fetchDistance(coordinates.substring(1,coordinates.length-1)),
+                    Text('\$' + roundedPrice.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                    ])
+                  ),
+                )
+                ],)
+            ),
           ),
-        ),
-      ),
-    );
+      );
   }
 
   Widget _noSpaces(BuildContext context){
