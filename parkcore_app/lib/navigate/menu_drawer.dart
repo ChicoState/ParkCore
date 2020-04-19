@@ -38,6 +38,12 @@ class MenuDrawer extends StatelessWidget {
             text: 'Contact Us',
             route: '/contact',
           ),
+          CreateMenuItem(
+            context: context,
+            icon: Icons.sentiment_satisfied,
+            text: 'About ParkCore',
+            route: '/about',
+          ),
         ],
       ),
     );
