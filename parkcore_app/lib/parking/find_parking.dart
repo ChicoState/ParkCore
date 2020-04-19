@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'parking_details.dart';
@@ -69,6 +68,14 @@ class FindParking extends StatefulWidget {
 class _MyFindParkingState extends State<FindParking> {
   final Map<MarkerId, Marker> _markers = {};
   List<Marker> allMarkers = [];
+  List<DocumentSnapshot> current;
+  int num_filters = 0;
+  String doc_type = "";
+  String doc_type2 = "";
+  String choice = "";
+  String choice2 = "";
+  String curSize = "All";
+  String curType = "All";
   
   Future<void> _onMapCreated(GoogleMapController controller) async {
     await Firestore.instance.collection('parkingSpaces')
@@ -107,7 +114,7 @@ class _MyFindParkingState extends State<FindParking> {
                       },
                     ),
                   ],
-                )
+                ),
               );
             },
           ),
@@ -132,7 +139,6 @@ class _MyFindParkingState extends State<FindParking> {
           LogoButton(),
         ],
       ),
-      //drawer: MenuDrawer(),
       body: Stack(
         children: <Widget>[
           _googlemap(context),
@@ -169,6 +175,30 @@ class _MyFindParkingState extends State<FindParking> {
         if(snapshot.data.documents.isEmpty){
          return _noSpaces(context);
         }
+
+        switch(num_filters) {
+          case 1: {
+            final List<DocumentSnapshot> filtered = snapshot.data.documents
+                .where((DocumentSnapshot documentSnapshot) =>
+            documentSnapshot[doc_type] == choice).toList();
+            return _buildList(context, filtered);
+          }
+          break;
+
+          case 2: {
+            final List<DocumentSnapshot> filtered = snapshot.data.documents
+                .where((DocumentSnapshot documentSnapshot) =>
+            documentSnapshot[doc_type] == choice).toList();
+            final List<DocumentSnapshot> filtered2 = filtered
+                .where((DocumentSnapshot documentSnapshot) =>
+            documentSnapshot[doc_type2] == choice2).toList();
+            return _buildList(context, filtered2);
+          }
+          break;
+
+          default: {};
+          break;
+        }
         return _buildList(context, snapshot.data.documents);
       },
     );
@@ -185,12 +215,130 @@ class _MyFindParkingState extends State<FindParking> {
             child: ListView(
               scrollDirection: Axis.vertical,
               padding: const EdgeInsets.only(top: 10.0),
-              children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+              children: filterRow() +
+                snapshot.map((data) => _buildListItem(context, data)).toList(),
             ),
           );
         },
       ),
     );
+  }
+  
+  List<Widget> filterRow() {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Flexible(
+            flex: 3,
+            fit: FlexFit.tight,
+            child: Column(
+              children:[],
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: Column(
+              children: [
+                RaisedButton(
+                  onPressed: () {
+                    setState(() {
+                      if(curSize == "All" && curType == "All"){
+                        num_filters = 0;
+                      }
+                      else if(curType == "All"){
+                        num_filters = 1;
+                        doc_type = "size";
+                        choice = curSize;
+                      }
+                      else if(curSize == "All"){
+                        num_filters = 1;
+                        doc_type = "type";
+                        choice = curType;
+                      }
+                      else{
+                        num_filters = 2;
+                        doc_type = "size";
+                        doc_type2 = "type";
+                        choice = curSize;
+                        choice2 = curType;
+                      }
+                    });
+                  },
+                  child: Text(
+                    'Apply',
+                    style: TextStyle(
+                      fontFamily: 'Century Gothic',
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                  color: Theme.of(context).backgroundColor,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                ListTile(
+                  title: const Text('Size'),
+                  trailing: DropdownButton<String>(
+                    hint: Text('Choose'),
+                    onChanged: (String changedValue) {
+                      setState(() {
+                        curSize = changedValue;
+                      });
+                    },
+                    value: curSize,
+                    items: <String>['All', 'Compact', 'Regular', 'Oversized']
+                        .map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                ListTile(
+                  title: const Text('Type'),
+                  trailing: DropdownButton<String>(
+                    hint: Text('Choose'),
+                    onChanged: (String changedValue) {
+                      setState(() {
+                        curType = changedValue;
+                      });
+                    },
+                    value: curType,
+                    items: <String>['All', 'Driveway', 'Parking Lot', 'Street']
+                        .map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ];
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
@@ -304,7 +452,7 @@ class _MyFindParkingState extends State<FindParking> {
                 title: Row(
                   children: <Widget>[
                     Text(
-                      "We're not yet in:\n" + widget.city +
+                      "We're not yet in\n" + widget.city +
                           "\nLet us know you're interested!",
                       style: Theme.of(context).textTheme.display3,
                       textAlign: TextAlign.center,
