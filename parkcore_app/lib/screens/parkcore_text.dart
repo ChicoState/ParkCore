@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ParkCoreText extends StatelessWidget {
   @override
@@ -7,7 +8,7 @@ class ParkCoreText extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text(
-          'ParkCore',
+          'PARKCORE',
           style: Theme.of(context).textTheme.headline,
         ),
         Text(
@@ -16,23 +17,22 @@ class ParkCoreText extends StatelessWidget {
         ),
         SizedBox(height: 10),
         Container(
-          margin: const EdgeInsets.all(20.0),
-          padding: const EdgeInsets.all(20.0),
-          decoration: const BoxDecoration(
-            border: Border(
-              top: BorderSide(width: 2.0, color: Color(0xFF99F1B8)),
-              left: BorderSide(width: 2.0, color: Color(0xFF99F1B8)),
-              right: BorderSide(width: 2.0, color: Color(0xFF358D5B)),
-              bottom: BorderSide(width: 2.0, color: Color(0xFF358D5B)),
+          margin: EdgeInsets.all(10),
+          width: 250,
+          height: 250,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(50.0),
+            child: Container(
+              padding: EdgeInsets.all(30),
+              child: SvgPicture.asset(
+                'assets/ParkCore_WHITE_SQUIRREL.svg',
+                fit: BoxFit.fitWidth,
+                semanticsLabel: 'ParkCore Logo',
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).backgroundColor,
+              ),
             ),
-          ),
-          child: Text(
-            'ParkCore is a parking application that allows local property '
-            'owners around the Chico State campus to earn a little money '
-            'through the rental of their driveway to students, faculty, '
-            'and staff.',
-            style: Theme.of(context).textTheme.display2,
-            textAlign: TextAlign.center,
           ),
         ),
       ],

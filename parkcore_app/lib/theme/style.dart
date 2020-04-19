@@ -9,13 +9,14 @@ ThemeData appTheme() {
       headline: TextStyle(
         fontSize: 36.0,
         fontWeight: FontWeight.bold,
-        fontStyle: FontStyle.italic,
+        fontFamily: 'Century Gothic',
+        letterSpacing: 6.0,
         color: Colors.grey[850],
       ),
       display1: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.bold,
-        letterSpacing: 2.0,
+        letterSpacing: 1.0,
         color: Colors.grey[600],
       ),
       display2: TextStyle(

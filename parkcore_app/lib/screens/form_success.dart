@@ -10,14 +10,14 @@ class FormSuccess extends StatelessWidget {
       icon: Icon(
         Icons.cake,
         size: 50.0,
-        color: Colors.deepPurple[900],
+        color: Color(0xFF7E57C2),
       ),
       onPressed: () {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text(
             'Thank you!',
             style: TextStyle(
-              color: Colors.deepPurple[200],
+              color: Color(0xFFB085F5),
               fontSize: 20,
             ),
           ),
@@ -55,7 +55,7 @@ class FormSuccess extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'ParkCore',
+              'PARKCORE',
               style: Theme.of(context).textTheme.headline,
             ),
             Text(
