@@ -49,25 +49,22 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       drawer: MenuDrawer(),
       body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
-            child: Column(
-              children: <Widget>[
-                Form(
-                  key: _searchKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: SearchBar(),
-                  ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+          child: Column(
+            children: <Widget>[
+              Form(
+                key: _searchKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: SearchBar(),
                 ),
-                SizedBox(height: 10),
-                _input == "none" ? Text("") : SearchReturn(),
-                SizedBox(height: 50),
-                ParkCoreText(),
-              ],
-            ),
+              ),
+              SizedBox(height: 10),
+              _input == "none" ? Text("") : SearchReturn(),
+              SizedBox(height: 50),
+              ParkCoreText(),
+            ],
           ),
         ),
       ),
@@ -129,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Ink(
       padding: EdgeInsets.all(3.0),
       decoration: const ShapeDecoration(
-        color: Color(0xFF4D2C91),
+        color: Color(0xFF7E57C2),
         shape: CircleBorder(),
       ),
       child: IconButton(
