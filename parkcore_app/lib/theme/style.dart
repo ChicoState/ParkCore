@@ -9,7 +9,7 @@ ThemeData appTheme() {
       headline: TextStyle(
         fontSize: 36.0,
         fontWeight: FontWeight.bold,
-        fontFamily: 'Century Gothic',
+        fontFamily: 'Roboto',
         letterSpacing: 6.0,
         color: Colors.grey[850],
       ),
@@ -21,12 +21,12 @@ ThemeData appTheme() {
       ),
       display2: TextStyle(
         fontSize: 20.0,
-        fontFamily: 'Montserrat',
+        fontFamily: 'Roboto',
         color: Colors.grey[800],
       ),
       display3: TextStyle(
         fontSize: 18.0,
-        fontFamily: 'Montserrat',
+        fontFamily: 'Roboto',
         color: Colors.white,
       ),
     ),
