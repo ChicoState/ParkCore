@@ -81,6 +81,8 @@ flutter:
     - assets/parkcore_logo_green2.jpg
     - assets/ParkCore_WHITE_SQUIRREL_ONLY.svg
     - assets/ParkCore_WHITE_SQUIRREL.svg
+    - assets/Acorns.svg
+    - assets/Acorns_White.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
