@@ -231,7 +231,7 @@ class _MyFindParkingState extends State<FindParking> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
-            flex: 3,
+            flex: 2,
             fit: FlexFit.tight,
             child: Column(
               children:[],
@@ -268,14 +268,16 @@ class _MyFindParkingState extends State<FindParking> {
                     });
                   },
                   child: Text(
-                    'Apply',
+                    'Apply Filters',
                     style: TextStyle(
                       fontFamily: 'Century Gothic',
                       fontSize: 16.0,
-                      color: Colors.white,
+                      color: Theme.of(context).backgroundColor,
+                      //color: Colors.white,
                     ),
                   ),
-                  color: Theme.of(context).backgroundColor,
+                  color: Colors.white,
+                  //color: Theme.of(context).backgroundColor,
                 ),
               ],
             ),
@@ -289,23 +291,39 @@ class _MyFindParkingState extends State<FindParking> {
           Expanded(
             child: Column(
               children: [
-                ListTile(
-                  title: const Text('Size'),
-                  trailing: DropdownButton<String>(
-                    hint: Text('Choose'),
-                    onChanged: (String changedValue) {
-                      setState(() {
-                        curSize = changedValue;
-                      });
-                    },
-                    value: curSize,
-                    items: <String>['All', 'Compact', 'Regular', 'Oversized']
-                        .map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white60,
+                  ),
+                  child: ListTileTheme(
+                    textColor: Color(0xFF358D5B),
+                    child: ListTile(
+                      title: const Text(
+                        'Size',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      trailing: DropdownButton<String>(
+                        hint: Text('Choose'),
+                        onChanged: (String changedValue) {
+                          setState(() {
+                            curSize = changedValue;
+                          });
+                        },
+                        value: curSize,
+                        items: <String>['All', 'Compact', 'Regular', 'Oversized']
+                            .map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        style: TextStyle(
+                          color: Color(0xFF358D5B),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -314,23 +332,39 @@ class _MyFindParkingState extends State<FindParking> {
           Expanded(
             child: Column(
               children: [
-                ListTile(
-                  title: const Text('Type'),
-                  trailing: DropdownButton<String>(
-                    hint: Text('Choose'),
-                    onChanged: (String changedValue) {
-                      setState(() {
-                        curType = changedValue;
-                      });
-                    },
-                    value: curType,
-                    items: <String>['All', 'Driveway', 'Parking Lot', 'Street']
-                        .map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white60,
+                  ),
+                  child: ListTileTheme(
+                    textColor: Color(0xFF358D5B),
+                    child: ListTile(
+                      title: const Text(
+                        'Type',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      trailing: DropdownButton<String>(
+                        hint: Text('Choose'),
+                        onChanged: (String changedValue) {
+                          setState(() {
+                            curType = changedValue;
+                          });
+                        },
+                        value: curType,
+                        items: <String>['All', 'Driveway', 'Parking Lot', 'Street']
+                            .map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        style: TextStyle(
+                          color: Color(0xFF358D5B),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
