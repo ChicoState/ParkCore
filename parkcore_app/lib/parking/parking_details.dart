@@ -1,29 +1,22 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:parkcore_app/navigate/menu_drawer.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'find_parking.dart';
-import 'package:parkcore_app/navigate/parkcore_button.dart';
+import 'package:parkcore_app/parking/find_parking.dart';
 
-/*class User {
+class Users {
+  Users.fromMap(Map<String, dynamic>map, {this.reference})
+  : displayName = map['displayName'],
+  photoURL = map['photoURL'],
+  uid = map['uid'];
 
-  User.fromMap(Map<String, dynamic>map, {this.reference})
-  : uid = map['uid'],
-  displayName = map['displayName'],
-  email = map['email'],
-  photoURL = map['photoURL'];
-
-  User.fromSnapshot(DocumentSnapshot snapshot)
+  Users.fromSnapshot(DocumentSnapshot snapshot)
     : this.fromMap(snapshot.data, reference: snapshot.reference);
 
-  String uid;
   String displayName;
-  String email;
   String photoURL;
-  final DocumentReference;
-
-}*/
+  String uid;
+  final DocumentReference reference;
+}
 
 class DetailScreen extends StatelessWidget {
   // Declare a field that holds the Todo.
@@ -34,10 +27,9 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Colors.green[300],
         elevation: 10,
         leading: Builder(
           builder: (BuildContext context){
@@ -48,30 +40,29 @@ class DetailScreen extends StatelessWidget {
               },
             );
           },
-        ),
-        actions: <Widget>[
-          LogoButton(),
-        ],
+        )
       ),
       body: SingleChildScrollView(
       scrollDirection: Axis.vertical,
       physics: BouncingScrollPhysics(),
       child: 
-          _detailsBody(),
+          _detailsBody(context),
       ),
       bottomNavigationBar: bottomAppBar()
     );
   }
 
   Widget bottomAppBar () {
-    
+
+    var roundedPrice = (num.parse(spot.monthPrice)).round();
+
     return BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(10.0),
-              child: Text('\$' + spot.monthPrice + '/month')
+              child: Text('\$' + roundedPrice.toString() + '/month')
               ),
             Padding(
               padding: EdgeInsets.all(10.0),
@@ -87,7 +78,32 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _detailsBody () {
+  Widget _detailsBody(BuildContext context){
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('users').where('uid', isEqualTo: spot.uid).snapshots(),
+      builder: (context, snapshot) {
+       if (!snapshot.hasData) return LinearProgressIndicator();
+
+       return _details(context, snapshot.data.documents[0]);
+     },
+    );
+  }
+  Widget _details(BuildContext context, DocumentSnapshot data) {
+
+    final currentUser = Users.fromSnapshot(data);
+
+    bool check(String string){
+      if(string == 'N/A'){
+        return false;
+      }
+      return true;
+    }
+    bool checkDriveway(String string){
+      if(string == 'Driveway'){
+        return true;
+      }
+      return false;
+    }
 
     return Container(
         child: Column(
@@ -104,7 +120,7 @@ class DetailScreen extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.all(10.0),
-            child: Text(spot.title ?? 'none', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30))
+            child: Text(spot.title, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30))
           ),
           Row(
             children: <Widget>[   
@@ -114,24 +130,24 @@ class DetailScreen extends StatelessWidget {
                 ),
                 Container(
                   padding: EdgeInsets.all(5.0),
-                  child: Text(spot.city + ' ' + spot.state + ' , ' + spot.zip),
+                  child: Text(spot.city + ' ' + spot.state + ', ' + spot.zip),
                 ),
                 Container(
-                  padding: EdgeInsets.all(5.0),
-                  child: Text('test'),
-                ),
-                Container(
-                  width: 80,
-                  height: 50,
-                  margin: const EdgeInsets.only(left: 100.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40.0),
+                  padding: EdgeInsets.only(left: 80.0, top: 5.0),
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                   ClipRRect(
+                    borderRadius: BorderRadius.circular(50.0),
                     child: Image(
                       fit: BoxFit.cover,
-                      image: NetworkImage('https://img.favpng.com/6/14/19/computer-icons-user-profile-icon-design-png-favpng-vcvaCZNwnpxfkKNYzX3fYz7h2.jpg'),
+                      width: 50,
+                      image: NetworkImage(currentUser.photoURL ?? 'https://img.favpng.com/6/14/19/computer-icons-user-profile-icon-design-png-favpng-vcvaCZNwnpxfkKNYzX3fYz7h2.jpg'),
+                      ),
                     ),
-                  ),
-                ),
+                    Text(currentUser.displayName)
+                  ]
+                )),
             ],
           ),
           Row(
@@ -142,7 +158,19 @@ class DetailScreen extends StatelessWidget {
                 ),
                 Container(
                   padding: EdgeInsets.all(5.0),
-                  child: Text(spot.driveway + ', ' + spot.size + ', ' + spot.type + ', ' + spot.spacetype),
+                  child: Column( 
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    if(check(spot.type))
+                      Text('Spot type: ' + spot.type),
+                    if(check(spot.spacetype))
+                      Text(spot.spacetype),
+                    if(checkDriveway(spot.type))
+                      Text(spot.driveway + ' driveway'),
+                    if(check(spot.size))
+                      Text('Size: ' + spot.size)
+                  ],
+                  )
                 ),
             ],
           ),
@@ -166,7 +194,7 @@ class DetailScreen extends StatelessWidget {
                 ),
                 Container(
                   padding: EdgeInsets.all(5.0),
-                  child: Text('Availability:' + spot.starttime + ' - ' + spot.endtime),
+                  child: Text('Availability: ' + spot.starttime + ' - ' + spot.endtime),
                 ),
             ],
           ),
@@ -194,4 +222,4 @@ class DetailScreen extends StatelessWidget {
       ),
     );
   }//_detailsBody
-}
+} 
