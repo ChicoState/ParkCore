@@ -102,10 +102,11 @@ class _MyFindParkingState extends State<FindParking> {
   List<Marker> allMarkers = [];
   List<DocumentSnapshot> current;
   int numFilters = 0;
-  // 3 lists below used for filter options: ['size','type']
-  List docType = ["none", "none"];
-  List choice = ["none", "none"];
-  List curFilter = ["All", "All"];
+  // 3 lists below used for parking space filter options
+  final List<String> docType = ["size", "type", "monthprice"];
+  List<String> choice = ["none", "none", "none"];
+  List<String> curFilter = ["All", "All", "All"];
+  String priceVal = "All";
   Future<DistanceMatrix> futureAlbum;
   String tempOrigin = 'csuchico';
   String tempDestination = 'csuchico';
@@ -236,13 +237,17 @@ class _MyFindParkingState extends State<FindParking> {
 
         if(numFilters > 0){
           List<DocumentSnapshot> filtered = snapshot.data.documents;
-          if(docType[0] != "none"){
+          if(choice[0] != "none"){
             filtered = filtered.where((DocumentSnapshot documentSnapshot) =>
               documentSnapshot[docType[0]] == choice[0]).toList();
           }
-          if(docType[1] != "none"){
+          if(choice[1] != "none"){
             filtered = filtered.where((DocumentSnapshot documentSnapshot) =>
             documentSnapshot[docType[1]] == choice[1]).toList();
+          }
+          if(choice[2] != "none"){
+            filtered = filtered.where((DocumentSnapshot documentSnapshot) =>
+            double.parse(documentSnapshot[docType[2]]) <= double.parse(choice[2])).toList();
           }
           return _buildList(context, filtered);
         }
@@ -302,11 +307,9 @@ class _MyFindParkingState extends State<FindParking> {
                       fontFamily: 'Century Gothic',
                       fontSize: 16.0,
                       color: Theme.of(context).backgroundColor,
-                      //color: Colors.white,
                     ),
                   ),
                   color: Colors.white,
-                  //color: Theme.of(context).backgroundColor,
                 ),
               ],
             ),
@@ -320,82 +323,33 @@ class _MyFindParkingState extends State<FindParking> {
           Expanded(
             child: Column(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white60,
-                  ),
-                  child: ListTileTheme(
-                    textColor: Color(0xFF358D5B),
-                    child: ListTile(
-                      title: const Text(
-                        'Size',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      trailing: DropdownButton<String>(
-                        hint: Text('Choose'),
-                        onChanged: (String changedValue) {
-                          setState(() {
-                            curFilter[0] = changedValue;
-                          });
-                        },
-                        value: curFilter[0],
-                        items: <String>['All', 'Compact', 'Regular', 'Oversized']
-                            .map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        style: TextStyle(
-                          color: Color(0xFF358D5B),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                SizeFilter(),
               ],
             ),
           ),
           Expanded(
             child: Column(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white60,
-                  ),
-                  child: ListTileTheme(
-                    textColor: Color(0xFF358D5B),
-                    child: ListTile(
-                      title: const Text(
-                        'Type',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      trailing: DropdownButton<String>(
-                        hint: Text('Choose'),
-                        onChanged: (String changedValue) {
-                          setState(() {
-                            curFilter[1] = changedValue;
-                          });
-                        },
-                        value: curFilter[1],
-                        items: <String>['All', 'Driveway', 'Parking Lot', 'Street']
-                            .map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        style: TextStyle(
-                          color: Color(0xFF358D5B),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                TypeFilter(),
+              ],
+            ),
+          ),
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                PriceFilter(),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
               ],
             ),
           ),
@@ -404,24 +358,143 @@ class _MyFindParkingState extends State<FindParking> {
     ];
   }
 
-  void checkFilters() {
-    numFilters = 0;
-    for(int i = 0; i < 2; i++){
-      docType[i] = "none";
-      choice[i] = "none";
-    }
+  Widget SizeFilter(){
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white60,
+      ),
+      child: ListTileTheme(
+        textColor: Color(0xFF358D5B),
+        child: ListTile(
+          title: const Text(
+            'Size',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          trailing: DropdownButton<String>(
+            hint: Text('Choose'),
+            onChanged: (String changedValue) {
+              setState(() {
+                curFilter[0] = changedValue;
+              });
+            },
+            value: curFilter[0],
+            items: <String>['All', 'Compact', 'Regular', 'Oversized']
+                .map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            style: TextStyle(
+              color: Color(0xFF358D5B),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-    if(curFilter[0] != "All"){
-      numFilters++;
-      docType[0] = "size";
-      choice[0] = curFilter[0];
-      print("Doc 0: "+ numFilters.toString() + " " + choice[0]);
-    }
-    if(curFilter[1] != "All"){
-      numFilters++;
-      docType[1] = "type";
-      choice[1] = curFilter[1];
-      print("Doc 1: "+ numFilters.toString() + " " + choice[1]);
+  Widget TypeFilter(){
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white60,
+      ),
+      child: ListTileTheme(
+        textColor: Color(0xFF358D5B),
+        child: ListTile(
+          title: const Text(
+            'Type',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          trailing: DropdownButton<String>(
+            hint: Text('Choose'),
+            onChanged: (String changedValue) {
+              setState(() {
+                curFilter[1] = changedValue;
+              });
+            },
+            value: curFilter[1],
+            items: <String>['All', 'Driveway', 'Parking Lot', 'Street']
+                .map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            style: TextStyle(
+              color: Color(0xFF358D5B),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget PriceFilter(){
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white60,
+      ),
+      child: ListTileTheme(
+        textColor: Color(0xFF358D5B),
+        child: ListTile(
+          title: const Text(
+            'Price',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          trailing: DropdownButton<String>(
+            hint: Text('Choose'),
+            onChanged: (String changedValue) {
+              setState(() {
+                if(changedValue == "All"){
+                  curFilter[2] = changedValue;
+                  priceVal = changedValue;
+                }
+                else{
+                  curFilter[2] = changedValue.substring(1, changedValue.indexOf(' '));
+                  priceVal = changedValue;
+                }
+              });
+            },
+            value: priceVal,
+            items: <String>['All','\$25 or less', '\$50 or less',
+              '\$75 or less', '\$100 or less'].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            style: TextStyle(
+              color: Color(0xFF358D5B),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void checkFilters() {
+    // re-initialize numFilters to 0
+    numFilters = 0;
+
+    // Iterate through filter options
+    // If current filter was not requested, set choice[i] to none
+    // Else, apply the requested filter and increment numFilters by 1
+    for(int i = 0; i < choice.length; i++){
+      if(curFilter[i] == "All") {
+        choice[i] = "none";
+      }
+      else{
+        choice[i] = curFilter[i];
+        numFilters++;
+        print(numFilters.toString() + ": " + docType[i] + " " + choice[i]);
+      }
     }
   }
 
