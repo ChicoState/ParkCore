@@ -3,8 +3,7 @@ import 'package:geocoder/model.dart';
 //import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:great_circle_distance2/great_circle_distance2.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'parking_details.dart';
 
@@ -54,34 +53,11 @@ class Spot{
   final DocumentReference reference;
 
 }//end of class
-class DistanceMatrix {
-  List<dynamic> destination_addresses;
-  List<dynamic> origin_addresses;
-  List<dynamic> rows;
-  //String title;
-  //String body;
-
-  DistanceMatrix({
-    this.destination_addresses,
-    this.origin_addresses,
-    this.rows,
-    //this.body,
-  });
 
   ///This method is to deserialize your JSON
   ///Basically converting a string response to an object model
   ///Here key is always a String type and value can be of any type
   ///so we create a map of String and dynamic.
-  factory DistanceMatrix.fromJson(Map<String, dynamic> json) => DistanceMatrix(
-    destination_addresses: json['destination_addresses'],
-    origin_addresses: json['origin_addresses'],
-    rows: json['rows'],
-  );
-}
-DistanceMatrix responseFromJson(String jsonString) {
-  final jsonData = json.decode(jsonString);
-  return DistanceMatrix.fromJson(jsonData);
-}
 
 class FindParking extends StatefulWidget {
   FindParking({Key key, this.title, this.city, this.latlong}) : super(key: key);
@@ -102,11 +78,9 @@ class FindParking extends StatefulWidget {
 class _MyFindParkingState extends State<FindParking> {
   final Map<MarkerId, Marker> _markers = {};
   List<Marker> allMarkers = [];
-  Future<DistanceMatrix> futureAlbum;
-  String tempOrigin = 'csuchico';
-  String tempDestination = 'csuchico';
-  String distanceApiKey = 'AIzaSyCK2y9692dLUn-MAVgZX02hd4VF_et-URw';
-  
+  bool pressed = false;
+  bool isLoading = true;
+
   Future<void> _onMapCreated(GoogleMapController controller) async {
     await Firestore.instance.collection('parkingSpaces')
       .getDocuments()
@@ -122,7 +96,7 @@ class _MyFindParkingState extends State<FindParking> {
             ),
             infoWindow: InfoWindow(title: '${f.data['title']}',
             snippet: '${f.data['zip']}'),
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen,),
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
             onTap: () {
               showDialog(
                 context: context,
@@ -152,30 +126,10 @@ class _MyFindParkingState extends State<FindParking> {
       );
     });
     setState(() {
-      for(int i = 0; i < allMarkers.length; i++){
+      for(num i = 0; i < allMarkers.length; i++){
         _markers[allMarkers[i].markerId] = allMarkers[i];
       }
     });
-  }
-
-  Future<DistanceMatrix> getMatrixResponse(String coordinates) async{
-
-    final response = await http.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=' + coordinates + '&destinations=' + tempDestination + '&mode=walking&key=' + distanceApiKey);
-    if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return DistanceMatrix.fromJson(json.decode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load album');
-  }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    futureAlbum = getMatrixResponse(tempOrigin);
   }
 
   @override
@@ -193,10 +147,39 @@ class _MyFindParkingState extends State<FindParking> {
       body: Stack(
         children: <Widget>[
           _googlemap(context),
+          DistanceButton(),
           _buildBody(context),
         ],
       )
     );
+  }
+
+  Widget DistanceButton() {
+    return Align(
+      alignment: Alignment.topRight,
+      child:
+      Container(
+        padding: EdgeInsets.all(5.0),
+        width: 100,
+        height: 70,
+        child: RaisedButton(
+          onPressed: () {
+              setState(() {
+                pressed = true;
+              });
+          },
+          color: Color(0xFF4D2C91),
+          child:  
+          Padding(
+            padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+            child: Text(
+            'Show distance to CSU, Chico',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 10, color: Colors.white, letterSpacing: 1),
+          ),
+        ),
+      )
+    ));
   }
 
   Widget _googlemap(BuildContext context){
@@ -250,30 +233,48 @@ class _MyFindParkingState extends State<FindParking> {
       ),
     );
   }
-  Widget _fetchDistance(String coordinates) {
+
+  Widget displayDistance(String coordinates){
     
-    return FutureBuilder<DistanceMatrix>(
-      future: getMatrixResponse(coordinates),
-      builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        return Container(
-          padding: EdgeInsets.all(5.0),
-        child: Row(
-          children: <Widget> [
-            Text(snapshot.data.rows[0]['elements'][0]['duration']['text'] ?? 'null',style: TextStyle(fontSize: 15)),
-            Icon(Icons.directions_walk, size: 20,)
-        ]));
-      } else if (snapshot.hasError) {
-        return Text('${snapshot.error}');
+    double adjustDistance(var i){
+      if(i > 1){
+        return i + i.floor()*.25;
       }
-      // By default, show a loading spinner.
-      return SizedBox(
-        height: 15,
-        width: 15,
-        child:CircularProgressIndicator());
-    },
+      else{
+        return i;
+      }
+    }
+    String haversize() {
+      
+      var lat = num.parse(coordinates.substring(1, coordinates.indexOf(',')));
+      var long = num.parse(coordinates.substring(coordinates.indexOf(',') + 1, coordinates.length -1));
+      
+      final lat1 = 39.729918;
+      final lon1 =  -121.849759;
+
+      final lat2 = lat;
+      final lon2 = long;
+
+    var gcd = GreatCircleDistance.fromDegrees(
+        latitude1: lat1, longitude1: lon1, latitude2: lat2, longitude2: lon2);
+
+    /*print(
+        'Distance from location 1 to 2 using the Haversine formula is: ${(adjustDistance((gcd.haversineDistance()/1609)*15))}');*/
+    return(adjustDistance((gcd.haversineDistance()/1609))*25).round().toString();
+    
+    }
+
+    return Container(
+      padding: EdgeInsets.all(5.0),
+      child: Row(
+        children: <Widget> [
+          Text(haversize() + ' Min' ?? 'null', style: TextStyle(fontSize: 15)),
+          Icon(Icons.directions_walk, size: 20,)
+        ]
+      )
     );
   }
+  
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
 
@@ -341,7 +342,7 @@ class _MyFindParkingState extends State<FindParking> {
                     padding: const EdgeInsets.all(5.0),
                     child: Column(
                     children: <Widget>[
-                    _fetchDistance(coordinates.substring(1,coordinates.length-1)),
+                    pressed ? displayDistance(coordinates) : SizedBox(),
                     Text('\$' + roundedPrice.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
                     ])
                   ),
