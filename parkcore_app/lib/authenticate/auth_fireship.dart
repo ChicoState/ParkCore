@@ -6,6 +6,7 @@ import 'package:rxdart/rxdart.dart';
 class AuthService {
   //constructor 
   AuthService() {
+    //user = _auth.onAuthStateChanged;
     user = Observable(_auth.onAuthStateChanged);
 
     profile = user.switchMap((FirebaseUser u) {
@@ -16,6 +17,7 @@ class AuthService {
             .snapshots()
             .map((snap) => snap.data);
       } else {
+        //return Stream.value({});
         return Observable.just({});
       }
     });
@@ -25,6 +27,8 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
 
+  //Stream<FirebaseUser> user; //firebase user
+  //Stream<Map<String, dynamic>> profile;
   Observable<FirebaseUser> user; //firebase user
   Observable<Map<String, dynamic>> profile;
   PublishSubject loading = PublishSubject();

@@ -32,6 +32,7 @@ dependencies:
   firebase_auth: ^0.15.5
   google_sign_in: ^4.2.0
   rxdart: 0.20.0
+  #rxdart: ^0.23.1
 
   google_maps_flutter: ^0.5.11
   http: ^0.12.0+1
@@ -45,6 +46,7 @@ dependencies:
 
   # for getting lat/long coordinates from address
   geocoder: ^0.2.1
+  #flutter_google_places: ^0.2.4
 
   # for getting images from users
   image_picker: ^0.6.3+4
