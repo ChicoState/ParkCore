@@ -101,12 +101,14 @@ class _MyFindParkingState extends State<FindParking> {
   final Map<MarkerId, Marker> _markers = {};
   List<Marker> allMarkers = [];
   List<DocumentSnapshot> current;
+  // Variables below used for parking space filter options
   int numFilters = 0;
-  // 3 lists below used for parking space filter options
-  final List<String> docType = ["size", "type", "monthprice"];
-  List<String> choice = ["none", "none", "none"];
-  List<String> curFilter = ["All", "All", "All"];
+  final List<String> docType = ["size", "type", "monthprice", "amenities"];
+  List<String> choice = ["none", "none", "none", "none", "none", "none", "none"];
+  List<String> curFilter = ["All", "All", "All", "All"];
   String priceVal = "All";
+  List<bool> selected = [false, false, false, false];
+  List<String> amenity = ["Lit", "Covered", "Security Camera", "EV Charging"];
   Future<DistanceMatrix> futureAlbum;
   String tempOrigin = 'csuchico';
   String tempDestination = 'csuchico';
@@ -237,17 +239,28 @@ class _MyFindParkingState extends State<FindParking> {
 
         if(numFilters > 0){
           List<DocumentSnapshot> filtered = snapshot.data.documents;
-          if(choice[0] != "none"){
-            filtered = filtered.where((DocumentSnapshot documentSnapshot) =>
-              documentSnapshot[docType[0]] == choice[0]).toList();
-          }
-          if(choice[1] != "none"){
-            filtered = filtered.where((DocumentSnapshot documentSnapshot) =>
-            documentSnapshot[docType[1]] == choice[1]).toList();
-          }
-          if(choice[2] != "none"){
-            filtered = filtered.where((DocumentSnapshot documentSnapshot) =>
-            double.parse(documentSnapshot[docType[2]]) <= double.parse(choice[2])).toList();
+          var j = 0;
+          for(var i = 0; i < choice.length; i++){
+            if(i < 2){
+              if(choice[i] != "none"){
+                filtered = filtered.where((DocumentSnapshot docSnap) =>
+                docSnap[docType[i]] == choice[i]).toList();
+              }
+            }
+            else if(i == 2){
+              if(choice[i] != "none"){
+                filtered = filtered.where((DocumentSnapshot docSnap) =>
+                double.parse(docSnap[docType[i]]) <= double.parse(choice[i])).toList();
+              }
+            }
+            else{
+              if(selected[j]){
+                filtered = filtered.where((DocumentSnapshot docSnap) =>
+                  docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
+                    .split(", ").contains(amenity[j])).toList();
+              }
+              j++;
+            }
           }
           return _buildList(context, filtered);
         }
@@ -349,7 +362,14 @@ class _MyFindParkingState extends State<FindParking> {
           ),
           Expanded(
             child: Column(
-              children: [
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.center,
+                  child: FractionallySizedBox(
+                    widthFactor: 0.9,
+                    child: AmenitiesFilter(),
+                  ),
+                ),
               ],
             ),
           ),
@@ -479,6 +499,68 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 
+  Widget AmenitiesFilter(){
+    return FlatButton(
+      onPressed: () {
+        getDialog();
+      },
+      child: Text(
+        'Amenities',
+        style: TextStyle(
+          fontFamily: 'Century Gothic',
+          fontSize: 16.0,
+          color: Color(0xFF358D5B),
+        ),
+      ),
+      color: Colors.white60,
+    );
+  }
+
+  Future<void> getDialog() async {
+    return showDialog<void>(
+      context: context,
+      //barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Amenities'),
+          content: SingleChildScrollView(
+            child: RotatedBox(
+              quarterTurns: 1,
+              child: ToggleButtons(
+                children: [
+                  RotatedBox(quarterTurns: 3, child: Text("Lit")),
+                  RotatedBox(quarterTurns: 3, child: Text("Covered")),
+                  RotatedBox(quarterTurns: 3, child: Text("Security Camera")),
+                  RotatedBox(quarterTurns: 3, child: Text("EV Charging")),
+                ],
+                isSelected: selected,
+                onPressed: (int index) {
+                  setState(() {
+                    selected[index] = !selected[index];
+                    print("Selected: " + selected.toString());
+                  });
+                },
+                color: Colors.green[300],
+                selectedColor: Colors.green[900],
+                borderWidth: 5.0,
+                borderColor: Colors.green[300],
+                selectedBorderColor: Colors.green[900],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Return'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void checkFilters() {
     // re-initialize numFilters to 0
     numFilters = 0;
@@ -486,14 +568,20 @@ class _MyFindParkingState extends State<FindParking> {
     // Iterate through filter options
     // If current filter was not requested, set choice[i] to none
     // Else, apply the requested filter and increment numFilters by 1
-    for(int i = 0; i < choice.length; i++){
+    for(var i = 0; i < curFilter.length; i++){
       if(curFilter[i] == "All") {
         choice[i] = "none";
       }
       else{
         choice[i] = curFilter[i];
         numFilters++;
-        print(numFilters.toString() + ": " + docType[i] + " " + choice[i]);
+      }
+    }
+
+    // Iterate through the amenities toggle buttons to see if any were selected
+    for(var i = 0; i < selected.length; i++){
+      if(selected[i]){
+        numFilters++;
       }
     }
   }
