@@ -101,6 +101,10 @@ class _MyFindParkingState extends State<FindParking> {
   final Map<MarkerId, Marker> _markers = {};
   List<Marker> allMarkers = [];
   List<DocumentSnapshot> current;
+  Future<DistanceMatrix> futureAlbum;
+  String tempOrigin = 'csuchico';
+  String tempDestination = 'csuchico';
+  String distanceApiKey = 'YOUR-API-KEY';
   // Variables below used for parking space filter options
   int numFilters = 0;
   final List<String> docType = ["size", "type", "monthprice", "amenities"];
@@ -110,10 +114,7 @@ class _MyFindParkingState extends State<FindParking> {
   List<bool> selected = [false, false, false, false];
   List<String> amenity = ["Lit", "Covered", "Security Camera", "EV Charging"];
   bool _isVisible = false;
-  Future<DistanceMatrix> futureAlbum;
-  String tempOrigin = 'csuchico';
-  String tempDestination = 'csuchico';
-  String distanceApiKey = 'YOUR-API-KEY';
+
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     await Firestore.instance.collection('parkingSpaces')
@@ -238,29 +239,28 @@ class _MyFindParkingState extends State<FindParking> {
          return _noSpaces(context);
         }
 
+        // If filter options are chosen, update the list of parking spaces shown
         if(numFilters > 0){
           List<DocumentSnapshot> filtered = snapshot.data.documents;
-          var j = 0;
           for(var i = 0; i < choice.length; i++){
-            if(i < 2){
+            if(i < 2){ // Type or Size filter
               if(choice[i] != "none"){
                 filtered = filtered.where((DocumentSnapshot docSnap) =>
                 docSnap[docType[i]] == choice[i]).toList();
               }
             }
-            else if(i == 2){
+            else if(i == 2){ // Price filter
               if(choice[i] != "none"){
                 filtered = filtered.where((DocumentSnapshot docSnap) =>
                 double.parse(docSnap[docType[i]]) <= double.parse(choice[i])).toList();
               }
             }
-            else{
-              if(selected[j]){
+            else{ // Amenities filters (i >= 3)
+              if(choice[i] != "none"){
                 filtered = filtered.where((DocumentSnapshot docSnap) =>
-                  docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
-                    .split(", ").contains(amenity[j])).toList();
+                    docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
+                        .split(", ").contains(choice[i])).toList();
               }
-              j++;
             }
           }
           return _buildList(context, filtered);
@@ -291,6 +291,7 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 
+  // Show filter options in row above the list of parking spaces
   List<Widget> filterRow() {
     return [
       Row(
@@ -318,12 +319,14 @@ class _MyFindParkingState extends State<FindParking> {
                   child: Text(
                     'Apply Filters',
                     style: TextStyle(
-                      fontFamily: 'Century Gothic',
+                      fontFamily: 'Roboto',
                       fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
                       color: Theme.of(context).backgroundColor,
                     ),
                   ),
                   color: Colors.white,
+                  highlightColor: Theme.of(context).accentColor,
                 ),
               ],
             ),
@@ -380,6 +383,7 @@ class _MyFindParkingState extends State<FindParking> {
     ];
   }
 
+  // Select 1 size filter option from dropdown list
   Widget SizeFilter(){
     return Container(
       margin: const EdgeInsets.all(2.0),
@@ -387,13 +391,10 @@ class _MyFindParkingState extends State<FindParking> {
         color: Colors.white60,
       ),
       child: ListTileTheme(
-        textColor: Color(0xFF358D5B),
         child: ListTile(
-          title: const Text(
+          title: Text(
             'Size',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.display4,
           ),
           trailing: DropdownButton<String>(
             hint: Text('Choose'),
@@ -419,6 +420,7 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 
+  // Select 1 Type filter option from dropdown list
   Widget TypeFilter(){
     return Container(
       margin: const EdgeInsets.all(2.0),
@@ -426,13 +428,10 @@ class _MyFindParkingState extends State<FindParking> {
         color: Colors.white60,
       ),
       child: ListTileTheme(
-        textColor: Color(0xFF358D5B),
         child: ListTile(
-          title: const Text(
+          title: Text(
             'Type',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.display4,
           ),
           trailing: DropdownButton<String>(
             hint: Text('Choose'),
@@ -458,6 +457,7 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 
+  // Select 1 Price filter option from dropdown list
   Widget PriceFilter(){
     return Container(
       margin: const EdgeInsets.all(2.0),
@@ -465,13 +465,10 @@ class _MyFindParkingState extends State<FindParking> {
         color: Colors.white60,
       ),
       child: ListTileTheme(
-        textColor: Color(0xFF358D5B),
         child: ListTile(
-          title: const Text(
+          title: Text(
             'Price',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.display4,
           ),
           trailing: DropdownButton<String>(
             hint: Text('Choose'),
@@ -504,6 +501,8 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 
+  // Button to show/hide amenity filter options
+  // (option to select multiple)
   Widget AmenitiesFilter(){
     return FlatButton(
       onPressed: () {
@@ -513,16 +512,15 @@ class _MyFindParkingState extends State<FindParking> {
       },
       child: Text(
         'Amenities',
-        style: TextStyle(
-          fontFamily: 'Century Gothic',
-          fontSize: 16.0,
-          color: Color(0xFF358D5B),
-        ),
+        style: Theme.of(context).textTheme.display4,
       ),
       color: Colors.white60,
     );
   }
 
+  // Toggle Buttons for filtering amenities (visible when Amenities is clicked)
+  // Can toggle options on and off without changing list, current choices are
+  // applied when the Apply Filters button is clicked
   Widget AmenityButtons() {
     return Visibility(
       child: Container(
@@ -538,19 +536,19 @@ class _MyFindParkingState extends State<FindParking> {
               children: [
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
-                  child: Text("Lit"),
+                  child: selected[0] ? Icon(Icons.lightbulb_outline):Text("Lit"),
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
-                  child: Text("Covered"),
+                  child: selected[1] ? Icon(Icons.beach_access): Text("Covered"),
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
-                  child: Text("Security Camera"),
+                  child: selected[2] ? Icon(Icons.videocam): Text("Security Camera"),
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
-                  child: Text("EV Charging"),
+                  child: selected[3] ? Icon(Icons.battery_charging_full): Text("EV Charging"),
                 ),
               ],
               isSelected: selected,
@@ -560,12 +558,13 @@ class _MyFindParkingState extends State<FindParking> {
                   print("Selected: " + selected.toString());
                 });
               },
-              fillColor: Colors.green[50],
               color: Theme.of(context).backgroundColor,
-              selectedColor: Color(0xFF358D5B),
-              borderWidth: 1.5,
               borderColor: Theme.of(context).backgroundColor,
+              selectedColor: Color(0xFF358D5B),
               selectedBorderColor: Color(0xFF358D5B),
+              highlightColor: Color(0xFF99F1B8),
+              fillColor: Colors.white,
+              borderWidth: 1.5,
               borderRadius: BorderRadius.circular(5.0),
             ),
           ],
@@ -575,13 +574,14 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 
+  // When Apply Filters button is clicked, reset filter parameters
   void checkFilters() {
     // re-initialize numFilters to 0
     numFilters = 0;
 
     // Iterate through filter options
-    // If current filter was not requested, set choice[i] to none
-    // Else, apply the requested filter and increment numFilters by 1
+    // If current filter was not requested, set corresponding choice to none
+    // Else, apply the requested filter and increment numFilters
     for(var i = 0; i < curFilter.length; i++){
       if(curFilter[i] == "All") {
         choice[i] = "none";
@@ -593,8 +593,14 @@ class _MyFindParkingState extends State<FindParking> {
     }
 
     // Iterate through the amenities toggle buttons to see if any were selected
+    // If amenity not selected, set corresponding choice to none
+    // Else, apply the requested amenity filter and increment numFilters
     for(var i = 0; i < selected.length; i++){
-      if(selected[i]){
+      if(!selected[i]){
+        choice[i+3] = "none";
+      }
+      else{
+        choice[i+3] = amenity[i];
         numFilters++;
       }
     }
