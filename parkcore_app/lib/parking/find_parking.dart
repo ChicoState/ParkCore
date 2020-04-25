@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'parking_details.dart';
+//import 'filter_dialog.dart';
 
 class Spot{
 
@@ -109,6 +110,7 @@ class _MyFindParkingState extends State<FindParking> {
   String priceVal = "All";
   List<bool> selected = [false, false, false, false];
   List<String> amenity = ["Lit", "Covered", "Security Camera", "EV Charging"];
+  bool _isVisible = false;
   Future<DistanceMatrix> futureAlbum;
   String tempOrigin = 'csuchico';
   String tempDestination = 'csuchico';
@@ -375,11 +377,40 @@ class _MyFindParkingState extends State<FindParking> {
           ),
         ],
       ),
+      AmenityButtons(),
+//      Visibility(
+//        child: Row(
+//          children: [
+//            ToggleButtons(
+//              children: [
+//                Text("Lit"),
+//                Text("Covered"),
+//                Text("Security Camera"),
+//                Text("EV Charging"),
+//              ],
+//              isSelected: selected,
+//              onPressed: (int index) {
+//                setState(() {
+//                  selected[index] = !selected[index];
+//                  print("Selected: " + selected.toString());
+//                });
+//              },
+//              color: Colors.green[300],
+//              selectedColor: Colors.green[900],
+//              borderWidth: 5.0,
+//              borderColor: Colors.green[300],
+//              selectedBorderColor: Colors.green[900],
+//            ),
+//          ],
+//        ),
+//        visible: _isVisible,
+//      ),
     ];
   }
 
   Widget SizeFilter(){
     return Container(
+      margin: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
         color: Colors.white60,
       ),
@@ -418,6 +449,7 @@ class _MyFindParkingState extends State<FindParking> {
 
   Widget TypeFilter(){
     return Container(
+      margin: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
         color: Colors.white60,
       ),
@@ -456,6 +488,7 @@ class _MyFindParkingState extends State<FindParking> {
 
   Widget PriceFilter(){
     return Container(
+      margin: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
         color: Colors.white60,
       ),
@@ -502,7 +535,19 @@ class _MyFindParkingState extends State<FindParking> {
   Widget AmenitiesFilter(){
     return FlatButton(
       onPressed: () {
-        getDialog();
+        showAmenities();
+        //getDialog();
+//        Navigator.push(
+//          context,
+//          MaterialPageRoute(
+//            builder: (context) => FilterDialogContent(
+//              city: widget.city,
+//              latlong: widget.latlong,
+//              selected: widget.selected,
+//            ),
+//            //fullscreenDialog: true,
+//          ),
+//        );
       },
       child: Text(
         'Amenities',
@@ -516,50 +561,112 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 
-  Future<void> getDialog() async {
-    return showDialog<void>(
-      context: context,
-      //barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select Amenities'),
-          content: SingleChildScrollView(
-            child: RotatedBox(
-              quarterTurns: 1,
-              child: ToggleButtons(
-                children: [
-                  RotatedBox(quarterTurns: 3, child: Text("Lit")),
-                  RotatedBox(quarterTurns: 3, child: Text("Covered")),
-                  RotatedBox(quarterTurns: 3, child: Text("Security Camera")),
-                  RotatedBox(quarterTurns: 3, child: Text("EV Charging")),
-                ],
-                isSelected: selected,
-                onPressed: (int index) {
-                  setState(() {
-                    selected[index] = !selected[index];
-                    print("Selected: " + selected.toString());
-                  });
-                },
-                color: Colors.green[300],
-                selectedColor: Colors.green[900],
-                borderWidth: 5.0,
-                borderColor: Colors.green[300],
-                selectedBorderColor: Colors.green[900],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Return'),
-              onPressed: () {
-                Navigator.of(context).pop();
+  void showAmenities() {
+    setState(() {
+      _isVisible = !_isVisible;
+    });
+  }
+
+  Widget AmenityButtons() {
+    return Visibility(
+      child: Container(
+        margin: const EdgeInsets.all(2.0),
+        decoration: BoxDecoration(
+          color: Colors.white60,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ToggleButtons(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
+                  child: Text("Lit"),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
+                  child: Text("Covered"),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
+                  child: Text("Security Camera"),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
+                  child: Text("EV Charging"),
+                ),
+              ],
+              isSelected: selected,
+              onPressed: (int index) {
+                setState(() {
+                  selected[index] = !selected[index];
+                  print("Selected: " + selected.toString());
+                });
               },
+              fillColor: Colors.green[50],
+              color: Theme.of(context).backgroundColor,
+              selectedColor: Color(0xFF358D5B),
+              borderWidth: 1.5,
+              borderColor: Theme.of(context).backgroundColor,
+              selectedBorderColor: Color(0xFF358D5B),
+              borderRadius: BorderRadius.circular(5.0),
             ),
           ],
-        );
-      },
+        ),
+      ),
+      visible: _isVisible,
     );
   }
+
+//  Future<void> getDialog() async {
+//    return showDialog<void>(
+//      context: context,
+//      //barrierDismissible: false, // user must tap button!
+//      builder: (BuildContext context) {
+//        return Container(
+//          child: FilterDialogContent(),
+//        );
+//        return AlertDialog(
+//          title: Text('Select Amenities'),
+//          content: SingleChildScrollView(
+//            child: FilterDialogContent(),
+//            child: RotatedBox(
+//              quarterTurns: 1,
+//              child: ToggleButtons(
+//                children: [
+//                  RotatedBox(quarterTurns: 3, child: Text("Lit")),
+//                  RotatedBox(quarterTurns: 3, child: Text("Covered")),
+//                  RotatedBox(quarterTurns: 3, child: Text("Security Camera")),
+//                  RotatedBox(quarterTurns: 3, child: Text("EV Charging")),
+//                ],
+//                isSelected: selected,
+//                onPressed: (int index) {
+//                  setState(() {
+//                    selected[index] = !selected[index];
+//                    print("Selected: " + selected.toString());
+//                  });
+//                },
+//                color: Colors.green[300],
+//                selectedColor: Colors.green[900],
+//                borderWidth: 5.0,
+//                borderColor: Colors.green[300],
+//                selectedBorderColor: Colors.green[900],
+//              ),
+//            ),
+//          ),
+//          actions: <Widget>[
+//            FlatButton(
+//              child: Text('Return'),
+//              onPressed: () {
+//                Navigator.of(context).pop();
+//              },
+//            ),
+//          ],
+//        );
+//      },
+//    );
+//  }
 
   void checkFilters() {
     // re-initialize numFilters to 0
@@ -730,3 +837,110 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 }//end of parking space class
+
+//class FilterDialogContent extends StatefulWidget {
+//  FilterDialogContent({Key key, this.city, this.latlong, this.selected}): super(key: key);
+//
+//  final String city;
+//  final String latlong;
+//  final List<bool> selected;
+//
+//  @override
+//  _DialogContentState createState() => _DialogContentState();
+//}
+//
+//class _DialogContentState extends State<FilterDialogContent> {
+//
+//  //List<bool> curSelected = [false, false, false, false];
+//
+//  @override
+//  void initState(){
+//    super.initState();
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//      return AlertDialog(
+//        title: Text('Select Amenities'),
+//        content: SingleChildScrollView(
+//          child: RotatedBox(
+//            quarterTurns: 1,
+//            child: ToggleButtons(
+//              children: [
+//                RotatedBox(quarterTurns: 3, child: Text("Lit")),
+//                RotatedBox(quarterTurns: 3, child: Text("Covered")),
+//                RotatedBox(quarterTurns: 3, child: Text("Security Camera")),
+//                RotatedBox(quarterTurns: 3, child: Text("EV Charging")),
+//              ],
+//              isSelected: widget.selected,
+//              onPressed: (int index) {
+//                setState(() {
+//                  widget.selected[index] = !widget.selected[index];
+//                  print("Selected: " + widget.selected.toString());
+//                });
+//              },
+//              color: Colors.green[300],
+//              selectedColor: Colors.green[900],
+//              borderWidth: 5.0,
+//              borderColor: Colors.green[300],
+//              selectedBorderColor: Colors.green[900],
+//            ),
+//          ),
+//        ),
+//        actions: <Widget>[
+//          FlatButton(
+//            child: Text('Return'),
+//            onPressed: () {
+//              //Navigator.of(context).pop(curSelected);
+//              Navigator.pop(
+//                context,
+//                MaterialPageRoute(
+//                  builder: (context) => FindParking(
+//                    title: 'Find Parking',
+//                    city: widget.city,
+//                    latlong: widget.latlong,
+//                    selected: widget.selected,
+//                  ),
+//                ),
+//              );
+////              Navigator.pop(
+////                context,
+////                MaterialPageRoute(
+////                  builder: (context) => FindParking(
+////                    title: 'Find Parking',
+////                    city: widget.city,
+////                    latlong: _coordinates == null ?
+////                    '{39.7285,-121.8375}' : _coordinates,
+////                    selected: curSelected,
+////                  ),
+////                ),
+////              );
+//            },
+//          ),
+//        ],
+//      );
+////    return RotatedBox(
+////      quarterTurns: 1,
+////      child: ToggleButtons(
+////        children: [
+////          RotatedBox(quarterTurns: 3, child: Text("Lit")),
+////          RotatedBox(quarterTurns: 3, child: Text("Covered")),
+////          RotatedBox(quarterTurns: 3, child: Text("Security Camera")),
+////          RotatedBox(quarterTurns: 3, child: Text("EV Charging")),
+////        ],
+////        isSelected: curSelected,
+////        onPressed: (int index) {
+////          setState(() {
+////            curSelected[index] = !curSelected[index];
+////            print("Selected: " + curSelected.toString());
+////          });
+////        },
+////        color: Colors.green[300],
+////        selectedColor: Colors.green[900],
+////        borderWidth: 5.0,
+////        borderColor: Colors.green[300],
+////        selectedBorderColor: Colors.green[900],
+////      ),
+////    );
+//  }
+//}
