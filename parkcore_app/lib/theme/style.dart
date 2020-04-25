@@ -29,6 +29,12 @@ ThemeData appTheme() {
         fontFamily: 'Roboto',
         color: Colors.white,
       ),
+      display4: TextStyle(
+        fontSize: 16.0,
+        fontFamily: 'Roboto',
+        fontWeight: FontWeight.bold,
+        color: Color(0xFF358D5B),
+      ),
     ),
   );
 }
