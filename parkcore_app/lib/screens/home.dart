@@ -45,7 +45,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         centerTitle: true,
         backgroundColor: Theme.of(context).backgroundColor,
-        actions: <Widget>[LogoButton()],
+        actions: <Widget>[
+          LogoButton(),
+        ],
       ),
       drawer: MenuDrawer(),
       body: SingleChildScrollView(

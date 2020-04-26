@@ -10,6 +10,7 @@ class LoginPage extends StatelessWidget {
         home: Scaffold(
             appBar: AppBar(
               title: Text('Parkcore'),
+              centerTitle: true,
               backgroundColor: Theme.of(context).backgroundColor,
               actions: <Widget>[
                 LogoButton(),
@@ -55,7 +56,7 @@ class UserProfileState extends State<UserProfile> {
   bool _loading = false;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     authService.profile.listen((state) => setState(() => _profile = state));
     authService.loading.listen((state) => setState(() => _loading = state));

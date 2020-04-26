@@ -76,7 +76,7 @@ class FindParking extends StatefulWidget {
 class _MyFindParkingState extends State<FindParking> {
   final Map<MarkerId, Marker> _markers = {};
   List<Marker> allMarkers = [];
-  List<DocumentSnapshot> current;
+
   // Variables below used for parking space filter options
   int numFilters = 0;
   final List<String> docType = ["size", "type", "monthprice", "amenities"];
@@ -237,8 +237,8 @@ class _MyFindParkingState extends State<FindParking> {
             else{ // Amenities filters (i >= 3)
               if(choice[i] != "none"){
                 filtered = filtered.where((DocumentSnapshot docSnap) =>
-                    docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
-                        .split(", ").contains(choice[i])).toList();
+                  docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
+                    .split(", ").contains(choice[i])).toList();
               }
             }
           }
@@ -606,12 +606,12 @@ class _MyFindParkingState extends State<FindParking> {
       final lat2 = lat;
       final lon2 = long;
 
-    var gcd = GreatCircleDistance.fromDegrees(
+      var gcd = GreatCircleDistance.fromDegrees(
         latitude1: lat1, longitude1: lon1, latitude2: lat2, longitude2: lon2);
 
-    /*print(
+      /*print(
         'Distance from location 1 to 2 using the Haversine formula is: ${(adjustDistance((gcd.haversineDistance()/1609)*15))}');*/
-    return(adjustDistance((gcd.haversineDistance()/1609))*25).round().toString();
+      return(adjustDistance((gcd.haversineDistance()/1609))*25).round().toString();
 
     }
 
@@ -647,61 +647,64 @@ class _MyFindParkingState extends State<FindParking> {
        )
     );
   }
+
   Widget _boxes(String image, String title, String city, String state, String zip, String monthprice, String type, String coordinates){
 
     var roundedPrice = (num.parse(monthprice)).round();
 
     return Container(
-        child: FittedBox(
-          child: Material(
-            elevation: 20.0,
-            borderRadius: BorderRadius.circular(14.0),
-            shadowColor: Color(0x802196F3),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  width: 100,
-                  height: 90,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: Image(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(image ?? 'https://homestaymatch.com/images/no-image-available.png'),
-                    ),
+      child: FittedBox(
+        child: Material(
+          elevation: 20.0,
+          borderRadius: BorderRadius.circular(14.0),
+          shadowColor: Color(0x802196F3),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                width: 100,
+                height: 90,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15.0),
+                  child: Image(
+                    fit: BoxFit.fill,
+                    image: NetworkImage(image ?? 'https://homestaymatch.com/images/no-image-available.png'),
                   ),
                 ),
-                Container(
-                  width: 275,
-                  height: 90,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(title ?? 'N/A', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0), textAlign: TextAlign.center),
-                        Text(city + ', ' + state + ', ' + zip, style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
-                        Text(type ?? 'N/A', style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
-                      ],
-                    ),
-                  ),
-                  ),
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Column(
+              ),
+              Container(
+                width: 275,
+                height: 90,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                    pressed ? displayDistance(coordinates) : SizedBox(),
-                    Text('\$' + roundedPrice.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
-                    ])
+                      Text(title ?? 'N/A', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0), textAlign: TextAlign.center),
+                      Text(city + ', ' + state + ', ' + zip, style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
+                      Text(type ?? 'N/A', style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
+                    ],
                   ),
-                )
-                ],)
-            ),
+                ),
+              ),
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: <Widget>[
+                      pressed ? displayDistance(coordinates) : SizedBox(),
+                      Text('\$' + roundedPrice.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-      );
+        ),
+      ),
+    );
   }
 
   Widget _noSpaces(BuildContext context){
