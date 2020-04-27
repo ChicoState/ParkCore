@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FormSuccess extends StatelessWidget {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget showSnackBar(){
     return IconButton(
-      icon: Icon(
-        Icons.cake,
-        size: 50.0,
-        color: Colors.deepPurple[900],
+      icon: SvgPicture.asset(
+        'assets/Acorns.svg',
+        fit: BoxFit.fitWidth,
+        semanticsLabel: 'Acorns image',
       ),
+      iconSize: 100.0,
       onPressed: () {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text(
             'Thank you!',
             style: TextStyle(
-              color: Colors.deepPurple[200],
+              color: Color(0xFFB085F5),
               fontSize: 20,
             ),
           ),
@@ -55,16 +57,14 @@ class FormSuccess extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'ParkCore',
+              'PARKCORE',
               style: Theme.of(context).textTheme.headline,
             ),
             Text(
               'find a spot. go nuts.',
               style: Theme.of(context).textTheme.display1,
             ),
-            SizedBox(height: 10),
             showSnackBar(),
-            SizedBox(height: 20),
             Text(
               'thank you for joining the scurry!',
               style: Theme.of(context).textTheme.display2,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
+import 'package:parkcore_app/navigate/parkcore_button.dart';
 
 class Users {
   Users.fromMap(Map<String, dynamic>map, {this.reference})
@@ -19,17 +20,17 @@ class Users {
 }
 
 class DetailScreen extends StatelessWidget {
-  // Declare a field that holds the Todo.
-  final Spot spot;
-
   // In the constructor, require a Todo.
   DetailScreen({Key key, @required this.spot}) : super(key: key);
+
+  // Declare a field that holds the Todo.
+  final Spot spot;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[300],
+        backgroundColor: Theme.of(context).backgroundColor,
         elevation: 10,
         leading: Builder(
           builder: (BuildContext context){
@@ -40,7 +41,10 @@ class DetailScreen extends StatelessWidget {
               },
             );
           },
-        )
+        ),
+        actions: <Widget>[
+          LogoButton(),
+        ],
       ),
       body: SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -161,17 +165,13 @@ class DetailScreen extends StatelessWidget {
                   child: Column( 
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    if(check(spot.type))
-                      Text('Spot type: ' + spot.type),
-                    if(check(spot.spacetype))
-                      Text(spot.spacetype),
-                    if(checkDriveway(spot.type))
-                      Text(spot.driveway + ' driveway'),
-                    if(check(spot.size))
-                      Text('Size: ' + spot.size)
+                    check(spot.type) ? Text('Spot type: ' + spot.type): Text(''),
+                    check(spot.spacetype) ? Text(spot.spacetype): Text(''),
+                    checkDriveway(spot.type) ? Text(spot.driveway + ' driveway'): Text(''),
+                    check(spot.size)? Text('Size: ' + spot.size): Text(''),
                   ],
-                  )
-                ),
+                )
+              ),
             ],
           ),
           Row(

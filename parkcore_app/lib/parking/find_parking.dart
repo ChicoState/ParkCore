@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geocoder/model.dart';
-//import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:great_circle_distance2/great_circle_distance2.dart';
@@ -10,10 +8,10 @@ import 'parking_details.dart';
 class Spot{
 
   Spot.fromMap(Map<String, dynamic>map, {this.reference})
-    : title = map['title'], address = map['address'], 
+    : title = map['title'], address = map['address'],
     amenities = map['amenities'],
     coordinates = map['coordinates'],
-    city = map['city'], 
+    city = map['city'],
     driveway = map['driveway'],
     monthPrice = map['monthprice'],
     spacetype = map['spacetype'],
@@ -31,7 +29,7 @@ class Spot{
 
   Spot.fromSnapshot(DocumentSnapshot snapshot)
     : this.fromMap(snapshot.data, reference: snapshot.reference);
-  
+
   String title;
   String address;
   String amenities;
@@ -78,6 +76,17 @@ class FindParking extends StatefulWidget {
 class _MyFindParkingState extends State<FindParking> {
   final Map<MarkerId, Marker> _markers = {};
   List<Marker> allMarkers = [];
+
+  // Variables below used for parking space filter options
+  int numFilters = 0;
+  final List<String> docType = ["size", "type", "monthprice", "amenities"];
+  List<String> choice = ["none", "none", "none", "none", "none", "none", "none"];
+  List<String> curFilter = ["All", "All", "All", "All"];
+  String priceVal = "All";
+  List<bool> selected = [false, false, false, false];
+  List<String> amenity = ["Lit", "Covered", "Security Camera", "EV Charging"];
+  bool _isVisible = false;
+
   bool pressed = false;
   bool isLoading = true;
 
@@ -118,7 +127,7 @@ class _MyFindParkingState extends State<FindParking> {
                       },
                     ),
                   ],
-                )
+                ),
               );
             },
           ),
@@ -143,7 +152,6 @@ class _MyFindParkingState extends State<FindParking> {
           LogoButton(),
         ],
       ),
-      //drawer: MenuDrawer(),
       body: Stack(
         children: <Widget>[
           _googlemap(context),
@@ -169,7 +177,7 @@ class _MyFindParkingState extends State<FindParking> {
               });
           },
           color: Color(0xFF4D2C91),
-          child:  
+          child:
           Padding(
             padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
             child: Text(
@@ -201,7 +209,6 @@ class _MyFindParkingState extends State<FindParking> {
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-        // stream: Firestore.instance.collection('parkingSpaces').snapshots(),
       stream: Firestore.instance.collection('parkingSpaces')
         .where('city', isEqualTo: widget.city)
         .snapshots(),
@@ -210,6 +217,34 @@ class _MyFindParkingState extends State<FindParking> {
         if(snapshot.data.documents.isEmpty){
          return _noSpaces(context);
         }
+
+        // If filter options are chosen, update the list of parking spaces shown
+        if(numFilters > 0){
+          List<DocumentSnapshot> filtered = snapshot.data.documents;
+          for(var i = 0; i < choice.length; i++){
+            if(i < 2){ // Type or Size filter
+              if(choice[i] != "none"){
+                filtered = filtered.where((DocumentSnapshot docSnap) =>
+                docSnap[docType[i]] == choice[i]).toList();
+              }
+            }
+            else if(i == 2){ // Price filter
+              if(choice[i] != "none"){
+                filtered = filtered.where((DocumentSnapshot docSnap) =>
+                double.parse(docSnap[docType[i]]) <= double.parse(choice[i])).toList();
+              }
+            }
+            else{ // Amenities filters (i >= 3)
+              if(choice[i] != "none"){
+                filtered = filtered.where((DocumentSnapshot docSnap) =>
+                  docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
+                    .split(", ").contains(choice[i])).toList();
+              }
+            }
+          }
+          return _buildList(context, filtered);
+        }
+
         return _buildList(context, snapshot.data.documents);
       },
     );
@@ -226,7 +261,8 @@ class _MyFindParkingState extends State<FindParking> {
             child: ListView(
               scrollDirection: Axis.vertical,
               padding: const EdgeInsets.only(top: 10.0),
-              children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+              children: filterRow() +
+                snapshot.map((data) => _buildListItem(context, data)).toList(),
             ),
           );
         },
@@ -234,8 +270,323 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 
+  // Show filter options in row above the list of parking spaces
+  List<Widget> filterRow() {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+            child: Column(
+              children:[],
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            fit: FlexFit.tight,
+            child: Column(
+              children: [
+                RaisedButton(
+                  onPressed: () {
+                    setState(() {
+                      checkFilters();
+                    });
+                  },
+                  child: Text(
+                    'Apply Filters',
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).backgroundColor,
+                    ),
+                  ),
+                  color: Colors.white,
+                  highlightColor: Theme.of(context).accentColor,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                SizeFilter(),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                TypeFilter(),
+              ],
+            ),
+          ),
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                PriceFilter(),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.center,
+                  child: FractionallySizedBox(
+                    widthFactor: 0.9,
+                    child: AmenitiesFilter(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      AmenityButtons(),
+    ];
+  }
+
+  // Select 1 size filter option from dropdown list
+  Widget SizeFilter(){
+    return Container(
+      margin: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: Colors.white60,
+      ),
+      child: ListTileTheme(
+        child: ListTile(
+          title: Text(
+            'Size',
+            style: Theme.of(context).textTheme.display4,
+          ),
+          trailing: DropdownButton<String>(
+            hint: Text('Choose'),
+            onChanged: (String changedValue) {
+              setState(() {
+                curFilter[0] = changedValue;
+              });
+            },
+            value: curFilter[0],
+            items: <String>['All', 'Compact', 'Regular', 'Oversized']
+                .map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            style: TextStyle(
+              color: Color(0xFF358D5B),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Select 1 Type filter option from dropdown list
+  Widget TypeFilter(){
+    return Container(
+      margin: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: Colors.white60,
+      ),
+      child: ListTileTheme(
+        child: ListTile(
+          title: Text(
+            'Type',
+            style: Theme.of(context).textTheme.display4,
+          ),
+          trailing: DropdownButton<String>(
+            hint: Text('Choose'),
+            onChanged: (String changedValue) {
+              setState(() {
+                curFilter[1] = changedValue;
+              });
+            },
+            value: curFilter[1],
+            items: <String>['All', 'Driveway', 'Parking Lot', 'Street']
+                .map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            style: TextStyle(
+              color: Color(0xFF358D5B),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Select 1 Price filter option from dropdown list
+  Widget PriceFilter(){
+    return Container(
+      margin: const EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: Colors.white60,
+      ),
+      child: ListTileTheme(
+        child: ListTile(
+          title: Text(
+            'Price',
+            style: Theme.of(context).textTheme.display4,
+          ),
+          trailing: DropdownButton<String>(
+            hint: Text('Choose'),
+            onChanged: (String changedValue) {
+              setState(() {
+                if(changedValue == "All"){
+                  curFilter[2] = changedValue;
+                  priceVal = changedValue;
+                }
+                else{
+                  curFilter[2] = changedValue.substring(1, changedValue.indexOf(' '));
+                  priceVal = changedValue;
+                }
+              });
+            },
+            value: priceVal,
+            items: <String>['All','\$25 or less', '\$50 or less',
+              '\$75 or less', '\$100 or less'].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            style: TextStyle(
+              color: Color(0xFF358D5B),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Button to show/hide amenity filter options
+  // (option to select multiple)
+  Widget AmenitiesFilter(){
+    return FlatButton(
+      onPressed: () {
+        setState(() {
+          _isVisible = !_isVisible;
+        });
+      },
+      child: Text(
+        'Amenities',
+        style: Theme.of(context).textTheme.display4,
+      ),
+      color: Colors.white60,
+    );
+  }
+
+  // Toggle Buttons for filtering amenities (visible when Amenities is clicked)
+  // Can toggle options on and off without changing list, current choices are
+  // applied when the Apply Filters button is clicked
+  Widget AmenityButtons() {
+    return Visibility(
+      child: Container(
+        margin: const EdgeInsets.all(2.0),
+        decoration: BoxDecoration(
+          color: Colors.white60,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ToggleButtons(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
+                  child: selected[0] ? Icon(Icons.lightbulb_outline):Text("Lit"),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
+                  child: selected[1] ? Icon(Icons.beach_access): Text("Covered"),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
+                  child: selected[2] ? Icon(Icons.videocam): Text("Security Camera"),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
+                  child: selected[3] ? Icon(Icons.battery_charging_full): Text("EV Charging"),
+                ),
+              ],
+              isSelected: selected,
+              onPressed: (int index) {
+                setState(() {
+                  selected[index] = !selected[index];
+                  print("Selected: " + selected.toString());
+                });
+              },
+              color: Theme.of(context).backgroundColor,
+              borderColor: Theme.of(context).backgroundColor,
+              selectedColor: Color(0xFF358D5B),
+              selectedBorderColor: Color(0xFF358D5B),
+              highlightColor: Color(0xFF99F1B8),
+              fillColor: Colors.white,
+              borderWidth: 1.5,
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+          ],
+        ),
+      ),
+      visible: _isVisible,
+    );
+  }
+
+  // When Apply Filters button is clicked, reset filter parameters
+  void checkFilters() {
+    // re-initialize numFilters to 0
+    numFilters = 0;
+
+    // Iterate through filter options
+    // If current filter was not requested, set corresponding choice to none
+    // Else, apply the requested filter and increment numFilters
+    for(var i = 0; i < curFilter.length; i++){
+      if(curFilter[i] == "All") {
+        choice[i] = "none";
+      }
+      else{
+        choice[i] = curFilter[i];
+        numFilters++;
+      }
+    }
+
+    // Iterate through the amenities toggle buttons to see if any were selected
+    // If amenity not selected, set corresponding choice to none
+    // Else, apply the requested amenity filter and increment numFilters
+    for(var i = 0; i < selected.length; i++){
+      if(!selected[i]){
+        choice[i+3] = "none";
+      }
+      else{
+        choice[i+3] = amenity[i];
+        numFilters++;
+      }
+    }
+  }
+
   Widget displayDistance(String coordinates){
-    
+
     double adjustDistance(var i){
       if(i > 1){
         return i + i.floor()*.25;
@@ -245,23 +596,23 @@ class _MyFindParkingState extends State<FindParking> {
       }
     }
     String haversize() {
-      
+
       var lat = num.parse(coordinates.substring(1, coordinates.indexOf(',')));
       var long = num.parse(coordinates.substring(coordinates.indexOf(',') + 1, coordinates.length -1));
-      
+
       final lat1 = 39.729918;
       final lon1 =  -121.849759;
 
       final lat2 = lat;
       final lon2 = long;
 
-    var gcd = GreatCircleDistance.fromDegrees(
+      var gcd = GreatCircleDistance.fromDegrees(
         latitude1: lat1, longitude1: lon1, latitude2: lat2, longitude2: lon2);
 
-    /*print(
+      /*print(
         'Distance from location 1 to 2 using the Haversine formula is: ${(adjustDistance((gcd.haversineDistance()/1609)*15))}');*/
-    return(adjustDistance((gcd.haversineDistance()/1609))*25).round().toString();
-    
+      return(adjustDistance((gcd.haversineDistance()/1609))*25).round().toString();
+
     }
 
     return Container(
@@ -274,7 +625,7 @@ class _MyFindParkingState extends State<FindParking> {
       )
     );
   }
-  
+
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
 
@@ -296,61 +647,64 @@ class _MyFindParkingState extends State<FindParking> {
        )
     );
   }
+
   Widget _boxes(String image, String title, String city, String state, String zip, String monthprice, String type, String coordinates){
 
     var roundedPrice = (num.parse(monthprice)).round();
 
     return Container(
-        child: FittedBox(
-          child: Material(
-            elevation: 20.0,
-            borderRadius: BorderRadius.circular(14.0),
-            shadowColor: Color(0x802196F3),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  width: 100,
-                  height: 90,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    child: Image(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(image ?? 'https://homestaymatch.com/images/no-image-available.png'),
-                    ),
+      child: FittedBox(
+        child: Material(
+          elevation: 20.0,
+          borderRadius: BorderRadius.circular(14.0),
+          shadowColor: Color(0x802196F3),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                width: 100,
+                height: 90,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15.0),
+                  child: Image(
+                    fit: BoxFit.fill,
+                    image: NetworkImage(image ?? 'https://homestaymatch.com/images/no-image-available.png'),
                   ),
                 ),
-                Container(
-                  width: 275,
-                  height: 90,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(title ?? 'N/A', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0), textAlign: TextAlign.center),
-                        Text(city + ', ' + state + ', ' + zip, style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
-                        Text(type ?? 'N/A', style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
-                      ],
-                    ),
-                  ),
-                  ),
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Column(
+              ),
+              Container(
+                width: 275,
+                height: 90,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                    pressed ? displayDistance(coordinates) : SizedBox(),
-                    Text('\$' + roundedPrice.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
-                    ])
+                      Text(title ?? 'N/A', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0), textAlign: TextAlign.center),
+                      Text(city + ', ' + state + ', ' + zip, style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
+                      Text(type ?? 'N/A', style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
+                    ],
                   ),
-                )
-                ],)
-            ),
+                ),
+              ),
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: <Widget>[
+                      pressed ? displayDistance(coordinates) : SizedBox(),
+                      Text('\$' + roundedPrice.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-      );
+        ),
+      ),
+    );
   }
 
   Widget _noSpaces(BuildContext context){
@@ -370,7 +724,7 @@ class _MyFindParkingState extends State<FindParking> {
                 title: Row(
                   children: <Widget>[
                     Text(
-                      "We're not yet in:\n" + widget.city +
+                      "We're not yet in\n" + widget.city +
                           "\nLet us know you're interested!",
                       style: Theme.of(context).textTheme.display3,
                       textAlign: TextAlign.center,

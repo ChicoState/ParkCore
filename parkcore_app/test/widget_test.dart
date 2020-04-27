@@ -38,9 +38,9 @@ void main() {
     final Finder searchinput = find.widgetWithText(TextFormField, 'Search by location');
     final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
 
-    // Use the `findsNWidgets` matcher provided by flutter_test to
-    // verify this Text widget appears exactly 2 times in the widget tree.
-    expect(titleFinder, findsNWidgets(2));
+    // Use the `findsOneWidget` matcher provided by flutter_test to
+    // verify this Text widget appears exactly 1 time in the widget tree.
+    expect(titleFinder, findsOneWidget);
 
     // Finds 1 TextFormField Widget (for search input field in 1 Form)
     expect(find.byType(TextFormField),findsOneWidget);

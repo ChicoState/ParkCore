@@ -32,6 +32,7 @@ dependencies:
   firebase_auth: ^0.15.5
   google_sign_in: ^4.2.0
   rxdart: 0.20.0
+  #rxdart: ^0.23.1
 
   google_maps_flutter: ^0.5.11
   http: ^0.12.0+1
@@ -45,6 +46,7 @@ dependencies:
 
   # for getting lat/long coordinates from address
   geocoder: ^0.2.1
+  #flutter_google_places: ^0.2.4
 
   # for getting images from users
   image_picker: ^0.6.3+4
@@ -82,6 +84,10 @@ flutter:
     - assets/parkcore_logo_green2.jpg
     - assets/ParkCore_WHITE_SQUIRREL_ONLY.svg
     - assets/ParkCore_WHITE_SQUIRREL.svg
+    - assets/Acorns.svg
+    - assets/Acorns_White.png
+    - assets/text/about_us.txt
+    - assets/text/about_us_short.txt
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -100,11 +106,10 @@ flutter:
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
+  fonts:
+     - family: Roboto
+       fonts:
+         - asset: assets/fonts/Roboto-Regular.ttf
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
