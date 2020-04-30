@@ -85,8 +85,11 @@ class _MyFindParkingState extends State<FindParking> {
   String priceVal = "All";
   List<bool> selected = [false, false, false, false];
   List<String> amenity = ["Lit", "Covered", "Security Camera", "EV Charging"];
+  List<String> sizeOptions = ['All', 'Compact', 'Regular', 'Oversized'];
+  List<String> typeOptions = ['All', 'Driveway', 'Parking Lot', 'Street'];
+  List<String> priceOptions = ['All','\$25 or less', '\$50 or less',
+                              '\$75 or less', '\$100 or less'];
   bool _isVisible = false;
-
   bool pressed = false;
   bool isLoading = true;
 
@@ -278,10 +281,19 @@ class _MyFindParkingState extends State<FindParking> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
-            flex: 2,
+            flex: 1,
             fit: FlexFit.tight,
             child: Column(
               children:[],
+            ),
+          ),
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+            child: Column(
+              children:[
+                FiltersButton('Apply Filters', true),
+              ],
             ),
           ),
           Flexible(
@@ -289,24 +301,7 @@ class _MyFindParkingState extends State<FindParking> {
             fit: FlexFit.tight,
             child: Column(
               children: [
-                RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      checkFilters();
-                    });
-                  },
-                  child: Text(
-                    'Apply Filters',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).backgroundColor,
-                    ),
-                  ),
-                  color: Colors.white,
-                  highlightColor: Theme.of(context).accentColor,
-                ),
+                FiltersButton('Show All', false),
               ],
             ),
           ),
@@ -362,6 +357,49 @@ class _MyFindParkingState extends State<FindParking> {
     ];
   }
 
+  // Apply or remove filters as selected
+  Widget FiltersButton(String txt, bool apply){
+    return RaisedButton(
+      onPressed: () {
+        setState(() {
+          apply ? checkFilters() : showAll();
+        });
+      },
+      child: Text(
+        txt,
+        style: TextStyle(
+          fontFamily: 'Roboto',
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).backgroundColor,
+        ),
+      ),
+      color: Colors.white,
+      highlightColor: Theme.of(context).accentColor,
+    );
+  }
+
+  // show all listed parking spaces at this location (clear all selected)
+  void showAll(){
+    setState(() {
+      numFilters = 0;
+      for(int i = 0; i < curFilter.length; i++){
+        curFilter[i] = "All";
+        selected[i] = false;
+      }
+    });
+  }
+
+  // Get the dropdown menu items for the given filter option
+  List<DropdownMenuItem<String>> getFilterOptions(List<String> options){
+    return options.map((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(value),
+      );
+    }).toList();
+  }
+
   // Select 1 size filter option from dropdown list
   Widget SizeFilter(){
     return Container(
@@ -383,13 +421,7 @@ class _MyFindParkingState extends State<FindParking> {
               });
             },
             value: curFilter[0],
-            items: <String>['All', 'Compact', 'Regular', 'Oversized']
-                .map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
+            items: getFilterOptions(sizeOptions),
             style: TextStyle(
               color: Color(0xFF358D5B),
             ),
@@ -420,13 +452,7 @@ class _MyFindParkingState extends State<FindParking> {
               });
             },
             value: curFilter[1],
-            items: <String>['All', 'Driveway', 'Parking Lot', 'Street']
-                .map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
+            items: getFilterOptions(typeOptions),
             style: TextStyle(
               color: Color(0xFF358D5B),
             ),
@@ -463,14 +489,8 @@ class _MyFindParkingState extends State<FindParking> {
                 }
               });
             },
-            value: priceVal,
-            items: <String>['All','\$25 or less', '\$50 or less',
-              '\$75 or less', '\$100 or less'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
+            value: curFilter[2] == "All" ? curFilter[2] : priceVal,
+            items: getFilterOptions(priceOptions),
             style: TextStyle(
               color: Color(0xFF358D5B),
             ),
