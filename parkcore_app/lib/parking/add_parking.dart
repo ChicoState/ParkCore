@@ -320,9 +320,9 @@ class _MyAddParkingState extends State<AddParking> {
         child: getDays(),
       ),
       SizedBox(height: 10),
-      getStartTime(),
+      getTime("start"),
       SizedBox(height: 10),
-      getEndTime(),
+      getTime("end"),
       SizedBox(height: 10),
       getPrice(),
       SizedBox(height: 30),
@@ -335,9 +335,9 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       Row(
         children: <Widget>[
-          getCameraImage(),
+          getImageType("camera"),
           SizedBox(width: 10),
-          getGalleryImage(),
+          getImageType("gallery"),
         ],
       ),
       SizedBox(height: 30),
@@ -351,16 +351,8 @@ class _MyAddParkingState extends State<AddParking> {
       key: Key('title'),
       autofocus: true,
       validator: validateTitle,
-      keyboardType: TextInputType.multiline,
-      maxLines: 2,
-      decoration: InputDecoration(
-        labelText: '* Enter a descriptive title for your parking space:',
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).backgroundColor,
-          ),
-        ),
-      ),
+      decoration: textFormFieldDeco(
+          '* Enter a descriptive title for your parking space:'),
       onSaved: (value) {
         setState(() {
           _title = value;
@@ -373,14 +365,7 @@ class _MyAddParkingState extends State<AddParking> {
     return TextFormField(
       key: Key('address'),
       validator: validateAddress,
-      decoration: InputDecoration(
-        labelText: '* Street Address:',
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).backgroundColor,
-          ),
-        ),
-      ),
+      decoration: textFormFieldDeco('* Street Address:'),
       onSaved: (value) {
         setState(() {
           _address = value;
@@ -393,14 +378,7 @@ class _MyAddParkingState extends State<AddParking> {
     return TextFormField(
       key: Key('city'),
       validator: validateCity,
-      decoration: InputDecoration(
-        labelText: '* City:',
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).backgroundColor,
-          ),
-        ),
-      ),
+      decoration: textFormFieldDeco('* City:'),
       onSaved: (value) {
         setState(() {
           _city = value;
@@ -441,14 +419,7 @@ class _MyAddParkingState extends State<AddParking> {
       key: Key('zip'),
       autofocus: true,
       validator: validateZip,
-      decoration: InputDecoration(
-        labelText: '* Zip Code:',
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).backgroundColor,
-          ),
-        ),
-      ),
+      decoration: textFormFieldDeco('* Zip Code:'),
       onSaved: (value) {
         setState(() {
           _zip = value;
@@ -590,14 +561,7 @@ class _MyAddParkingState extends State<AddParking> {
       autofocus: true,
       keyboardType: TextInputType.multiline,
       maxLines: 6,
-      decoration: InputDecoration(
-        labelText: 'Other important details about your space:',
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).backgroundColor,
-          ),
-        ),
-      ),
+      decoration: textFormFieldDeco('Other important details about your space:'),
       onSaved: (value) {
         if (value.isEmpty) {
           _details = "";
@@ -630,11 +594,12 @@ class _MyAddParkingState extends State<AddParking> {
     );
   }
 
-  Widget getStartTime() {
+  Widget getTime(String type) {
     return DateTimeField(
       format: format,
       decoration: InputDecoration(
-        labelText: 'Parking Space Available Starting at:',
+        labelText: type == "start" ?
+          'Parking Space Available Starting at:':'Parking Space Available Until:',
       ),
       onShowPicker: (context, currentValue) async {
         final time = await showTimePicker(
@@ -642,26 +607,9 @@ class _MyAddParkingState extends State<AddParking> {
           initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
         );
         setState(() {
-          _startTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
-        });
-        return DateTimeField.convert(time);
-      },
-    );
-  }
-
-  Widget getEndTime() {
-    return DateTimeField(
-      format: format,
-      decoration: InputDecoration(
-        labelText: 'Parking Space Available Until:',
-      ),
-      onShowPicker: (context, currentValue) async {
-        final time = await showTimePicker(
-          context: context,
-          initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
-        );
-        setState(() {
-          _endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
+          type == "start" ?
+            _startTime = DateFormat('HH:mm').format(DateTimeField.convert(time))
+            : _endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
         });
         return DateTimeField.convert(time);
       },
@@ -674,19 +622,23 @@ class _MyAddParkingState extends State<AddParking> {
       validator: validatePrice,
       controller: priceController,
       keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: '* Price per month (\$):',
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).backgroundColor,
-          ),
-        ),
-      ),
+      decoration: textFormFieldDeco('* Price per month (\$):'),
       onSaved: (value) {
         setState(() {
           _price = priceController.text;
         });
       },
+    );
+  }
+
+  InputDecoration textFormFieldDeco(String label) {
+    return InputDecoration(
+      labelText: label,
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Theme.of(context).backgroundColor,
+        ),
+      ),
     );
   }
 
@@ -703,30 +655,18 @@ class _MyAddParkingState extends State<AddParking> {
     );
   }
 
-  Widget getCameraImage() {
+  Widget getImageType(String type) {
     return Expanded(
       child: FormField<File>(
         //validator: validateImage,
         builder: (FormFieldState<File> state) {
           return RaisedButton(
-            child: Icon(Icons.photo_camera),
-            onPressed: () => getImage(ImageSource.camera),
-            color: Theme.of(context).backgroundColor,
-            textColor: Colors.white,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget getGalleryImage() {
-    return Expanded(
-      child: FormField<File>(
-        //validator: validateImage,
-        builder: (FormFieldState<File> state) {
-          return RaisedButton(
-            child: Icon(Icons.photo_library),
-            onPressed: () => getImage(ImageSource.gallery),
+            child: Icon(
+              type == "camera" ? Icons.photo_camera : Icons.photo_library,
+            ),
+            onPressed: () =>
+              type == "camera" ?
+              getImage(ImageSource.camera) : getImage(ImageSource.gallery),
             color: Theme.of(context).backgroundColor,
             textColor: Colors.white,
           );
@@ -884,14 +824,12 @@ class _MyAddParkingState extends State<AddParking> {
   // Form Validation
 
   void validateAndSubmit() async {
-    // After address info is input, create associated coordinates (if possible)
-    if (_page == 1) {
+    // After address info is input, create associated coordinates (if possible),
+    if(_page == 1){
       try {
         _formKey.currentState.save();
-        _geoAddress =
-            _address + ", " + _city + ", " + _state + " " + _zip + ", USA";
-        var addresses =
-            await Geocoder.local.findAddressesFromQuery(_geoAddress);
+        _geoAddress = _address + ", " + _city + ", " + _zip;
+        var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
         var first = addresses.first;
         _coordinates = first.coordinates.toString();
         _coord_rand = getRandomCoordinates(_coordinates);
@@ -899,13 +837,13 @@ class _MyAddParkingState extends State<AddParking> {
         print(first.addressLine + " : " + first.coordinates.toString());
         print("random coordinates : " + _coord_rand);
 
-        var addr = first.addressLine.split(", ");
-
         setState(() {
+          var addr = first.addressLine.split(", ");
           _city_format = addr[1];
           _invalidLoc = false;
         });
-      } catch (e) {
+      }
+      catch (e) {
         print("Error occurred: $e");
         setState(() {
           _invalidLoc = true;
@@ -915,9 +853,7 @@ class _MyAddParkingState extends State<AddParking> {
     }
     // if location was valid, check additional validators
     if (!_invalidLoc) {
-      if (validateAndSave()) {
-       // print("User: " + _displayName);
-      } else {
+      if(!validateAndSave()){
         setState(() {
           _errorMessage = "Make sure to fill out all required fields";
           print(_errorMessage);
@@ -947,8 +883,8 @@ class _MyAddParkingState extends State<AddParking> {
       return 'Field can\'t be empty; \n'
           'This is what potential renters will see instead of your address';
     }
-    if (value.length > 60) {
-      return 'Title cannot be more than 60 characters';
+    if (value.length >= 25) {
+      return 'Title cannot be more than 25 characters';
     }
     return null;
   }
