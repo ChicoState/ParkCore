@@ -147,19 +147,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // When Search Button is clicked, try to find a location (set of coordinates)
   void submitSearch(String search) async {
-    try {
-      validateLocation();
+    assert(search != null);
+    if(getLocation() != null) {
       setState(() {
         _input = "Find parking near: " + search;
       });
-    } catch (e) {
-      print("Error occurred: $e");
     }
   }
 
   // Show Search Results
   Widget SearchReturn() {
     return Column(
+      key: Key('searchResult'),
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text("$_input"),
@@ -180,6 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // If Search was successful, show the location that was found
   Widget FoundResults() {
     return Row(
+      key: Key("foundResult"),
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -239,6 +239,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  bool getLocation() {
+    try{
+      validateLocation();
+      return true;
+    }
+    catch(e){
+      print("Error occurred: $e");
+      return false;
+    }
+  }
+
   // Use geocoder to search for a location that matches search result input
   void validateLocation() async {
     try {
@@ -270,5 +281,4 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
   }
-
 }
