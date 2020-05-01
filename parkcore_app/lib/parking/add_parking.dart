@@ -151,12 +151,6 @@ class _MyAddParkingState extends State<AddParking> {
     {"display": "Saturday", "value": "SAT"},
   ];
 
-  // Get the UID of the current user
-  Future<String> getUser() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    return user.uid;
-  }
-
   // Select an image via gallery or camera
   Future<void> getImage(ImageSource source) async {
     File selected = await ImagePicker.pickImage(source: source);
@@ -880,8 +874,7 @@ class _MyAddParkingState extends State<AddParking> {
 
   String validateTitle(String value) {
     if (value.isEmpty) {
-      return 'Field can\'t be empty; \n'
-          'This is what potential renters will see instead of your address';
+      return 'Field can\'t be empty';
     }
     if (value.length >= 25) {
       return 'Title cannot be more than 25 characters';
@@ -891,9 +884,9 @@ class _MyAddParkingState extends State<AddParking> {
 
   String validateAddress(String value) {
     if (value.isEmpty) {
-      return 'Field can\'t be empty';
+      return "Field can\'t be empty";
     }
-    if (value.length > 60) {
+    if (value.length >= 60) {
       return 'Address cannot be more than 60 characters';
     }
     return null;
