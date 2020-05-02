@@ -12,7 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/screens/home.dart';
 
 void main() {
-  testWidgets('Home Page Title', (WidgetTester tester) async {
+  testWidgets('Find Home Page Title', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
       home: MyHomePage(title: "ParkCore"),
