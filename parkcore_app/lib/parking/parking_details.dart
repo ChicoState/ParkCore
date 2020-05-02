@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class Users {
   Users.fromMap(Map<String, dynamic>map, {this.reference})
   : displayName = map['displayName'],
   photoURL = map['photoURL'],
-  uid = map['uid'];
+  uid = map['uid'],
+  rating = map['rating'];
 
   Users.fromSnapshot(DocumentSnapshot snapshot)
     : this.fromMap(snapshot.data, reference: snapshot.reference);
@@ -16,6 +18,7 @@ class Users {
   String displayName;
   String photoURL;
   String uid;
+  num rating;
   final DocumentReference reference;
 }
 
@@ -25,6 +28,8 @@ class DetailScreen extends StatelessWidget {
 
   // Declare a field that holds the Todo.
   final Spot spot;
+
+  //StarRating({this.starCount = 5, this.rating = .0, this.onRatingChanged, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +102,7 @@ class DetailScreen extends StatelessWidget {
     final currentUser = Users.fromSnapshot(data);
 
     bool check(String string){
-      if(string == 'N/A'){
+      if(string == 'N/A' || string == '[]' || string == ''){
         return false;
       }
       return true;
@@ -149,7 +154,25 @@ class DetailScreen extends StatelessWidget {
                       image: NetworkImage(currentUser.photoURL ?? 'https://img.favpng.com/6/14/19/computer-icons-user-profile-icon-design-png-favpng-vcvaCZNwnpxfkKNYzX3fYz7h2.jpg'),
                       ),
                     ),
-                    Text(currentUser.displayName)
+                    Text(currentUser.displayName),
+                    RatingBar(
+                      itemSize: 20,
+                      initialRating: currentUser.rating.toDouble(),
+                      unratedColor: Colors.purple[100],
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: false,
+                      itemCount: 5,
+                      itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
+                      itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                       color: Colors.purple[400],
+                      ),
+                      onRatingUpdate: (rating) {
+                        print(rating);
+                        currentUser.reference.updateData({'rating': rating });
+                      },
+                    )
                   ]
                 )),
             ],
@@ -165,16 +188,16 @@ class DetailScreen extends StatelessWidget {
                   child: Column( 
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    check(spot.type) ? Text('Spot type: ' + spot.type): Text(''),
-                    check(spot.spacetype) ? Text(spot.spacetype): Text(''),
-                    checkDriveway(spot.type) ? Text(spot.driveway + ' driveway'): Text(''),
-                    check(spot.size)? Text('Size: ' + spot.size): Text(''),
+                    check(spot.type) ? Text('Spot type: ' + spot.type): SizedBox(),
+                    check(spot.spacetype) ? Text(spot.spacetype): SizedBox(),
+                    checkDriveway(spot.type) ? Text(spot.driveway + ' driveway'): SizedBox(),
+                    check(spot.size)? Text('Size: ' + spot.size): SizedBox(),
                   ],
                 )
               ),
             ],
           ),
-          Row(
+          check(spot.amenities) ? Row(
             children: <Widget>[   
                 Container(
                   padding: EdgeInsets.all(20.0),
@@ -185,8 +208,8 @@ class DetailScreen extends StatelessWidget {
                   child: Text(spot.amenities.substring(1, spot.amenities.length-1)),
                 ),
             ],
-          ),
-          Row(
+          ) : SizedBox(),
+          check(spot.starttime) || check(spot.endtime) ? Row(
             children: <Widget>[   
                 Container(
                   padding: EdgeInsets.all(20.0),
@@ -197,8 +220,8 @@ class DetailScreen extends StatelessWidget {
                   child: Text('Availability: ' + spot.starttime + ' - ' + spot.endtime),
                 ),
             ],
-          ),
-          Row(
+          ): SizedBox(),
+          check(spot.days) ? Row(
             children: <Widget>[   
                 Container(
                   padding: EdgeInsets.all(20.0),
@@ -209,15 +232,15 @@ class DetailScreen extends StatelessWidget {
                   child: Text(spot.days.substring(1, spot.days.length-1)),
                 ),
             ],
-          ),
-          Padding(
+          ) : SizedBox(),
+          check(spot.spacedetails) ? Padding(
             padding: EdgeInsets.all(20.0),
             child: Text('Space Details')
-          ),
-          Padding(
+          ) : SizedBox(),
+          check(spot.spacedetails) ? Padding(
             padding: EdgeInsets.all(20.0),
             child: Text(spot.spacedetails)
-          ),
+          ) : SizedBox(),
         ],
       ),
     );
