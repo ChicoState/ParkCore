@@ -55,17 +55,25 @@ Widget CreateMenuItem(
   return ListTile(
     title: Row(
       children: <Widget>[
-        Icon(
-          icon,
-          color: Color(0xFF4D2C91),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.display2,
+        Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+          child: Icon(
+            icon,
+            color: Color(0xFF4D2C91),
           ),
-        )
+        ),
+        Flexible(
+          flex: 3,
+          fit: FlexFit.tight,
+          child:Padding(
+            padding: EdgeInsets.only(left: 3.0),
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.display2,
+            ),
+          ),
+        ),
       ],
     ),
     trailing: Icon(
@@ -83,15 +91,23 @@ Widget DefaultMap(BuildContext context) {
   return ListTile(
     title: Row(
       children: <Widget>[
-        Icon(
-          Icons.location_on,
-          color: Color(0xFF4D2C91),
+        Flexible(
+          flex: 1,
+          fit: FlexFit.tight,
+          child: Icon(
+            Icons.location_on,
+            color: Color(0xFF4D2C91),
+          ),
         ),
-        Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: Text(
-            'Visit Our Hometown!',
-            style: Theme.of(context).textTheme.display2,
+        Flexible(
+          flex: 3,
+          fit: FlexFit.tight,
+          child: Padding(
+            padding: EdgeInsets.only(left: 3.0),
+            child: Text(
+              'Visit Our Hometown!',
+              style: Theme.of(context).textTheme.display2,
+            ),
           ),
         ),
       ],

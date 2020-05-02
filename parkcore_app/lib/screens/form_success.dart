@@ -47,34 +47,57 @@ class FormSuccess extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50.0),
-              child: Image.asset(
-                'assets/parkcore_logo_green2.jpg',
-                height: 150,
-                fit:BoxFit.fill,
+            Flexible(
+              flex: 3,
+              fit: FlexFit.tight,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50.0),
+                child: Image.asset(
+                  'assets/parkcore_logo_green2.jpg',
+                  height: 150,
+                  fit:BoxFit.fill,
+                ),
               ),
             ),
-            SizedBox(height: 10),
-            Text(
-              'PARKCORE',
-              style: Theme.of(context).textTheme.headline,
+            Flexible(
+              flex: 1,
+              fit: FlexFit.tight,
+              child: Text(
+                'PARKCORE',
+                style: Theme.of(context).textTheme.headline,
+              ),
             ),
-            Text(
-              'find a spot. go nuts.',
-              style: Theme.of(context).textTheme.display1,
+            Flexible(
+              flex: 1,
+              fit: FlexFit.tight,
+              child: Text(
+                'find a spot. go nuts.',
+                style: Theme.of(context).textTheme.display1,
+              ),
             ),
-            showSnackBar(),
-            Text(
-              'thank you for joining the scurry!',
-              style: Theme.of(context).textTheme.display2,
+            Flexible(
+              flex: 2,
+              fit: FlexFit.tight,
+              child: showSnackBar(),
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50.0),
-              child: Image.asset(
-                'assets/parkcore_logo_green2.jpg',
-                height: 150,
-                fit:BoxFit.fill,
+            Flexible(
+              flex: 1,
+              fit: FlexFit.tight,
+              child: Text(
+                'thank you for joining the scurry!',
+                style: Theme.of(context).textTheme.display2,
+              ),
+            ),
+            Flexible(
+              flex: 3,
+              fit: FlexFit.tight,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50.0),
+                child: Image.asset(
+                  'assets/parkcore_logo_green2.jpg',
+                  height: 150,
+                  fit:BoxFit.fill,
+                ),
               ),
             ),
           ],
