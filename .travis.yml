@@ -8,8 +8,9 @@ install:
   - git clone https://github.com/flutter/flutter.git -b stable
   - ./flutter/bin/flutter doctor
   - gem install coveralls-lcov
+  - cd parkcore_app
 script:
-  - 
+  - ./flutter/bin/flutter test
 after_success:
   - coveralls-lcov coverage/lcov.info
 cache:
