@@ -6,6 +6,8 @@ faculty, and staff through the rental of driveways as personal parking spaces.
 ## Continuous Integration Status
 [![Codemagic build status](https://api.codemagic.io/apps/5eab11c076654b4dab8d58e0/5eab11c076654b4dab8d58df/status_badge.svg)](https://codemagic.io/apps/5eab11c076654b4dab8d58e0/5eab11c076654b4dab8d58df/latest_build)
 
+[![Build Status](https://travis-ci.org/jcheon/ParkCore.svg?branch=master)](https://travis-ci.org/jcheon/ParkCore)
+
 ## Getting Started
 
 This project is a Flutter application.
