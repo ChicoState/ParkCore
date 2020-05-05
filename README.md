@@ -8,6 +8,8 @@ faculty, and staff through the rental of driveways as personal parking spaces.
 
 [![Build Status](https://travis-ci.org/jcheon/ParkCore.svg?branch=master)](https://travis-ci.org/jcheon/ParkCore)
 
+[![Coverage Status](https://coveralls.io/repos/github/jcheon/ParkCore/badge.svg?branch=master)](https://coveralls.io/github/jcheon/ParkCore?branch=master)
+
 ## Getting Started
 
 This project is a Flutter application.
