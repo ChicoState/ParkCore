@@ -9,7 +9,6 @@ install:
   - ./flutter/bin/flutter doctor
 script:
   - cd parkcore_app
-  - ./flutter/bin/flutter test
 cache:
   directories:
     - $HOME/.pub-cache
