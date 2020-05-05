@@ -7,6 +7,7 @@ addons:
 install:
   - git clone https://github.com/flutter/flutter.git -b stable
   - ./flutter/bin/flutter doctor
+  - gem install coveralls-lcov
 script:
   - cd parkcore_app
 cache:
