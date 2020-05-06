@@ -11,4 +11,13 @@ void main() {
 
     expect(find.bySemanticsLabel('ParkCore Logo'), findsOneWidget);
   });
+
+  testWidgets('Find Menu Drawer List Tiles', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: MenuDrawer(),
+    ));
+
+    expect(find.byType(ListTile), findsNWidgets(5));
+  });
 }
