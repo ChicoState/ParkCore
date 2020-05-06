@@ -5,12 +5,9 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/screens/home.dart';
-import 'package:geocoder/geocoder.dart';
 
 void main() {
   testWidgets('Find Home Page Title', (WidgetTester tester) async {
