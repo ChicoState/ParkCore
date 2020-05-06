@@ -15,7 +15,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:parkcore_app/parking/random_coordinates.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 
-
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
   // This widget is the "add parking" page of the app. It is stateful: it has a
@@ -36,68 +35,44 @@ class _MyAddParkingState extends State<AddParking> {
   // Note: This is a `GlobalKey<FormState>`, not GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  FirebaseUser currentUser;
+  //FirebaseUser currentUser;
+  CurrentUser curUser = CurrentUser();
+  ParkingSpace parkingSpace = ParkingSpace();
+  PageNumber pageNum = PageNumber();
+  FormError formError = FormError();
+  File _imageFile;
 
   @override
   void initState() {
     super.initState();
-    _loadCurrentUser();
+    loadCurrentUser();
   }
 
-  void _loadCurrentUser() {
+  void loadCurrentUser() {
     FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
-        this.currentUser = user;
+        curUser.currentUser = user;
       });
     });
   }
 
-  int _page = 1;
-  bool _incomplete = false;
-  bool _invalidLoc = false;
-  String _errorMessage = '';
-
-  String _title = '';
-  String _address = '';
-  String _city = '';
-  String _city_format = '';
-  String _state = '';
-  String _zip = '';
-  String _geoAddress = '';
-  String _coordinates = '';
-  String _coord_rand = '';
-
-  String _size = '';
-  String _type = '';
-  String _driveway = '';
-  String _spaceType = '';
-  List _myAmenities = [];
-  String _details = '';
-
-  List _myDays = [];
   final format = DateFormat("HH:mm");
-  String _startTime = '';
-  String _endTime = '';
-  String _price = '';
-  var priceController = MoneyMaskedTextController(
+  final priceController = MoneyMaskedTextController(
       decimalSeparator: '.',
       thousandSeparator: ',',
   );
 
-  File _imageFile;
-  String _downloadURL;
-
   String getUserName() {
-    if (currentUser != null) {
-      return currentUser.displayName;
+    if (curUser.currentUser != null) {
+      return curUser.currentUser.displayName;
     } else {
       return "no current user";
     }
   }
 
   String getUserID() {
-    if (currentUser != null) {
-      return currentUser.uid;
+    if (curUser.currentUser != null) {
+      return curUser.currentUser.uid;
     } else {
       return "no current user";
     }
@@ -163,7 +138,7 @@ class _MyAddParkingState extends State<AddParking> {
   // Get a unique ID for each image upload
   Future<void> getUniqueFile() async {
     final String uuid = Uuid().v1();
-    _downloadURL = await _uploadFile(uuid);
+    parkingSpace.downloadURL = await _uploadFile(uuid);
   }
 
   // get download URL for image files
@@ -206,9 +181,9 @@ class _MyAddParkingState extends State<AddParking> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              _incomplete || _invalidLoc
-                ? Text(_errorMessage, style: TextStyle(color: Colors.red))
-                : Text("Part " + _page.toString() + " of 5"),
+              formError.incomplete || formError.invalidLoc
+                ? Text(formError.errorMessage, style: TextStyle(color: Colors.red))
+                : Text("Part " + pageNum.page.toString() + " of 5"),
               SizedBox(height: 10),
               Form(
                 key: _formKey,
@@ -225,13 +200,13 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   List<Widget> formPages() {
-    if (_page == 1) {
+    if (pageNum.page == 1) {
       return buildAddress() + pageButton('Next: Parking Space Info');
-    } else if (_page == 2) {
+    } else if (pageNum.page == 2) {
       return buildParkingType() + pageButton('Next: Price & Availability');
-    } else if (_page == 3) {
+    } else if (pageNum.page == 3) {
       return buildAvailability() + pageButton('Review');
-    } else if (_page == 4) {
+    } else if (pageNum.page == 4) {
       return review() + pageButton('Add Image & Submit');
     } else {
       return buildImages() + submitParking();
@@ -248,7 +223,7 @@ class _MyAddParkingState extends State<AddParking> {
         ),
         child: Text(
           'Adding a parking space owned by: ' + getUserName()
-          + '\n\nRequired fields marked with *',
+          + '\nRequired fields marked with *',
           textAlign: TextAlign.center,
         ),
       ),
@@ -261,7 +236,7 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       Container(
         decoration: BoxDecoration(
-          color: _incomplete ? Colors.red[50] : Colors.green[50],
+          color: formError.incomplete ? Colors.red[50] : Colors.green[50],
         ),
         child: getState(),
       ),
@@ -275,19 +250,19 @@ class _MyAddParkingState extends State<AddParking> {
     return [
       Container(
         decoration: BoxDecoration(
-          color: _incomplete ? Colors.red[50] : Colors.green[50],
+          color: formError.incomplete ? Colors.red[50] : Colors.green[50],
         ),
         child: getSize(),
       ),
       SizedBox(height: 10),
       Container(
         decoration: BoxDecoration(
-          color: _incomplete ? Colors.red[50] : Colors.green[50],
+          color: formError.incomplete ? Colors.red[50] : Colors.green[50],
         ),
         child: getType(),
       ),
       SizedBox(height: 10),
-      _type == "Driveway" ?
+      parkingSpace.type == "Driveway" ?
       Container(
         decoration: BoxDecoration(color: Colors.green[50]),
         child: getDrivewayDetails(),
@@ -349,7 +324,7 @@ class _MyAddParkingState extends State<AddParking> {
           '* Enter a descriptive title for your parking space:'),
       onSaved: (value) {
         setState(() {
-          _title = value;
+          parkingSpace.title = value;
         });
       },
     );
@@ -362,7 +337,7 @@ class _MyAddParkingState extends State<AddParking> {
       decoration: textFormFieldDeco('* Street Address:'),
       onSaved: (value) {
         setState(() {
-          _address = value;
+          parkingSpace.address = value;
         });
       },
     );
@@ -375,7 +350,7 @@ class _MyAddParkingState extends State<AddParking> {
       decoration: textFormFieldDeco('* City:'),
       onSaved: (value) {
         setState(() {
-          _city = value;
+          parkingSpace.city = value;
         });
       },
     );
@@ -386,20 +361,20 @@ class _MyAddParkingState extends State<AddParking> {
       titleText: 'State',
       hintText: '* Currently only available in California:',
       required: true,
-      value: _state,
+      value: parkingSpace.state,
       onSaved: (value) {
         setState(() {
-          if (_state.isEmpty) {
-            _incomplete = true;
+          if (parkingSpace.state.isEmpty) {
+            formError.incomplete = true;
           } else {
-            _incomplete = false;
-            _state = value;
+            formError.incomplete = false;
+            parkingSpace.state = value;
           }
         });
       },
       onChanged: (value) {
         setState(() {
-          _state = value;
+          parkingSpace.state = value;
         });
       },
       dataSource: _stateData,
@@ -416,7 +391,7 @@ class _MyAddParkingState extends State<AddParking> {
       decoration: textFormFieldDeco('* Zip Code:'),
       onSaved: (value) {
         setState(() {
-          _zip = value;
+          parkingSpace.zip = value;
         });
       },
     );
@@ -429,20 +404,20 @@ class _MyAddParkingState extends State<AddParking> {
       titleText: '* Parking Space Size',
       hintText: 'Select one:',
       required: true,
-      value: _size,
+      value: parkingSpace.size,
       onSaved: (value) {
         setState(() {
-          if (_size.isEmpty) {
-            _incomplete = true;
+          if (parkingSpace.size.isEmpty) {
+            formError.incomplete = true;
           } else {
-            _incomplete = false;
-            _size = value;
+            formError.incomplete = false;
+            parkingSpace.size = value;
           }
         });
       },
       onChanged: (value) {
         setState(() {
-          _size = value;
+          parkingSpace.size = value;
         });
       },
       dataSource: _sizeData,
@@ -456,20 +431,20 @@ class _MyAddParkingState extends State<AddParking> {
       titleText: '* Type of Parking Space',
       hintText: 'Select one:',
       required: true,
-      value: _type,
+      value: parkingSpace.type,
       onSaved: (value) {
         setState(() {
-          if (_type.isEmpty) {
-            _incomplete = true;
+          if (parkingSpace.type.isEmpty) {
+            formError.incomplete = true;
           } else {
-            _incomplete = false;
-            _type = value;
+            formError.incomplete = false;
+            parkingSpace.type = value;
           }
         });
       },
       onChanged: (value) {
         setState(() {
-          _type = value;
+          parkingSpace.type = value;
         });
       },
       dataSource: _typeData,
@@ -482,20 +457,20 @@ class _MyAddParkingState extends State<AddParking> {
     return DropDownFormField(
       titleText: '* Driveway Parking Space:',
       hintText: 'Select one:',
-      value: _driveway,
+      value: parkingSpace.driveway,
       onSaved: (value) {
         setState(() {
           if (value.isEmpty) {
-            _driveway = "N/A";
+            parkingSpace.driveway = "N/A";
           } else {
-            _driveway = value;
+            parkingSpace.driveway = value;
           }
-          _spaceType = "N/A";
+          parkingSpace.spaceType = "N/A";
         });
       },
       onChanged: (value) {
         setState(() {
-          _driveway = value;
+          parkingSpace.driveway = value;
         });
       },
       dataSource: _drivewayData,
@@ -508,20 +483,20 @@ class _MyAddParkingState extends State<AddParking> {
     return DropDownFormField(
       titleText: '* Additional Parking Space Info',
       hintText: 'Select one:',
-      value: _spaceType,
+      value: parkingSpace.spaceType,
       onSaved: (value) {
         setState(() {
           if (value.isEmpty) {
-            _spaceType = "N/A";
+            parkingSpace.spaceType = "N/A";
           } else {
-            _spaceType = value;
+            parkingSpace.spaceType = value;
           }
-          _driveway = "N/A";
+          parkingSpace.driveway = "N/A";
         });
       },
       onChanged: (value) {
         setState(() {
-          _spaceType = value;
+          parkingSpace.spaceType = value;
         });
       },
       dataSource: _parkingSpaceTypeData,
@@ -540,10 +515,10 @@ class _MyAddParkingState extends State<AddParking> {
       okButtonLabel: 'OK',
       cancelButtonLabel: 'CANCEL',
       hintText: 'Select all that apply',
-      value: _myAmenities,
+      value: parkingSpace.myAmenities,
       onSaved: (value) {
         setState(() {
-          _myAmenities = value;
+          parkingSpace.myAmenities = value;
         });
       },
     );
@@ -558,10 +533,10 @@ class _MyAddParkingState extends State<AddParking> {
       decoration: textFormFieldDeco('Other important details about your space:'),
       onSaved: (value) {
         if (value.isEmpty) {
-          _details = "";
+          parkingSpace.details = "";
         }
         setState(() {
-          _details = value;
+          parkingSpace.details = value;
         });
       },
     );
@@ -579,10 +554,10 @@ class _MyAddParkingState extends State<AddParking> {
       okButtonLabel: 'OK',
       cancelButtonLabel: 'CANCEL',
       hintText: 'Select all days your parking space\nwill be available',
-      value: _myDays,
+      value: parkingSpace.myDays,
       onSaved: (value) {
         setState(() {
-          _myDays = value;
+          parkingSpace.myDays = value;
         });
       },
     );
@@ -602,8 +577,8 @@ class _MyAddParkingState extends State<AddParking> {
         );
         setState(() {
           type == "start" ?
-            _startTime = DateFormat('HH:mm').format(DateTimeField.convert(time))
-            : _endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
+            parkingSpace.startTime = DateFormat('HH:mm').format(DateTimeField.convert(time))
+            : parkingSpace.endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
         });
         return DateTimeField.convert(time);
       },
@@ -619,7 +594,7 @@ class _MyAddParkingState extends State<AddParking> {
       decoration: textFormFieldDeco('* Price per month (\$):'),
       onSaved: (value) {
         setState(() {
-          _price = priceController.text;
+          parkingSpace.price = priceController.text;
         });
       },
     );
@@ -676,25 +651,25 @@ class _MyAddParkingState extends State<AddParking> {
         style: Theme.of(context).textTheme.display2,
       ),
       SizedBox(height: 10),
-      Text('Title: ' + _title),
-      Text('Address: ' + _address),
-      Text('City: ' + _city_format),
-      Text('State: ' + _state),
-      Text('Zip: ' + _zip),
-      Text('Size: ' + _size),
-      Text('Type: ' + _type),
-      Text('Driveway: ' + _driveway),
-      Text('Space Type: ' + _spaceType),
-      Text('Amenities: ' + _myAmenities.toString()),
-      Text('Additional Details: ' + _details),
-      Text('Days Available: ' + _myDays.toString()),
-      Text('Available Starting at: ' + _startTime),
-      Text('Available Until: ' + _endTime),
-      Text('Price per month: \$' + _price),
+      Text('Title: ' + parkingSpace.title),
+      Text('Address: ' + parkingSpace.address),
+      Text('City: ' + parkingSpace.city_format),
+      Text('State: ' + parkingSpace.state),
+      Text('Zip: ' + parkingSpace.zip),
+      Text('Size: ' + parkingSpace.size),
+      Text('Type: ' + parkingSpace.type),
+      Text('Driveway: ' + parkingSpace.driveway),
+      Text('Space Type: ' + parkingSpace.spaceType),
+      Text('Amenities: ' + parkingSpace.myAmenities.toString()),
+      Text('Additional Details: ' + parkingSpace.details),
+      Text('Days Available: ' + parkingSpace.myDays.toString()),
+      Text('Available Starting at: ' + parkingSpace.startTime),
+      Text('Available Until: ' + parkingSpace.endTime),
+      Text('Price per month: \$' + parkingSpace.price),
       SizedBox(height: 10),
       Text('Additional info connected to this parking space:'),
       Text('Parking Space Owner: ' + getUserName()),
-      Text('Parking Space Coordinates: ' + _coordinates),
+      Text('Parking Space Coordinates: ' + parkingSpace.coordinates),
       SizedBox(height: 10),
       restart(),
       SizedBox(height: 50),
@@ -786,24 +761,24 @@ class _MyAddParkingState extends State<AddParking> {
     }
 
     var parkingData = {
-      'title': _title,
-      'address': _address,
-      'city': _city_format,
-      'state': _state,
-      'zip': _zip,
-      'size': _size,
-      'type': _type,
-      'driveway': _driveway,
-      'spacetype': _spaceType,
-      'amenities': _myAmenities.toString(),
-      'spacedetails': _details,
-      'days': _myDays.toString(),
-      'starttime': _startTime,
-      'endtime': _endTime,
-      'monthprice': _price,
-      'coordinates': _coordinates, // generated from the input address
-      'coordinates_r': _coord_rand, // random coordinates near actual address
-      'downloadURL': _downloadURL, // for the image (put in firebase storage)
+      'title': parkingSpace.title,
+      'address': parkingSpace.address,
+      'city': parkingSpace.city_format,
+      'state': parkingSpace.state,
+      'zip': parkingSpace.zip,
+      'size': parkingSpace.size,
+      'type': parkingSpace.type,
+      'driveway': parkingSpace.driveway,
+      'spacetype': parkingSpace.spaceType,
+      'amenities': parkingSpace.myAmenities.toString(),
+      'spacedetails': parkingSpace.details,
+      'days': parkingSpace.myDays.toString(),
+      'starttime': parkingSpace.startTime,
+      'endtime': parkingSpace.endTime,
+      'monthprice': parkingSpace.price,
+      'coordinates': parkingSpace.coordinates, // generated from the input address
+      'coordinates_r': parkingSpace.coord_rand, // random coordinates near actual address
+      'downloadURL': parkingSpace.downloadURL, // for the image (put in firebase storage)
       'uid': getUserID(), // parkingSpace owner is the current user
       'reserved': [].toString(), // list of UIDs (if reserved, starts empty)
       'cur_tenant': '', // current tenant (a UID, or empty if spot is available)
@@ -819,38 +794,40 @@ class _MyAddParkingState extends State<AddParking> {
 
   void validateAndSubmit() async {
     // After address info is input, create associated coordinates (if possible),
-    if(_page == 1){
+    if(pageNum.page == 1){
       try {
         _formKey.currentState.save();
-        _geoAddress = _address + ", " + _city + ", " + _zip;
+        var _geoAddress = parkingSpace.address + ", " + parkingSpace.city
+            + ", " + parkingSpace.zip;
         var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
         var first = addresses.first;
-        _coordinates = first.coordinates.toString();
-        _coord_rand = getRandomCoordinates(_coordinates);
+        parkingSpace.coordinates = first.coordinates.toString();
+        parkingSpace.coord_rand = getRandomCoordinates(parkingSpace.coordinates);
 
         print(first.addressLine + " : " + first.coordinates.toString());
-        print("random coordinates : " + _coord_rand);
+        print("random coordinates : " + parkingSpace.coord_rand);
 
         setState(() {
-          var addr = first.addressLine.split(", ");
-          _city_format = addr[1];
-          _invalidLoc = false;
+          //var addr = first.addressLine.split(", ");
+          var addr = getSplitAddress(first.addressLine);
+          parkingSpace.city_format = addr[1];
+          formError.invalidLoc = false;
         });
       }
       catch (e) {
         print("Error occurred: $e");
         setState(() {
-          _invalidLoc = true;
-          _errorMessage = "We can't find you!\nPlease enter a valid location.";
+          formError.invalidLoc = true;
+          formError.errorMessage = "We can't find you!\nPlease enter a valid location.";
         });
       }
     }
     // if location was valid, check additional validators
-    if (!_invalidLoc) {
+    if (!formError.invalidLoc) {
       if(!validateAndSave()){
         setState(() {
-          _errorMessage = "Make sure to fill out all required fields";
-          print(_errorMessage);
+          formError.errorMessage = "Make sure to fill out all required fields";
+          print(formError.errorMessage);
         });
       }
     }
@@ -861,15 +838,19 @@ class _MyAddParkingState extends State<AddParking> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      if (_incomplete) {
+      if (formError.incomplete) {
         return false;
       }
       setState(() {
-        _page++;
+        pageNum.page++;
       });
       return true;
     }
     return false;
+  }
+
+  List<String> getSplitAddress(String address){
+    return address.split(", ");
   }
 
   String validateTitle(String value) {
@@ -931,4 +912,112 @@ class _MyAddParkingState extends State<AddParking> {
     }
     return null;
   }
+}
+
+class CurrentUser {
+  FirebaseUser _currentUser;
+
+  FirebaseUser get currentUser => _currentUser;
+  set currentUser(FirebaseUser currentUser) => _currentUser = currentUser;
+}
+
+class PageNumber {
+  int _page = 1;
+
+  int get page => _page;
+  set page(int page) => _page = page;
+}
+
+class FormError {
+  bool _incomplete = false;
+  bool _invalidLoc = false;
+  String _errorMessage = '';
+
+  bool get incomplete => _incomplete;
+  set incomplete(bool incomplete) => _incomplete = incomplete;
+
+  bool get invalidLoc => _invalidLoc;
+  set invalidLoc(bool invalidLoc) => _invalidLoc = invalidLoc;
+
+  String get errorMessage => _errorMessage;
+  set errorMessage(String errorMessage) => _errorMessage = errorMessage;
+}
+
+class ParkingSpace {
+  String _title = '';
+  String _address = '';
+  String _city = '';
+  String _city_format = '';
+  String _state = '';
+  String _zip = '';
+  String _size = '';
+  String _type = '';
+  String _driveway = '';
+  String _spaceType = '';
+  List _myAmenities = [];
+  String _details = '';
+  List _myDays = [];
+  String _startTime = '';
+  String _endTime = '';
+  String _price = '';
+  String _coordinates = '';
+  String _coord_rand = '';
+  String _downloadURL;
+
+  String get title => _title;
+  set title(String title) => _title = title;
+
+  String get address => _address;
+  set address(String address) => _address = address;
+
+  String get city => _city;
+  set city(String city) => _city = city;
+
+  String get city_format => _city_format;
+  set city_format(String city) => _city_format = city;
+
+  String get state => _state;
+  set state(String state) => _state = state;
+
+  String get zip => _zip;
+  set zip(String zip) => _zip = zip;
+
+  String get size => _size;
+  set size(String size) => _size = size;
+
+  String get type => _type;
+  set type(String type) => _type = type;
+
+  String get driveway => _driveway;
+  set driveway(String driveway) => _driveway = driveway;
+
+  String get spaceType => _spaceType;
+  set spaceType(String spaceType) => _spaceType = spaceType;
+
+  List<dynamic> get myAmenities => _myAmenities;
+  set myAmenities(List<dynamic> myAmenities) => _myAmenities = myAmenities;
+
+  String get details => _details;
+  set details(String details) => _details = details;
+
+  List<dynamic> get myDays => _myDays;
+  set myDays(List<dynamic> myDays) => _myDays = myDays;
+
+  String get startTime => _startTime;
+  set startTime(String startTime) => _startTime = startTime;
+
+  String get endTime => _endTime;
+  set endTime(String endTime) => _endTime = endTime;
+
+  String get price => _price;
+  set price(String price) => _price = price;
+
+  String get coordinates => _coordinates;
+  set coordinates(String coordinates) => _coordinates = coordinates;
+
+  String get coord_rand => _coord_rand;
+  set coord_rand(String coord_rand) => _coord_rand = coord_rand;
+
+  String get downloadURL => _downloadURL;
+  set downloadURL(String downloadURL) => _downloadURL = downloadURL;
 }
