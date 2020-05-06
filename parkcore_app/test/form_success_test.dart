@@ -13,4 +13,30 @@ void main() {
     final titleFinder = find.text('Form Submitted. Success!');
     expect(titleFinder, findsOneWidget);
   });
+
+  testWidgets(
+      'Form success find 3 Image Icon Buttons', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: FormSuccess(),
+    ));
+
+    expect(find.byType(IconButton), findsNWidgets(3));
+  });
+
+  testWidgets(
+      'Form success gets icon button on click', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: FormSuccess(),
+    ));
+
+    final Finder showThanks = find.byKey(Key('acornButton'));
+
+    // Tap the acorn icon and trigger a snackbar with a message
+    await tester.tap(showThanks);
+    await tester.pump();
+
+    expect(find.text("Thank you!"), findsOneWidget);
+  });
 }
