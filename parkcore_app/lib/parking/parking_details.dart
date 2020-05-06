@@ -168,11 +168,11 @@ class DetailScreen extends StatelessWidget {
                       Icons.star,
                        color: Colors.purple[400],
                       ),
-                      /* These changes can be added for specific users who can rate
-                        onRatingUpdate: (rating) {
-                        print(rating);
-                        currentUser.reference.updateData({'rating': rating });
-                      }, */
+                      //These changes can be added for specific users who can rate
+                      onRatingUpdate: (rating) {
+//                        print(rating);
+//                        currentUser.reference.updateData({'rating': rating });
+                      },
                     )
                   ]
                 )),
