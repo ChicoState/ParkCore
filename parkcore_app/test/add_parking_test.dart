@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/parking/add_parking.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:parkcore_app/parking/random_coordinates.dart';
 
 
 void main() {
@@ -367,21 +368,166 @@ void main() {
     expect(AddParking().createState().getUserID(), "no current user");
   });
 
-//  testWidgets('callback', (WidgetTester tester) async {
-//    var pressed = false;
-//    final onPressed = () => pressed = true;
-//
-//    await tester.pumpWidget(
-//      MaterialApp(
-//        home: RaisedButton(
-//          child: Text('Next: Parking Space Info'),
-//          onPressed: onPressed,
-//        ),
-//      ),
-//    );
-//
-//    await tester.tap(find.byType(RaisedButton));
-//
-//    expect(pressed, isTrue);
-//  });
+  testWidgets('Check user loaded', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking(title: 'Post Your Parking Space'),
+    ));
+    final curUser = CurrentUser();
+
+    AddParking().createState().loadCurrentUser();
+    expect(curUser.currentUser, null);
+  });
+
+  test('Page number getter and setter', () {
+    final pageNum = PageNumber();
+    pageNum.page = 1;
+    expect(pageNum.page, 1);
+  });
+
+  test('Incomplete Form getter and setter', () {
+    final formError = FormError();
+    formError.incomplete = true;
+    expect(formError.incomplete, isTrue);
+  });
+
+  test('Complete Form (incomplete == false) getter and setter', () {
+    final formError = FormError();
+    formError.incomplete = false;
+    expect(formError.incomplete, isFalse);
+  });
+
+  test('Invalid Location - Form getter and setter', () {
+    final formError = FormError();
+    formError.invalidLoc = true;
+    expect(formError.invalidLoc, isTrue);
+  });
+
+  test('Valid Location (invalid == false) Form getter and setter', () {
+    final formError = FormError();
+    formError.invalidLoc = false;
+    expect(formError.invalidLoc, isFalse);
+  });
+
+  test('Form Error message getter and setter', () {
+    final formError = FormError();
+    formError.errorMessage = "We can't find you!\nPlease enter a valid location.";
+    expect(formError.errorMessage, "We can't find you!\nPlease enter a valid location.");
+  });
+
+  test('Parking Space Title getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.title = "My Parking Space";
+    expect(parkingSpace.title, "My Parking Space");
+  });
+
+  test('Parking Space Address getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.address = "123 Main St";
+    expect(parkingSpace.address, "123 Main St");
+  });
+
+  test('Parking Space City getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.city = "Chico";
+    expect(parkingSpace.city, "Chico");
+  });
+
+  test('Parking Space State getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.state = "CA";
+    expect(parkingSpace.state, "CA");
+  });
+
+  test('Parking Space Zip getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.zip = "95928";
+    expect(parkingSpace.zip, "95928");
+  });
+
+  test('Parking Space City (formatted) getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.city_format = "Chico";
+    expect(parkingSpace.city_format, "Chico");
+  });
+
+  testWidgets('check address formatted after string split', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking(title: "Post Your Parking Space"),
+    ));
+
+    final parkingSpace = ParkingSpace();
+    final String input = '215 Orange St, Chico, CA 95928, USA';
+    List<String> splitAddress = AddParking().createState().getSplitAddress(input);
+    parkingSpace.city_format = splitAddress[1];
+    expect(parkingSpace.city_format, "Chico");
+  });
+
+  test('Parking Space Size getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.size = "Compact";
+    expect(parkingSpace.size, "Compact");
+  });
+
+  test('Parking Space Type getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.size = "Driveway";
+    expect(parkingSpace.size, "Driveway");
+  });
+
+  test('Parking Space Type -- Space Type getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.size = "Parallel";
+    expect(parkingSpace.size, "Parallel");
+  });
+
+  test('Parking Space Amenities getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.myAmenities = ["Lit", "Covered", "Security Camera", "EV Charging"];
+    expect(parkingSpace.myAmenities, ["Lit", "Covered", "Security Camera", "EV Charging"]);
+  });
+
+  test('Parking Space Start Time getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.startTime = "09:00";
+    expect(parkingSpace.startTime, "09:00");
+  });
+
+  test('Parking Space End Time getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.endTime = "20:00";
+    expect(parkingSpace.endTime, "20:00");
+  });
+
+  test('Parking Space Coordinates getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.coordinates = "{39.7285,-121.8375}";
+    expect(parkingSpace.coordinates, "{39.7285,-121.8375}");
+  });
+
+  test('Parking Space Random Coordinates Latitude getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.coordinates = "{39.7285,-121.8375}";
+    parkingSpace.coord_rand = getRandomCoordinates(parkingSpace.coordinates);
+    expect(parkingSpace.coord_rand.contains("39"), isTrue);
+  });
+
+  test('Parking Space Random Coordinates Longitude getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.coordinates = "{39.7285,-121.8375}";
+    parkingSpace.coord_rand = getRandomCoordinates(parkingSpace.coordinates);
+    expect(parkingSpace.coord_rand.contains("-121"), isTrue);
+  });
+
+  testWidgets('Parking Form Check that page number increases', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking(title: 'Post Your Parking Space'),
+    ));
+    final pageNum = PageNumber();
+    pageNum.page++;
+    expect(pageNum.page, 2);
+    //expect(find.byType(DropDownFormField), findsNWidgets(3));
+  });
 }
