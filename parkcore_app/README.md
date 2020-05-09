@@ -6,9 +6,9 @@ faculty, and staff through the rental of driveways as personal parking spaces.
 ## Continuous Integration Status
 [![Codemagic build status](https://api.codemagic.io/apps/5eab11c076654b4dab8d58e0/5eab11c076654b4dab8d58df/status_badge.svg)](https://codemagic.io/apps/5eab11c076654b4dab8d58e0/5eab11c076654b4dab8d58df/latest_build)
 
-[![Build Status](https://travis-ci.com/shelleywong/ParkCore.svg?branch=master)](https://travis-ci.com/shelleywong/ParkCore)
+[![Build Status](https://travis-ci.com/ChicoState/ParkCore.svg?branch=master)](https://travis-ci.com/ChicoState/ParkCore)
 
-[![Coverage Status](https://coveralls.io/repos/github/shelleywong/ParkCore/badge.svg?branch=master)](https://coveralls.io/github/shelleywong/ParkCore?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/shelleywong/ParkCore/badge.svg?branch=master)](https://coveralls.io/github/ChicoState/ParkCore?branch=master)
 
 ## Getting Started
 
