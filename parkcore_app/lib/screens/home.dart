@@ -42,7 +42,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          key: Key('homeAppTitle'),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).backgroundColor,
         actions: <Widget>[
@@ -147,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // When Search Button is clicked, try to find a location (set of coordinates)
   void submitSearch(String search) async {
-    assert(search != null);
+    //assert(search != null);
     if(getLocation() != null) {
       setState(() {
         _input.input = "Find parking near: " + search;
@@ -270,7 +273,6 @@ class _MyHomePageState extends State<MyHomePage> {
         _loc.location = "${first.addressLine}";
         _coordinates.coordinates = first.coordinates.toString();
       });
-
     }
     catch (e) {
       print("Error occurred: $e");
