@@ -35,7 +35,7 @@ class _MyAddParkingState extends State<AddParking> {
   // Note: This is a `GlobalKey<FormState>`, not GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  //FirebaseUser currentUser;
+  //Current User is a FirebaseUser
   CurrentUser curUser = CurrentUser();
   ParkingSpace parkingSpace = ParkingSpace();
   PageNumber pageNum = PageNumber();
@@ -515,8 +515,7 @@ class _MyAddParkingState extends State<AddParking> {
       okButtonLabel: 'OK',
       cancelButtonLabel: 'CANCEL',
       hintText: 'Select all that apply',
-      value: parkingSpace.myAmenities == null ?
-        ["no amenities chosen"] : parkingSpace.myAmenities,
+      initialValue: parkingSpace.myAmenities,
       onSaved: (value) {
         if (value == null) return;
         setState(() {
@@ -556,8 +555,7 @@ class _MyAddParkingState extends State<AddParking> {
       okButtonLabel: 'OK',
       cancelButtonLabel: 'CANCEL',
       hintText: 'Select all days your parking space\nwill be available',
-      value: parkingSpace.myDays == null ?
-        ["no days chosen"] : parkingSpace.myDays,
+      initialValue: parkingSpace.myDays,
       onSaved: (value) {
         if (value == null) return;
         setState(() {
