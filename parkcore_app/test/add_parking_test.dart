@@ -488,11 +488,11 @@ void main() {
     expect(parkingSpace.spaceType, "Parallel");
   });
 
-//  test('Parking Space Amenities getter and setter', () {
-//    final parkingSpace = ParkingSpace();
-//    parkingSpace.myAmenities = ["Lit", "Covered", "Security Camera", "EV Charging"];
-//    expect(parkingSpace.myAmenities, ["Lit", "Covered", "Security Camera", "EV Charging"]);
-//  });
+  test('Parking Space Amenities getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.myAmenities = ["Lit", "Covered", "Security Camera", "EV Charging"];
+    expect(parkingSpace.myAmenities, ["Lit", "Covered", "Security Camera", "EV Charging"]);
+  });
 
   test('Parking Space Details getter and setter', () {
     final parkingSpace = ParkingSpace();
@@ -500,11 +500,11 @@ void main() {
     expect(parkingSpace.details, "down an alley");
   });
 
-//  test('Parking Space Days Available getter and setter', () {
-//    final parkingSpace = ParkingSpace();
-//    parkingSpace.myDays = ["MON", "TUE", "WED", "THU", "FRI"];
-//    expect(parkingSpace.myDays, ["MON", "TUE", "WED", "THU", "FRI"]);
-//  });
+  test('Parking Space Days Available getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.myDays = ["MON", "TUE", "WED", "THU", "FRI"];
+    expect(parkingSpace.myDays, ["MON", "TUE", "WED", "THU", "FRI"]);
+  });
 
   test('Parking Space Start Time getter and setter', () {
     final parkingSpace = ParkingSpace();

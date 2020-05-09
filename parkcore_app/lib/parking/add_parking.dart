@@ -517,6 +517,7 @@ class _MyAddParkingState extends State<AddParking> {
       hintText: 'Select all that apply',
       value: parkingSpace.myAmenities,
       onSaved: (value) {
+        if (value == null) return;
         setState(() {
           parkingSpace.myAmenities = value;
         });
@@ -556,6 +557,7 @@ class _MyAddParkingState extends State<AddParking> {
       hintText: 'Select all days your parking space\nwill be available',
       value: parkingSpace.myDays,
       onSaved: (value) {
+        if (value == null) return;
         setState(() {
           parkingSpace.myDays = value;
         });
