@@ -515,7 +515,8 @@ class _MyAddParkingState extends State<AddParking> {
       okButtonLabel: 'OK',
       cancelButtonLabel: 'CANCEL',
       hintText: 'Select all that apply',
-      value: parkingSpace.myAmenities,
+      value: parkingSpace.myAmenities == null ?
+        ["no amenities chosen"] : parkingSpace.myAmenities,
       onSaved: (value) {
         if (value == null) return;
         setState(() {
@@ -555,7 +556,8 @@ class _MyAddParkingState extends State<AddParking> {
       okButtonLabel: 'OK',
       cancelButtonLabel: 'CANCEL',
       hintText: 'Select all days your parking space\nwill be available',
-      value: parkingSpace.myDays,
+      value: parkingSpace.myDays == null ?
+        ["no days chosen"] : parkingSpace.myDays,
       onSaved: (value) {
         if (value == null) return;
         setState(() {
