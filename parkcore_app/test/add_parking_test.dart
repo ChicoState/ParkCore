@@ -472,20 +472,38 @@ void main() {
 
   test('Parking Space Type getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.size = "Driveway";
-    expect(parkingSpace.size, "Driveway");
+    parkingSpace.type = "Driveway";
+    expect(parkingSpace.type, "Driveway");
+  });
+
+  test('Parking Space Driveway getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.driveway = "Left";
+    expect(parkingSpace.driveway, "Left");
   });
 
   test('Parking Space Type -- Space Type getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.size = "Parallel";
-    expect(parkingSpace.size, "Parallel");
+    parkingSpace.spaceType = "Parallel";
+    expect(parkingSpace.spaceType, "Parallel");
   });
 
   test('Parking Space Amenities getter and setter', () {
     final parkingSpace = ParkingSpace();
     parkingSpace.myAmenities = ["Lit", "Covered", "Security Camera", "EV Charging"];
     expect(parkingSpace.myAmenities, ["Lit", "Covered", "Security Camera", "EV Charging"]);
+  });
+
+  test('Parking Space Details getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.details = "down an alley";
+    expect(parkingSpace.details, "down an alley");
+  });
+
+  test('Parking Space Days Available getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.myDays = ["MON", "TUE", "WED", "THU", "FRI"];
+    expect(parkingSpace.myDays, ["MON", "TUE", "WED", "THU", "FRI"]);
   });
 
   test('Parking Space Start Time getter and setter', () {
@@ -498,6 +516,18 @@ void main() {
     final parkingSpace = ParkingSpace();
     parkingSpace.endTime = "20:00";
     expect(parkingSpace.endTime, "20:00");
+  });
+
+  test('Parking Space Price getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.price = "42.00";
+    expect(parkingSpace.price, "42.00");
+  });
+
+  test('Parking Space image download url getter and setter', () {
+    final parkingSpace = ParkingSpace();
+    parkingSpace.downloadURL = "https://firebasestorage.googleapis.com/v0/b/parkcore-7e1db.appspot.com/o/ec6dfa50-73a5-11ea-ff1e-8963043440f0.jpg?alt=media&token=2125fdf0-1f32-4ab3-a27a-86b286862e1f";
+    expect(parkingSpace.downloadURL, "https://firebasestorage.googleapis.com/v0/b/parkcore-7e1db.appspot.com/o/ec6dfa50-73a5-11ea-ff1e-8963043440f0.jpg?alt=media&token=2125fdf0-1f32-4ab3-a27a-86b286862e1f");
   });
 
   test('Parking Space Coordinates getter and setter', () {
@@ -528,6 +558,48 @@ void main() {
     final pageNum = PageNumber();
     pageNum.page++;
     expect(pageNum.page, 2);
-    //expect(find.byType(DropDownFormField), findsNWidgets(3));
   });
+
+  testWidgets('Check load user', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking(title: 'Post Your Parking Space'),
+    ));
+    final curUser = CurrentUser();
+
+    AddParking().createState().loadCurrentUser();
+    expect(curUser.currentUser, null);
+  });
+
+//  testWidgets('Check user-entered title set as parkingForm.title', (WidgetTester tester) async {
+//    // Build our app and trigger a frame.
+//    await tester.pumpWidget(MaterialApp(
+//      home: AddParking(title: 'Post Your Parking Space'),
+//    ));
+//
+//    // Create the finders
+//    final Finder title = find.byKey(Key('title'));
+//    final parkingSpace = ParkingSpace();
+//    final Finder submit = find.widgetWithText(RaisedButton, "Next: Parking Space Info");
+//
+//    // Test text field form input
+//    await tester.enterText(title, 'My Parking Space!');
+//    await tester.tap(submit);
+//    await tester.pump();
+//    // Expect Text Widget message
+//    expect(parkingSpace.title, "My Parking Space!");
+//  });
+
+//  testWidgets('check form page 2 returns Containers', (WidgetTester tester) async {
+//    // Build our app and trigger a frame.
+//    await tester.pumpWidget(MaterialApp(
+//      home: AddParking(title: 'Post Your Parking Space'),
+//    ));
+//
+//    final pageNum = PageNumber();
+//    pageNum.page++;
+//    await tester.pump();
+//    final formPage = AddParking().createState().formPages();
+//    expect(find.byType(Container), findsNWidgets(5));
+//  });
 }
