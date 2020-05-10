@@ -8,6 +8,7 @@ class FormSuccess extends StatelessWidget {
 
   Widget showSnackBar(){
     return IconButton(
+      key: Key('acornButton'),
       icon: SvgPicture.asset(
         'assets/Acorns.svg',
         fit: BoxFit.fitWidth,
@@ -54,7 +55,7 @@ class FormSuccess extends StatelessWidget {
                 borderRadius: BorderRadius.circular(50.0),
                 child: Image.asset(
                   'assets/parkcore_logo_green2.jpg',
-                  height: 150,
+                  height: 120,
                   fit:BoxFit.fill,
                 ),
               ),
@@ -95,7 +96,7 @@ class FormSuccess extends StatelessWidget {
                 borderRadius: BorderRadius.circular(50.0),
                 child: Image.asset(
                   'assets/parkcore_logo_green2.jpg',
-                  height: 150,
+                  height: 120,
                   fit:BoxFit.fill,
                 ),
               ),

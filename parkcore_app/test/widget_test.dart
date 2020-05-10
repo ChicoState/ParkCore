@@ -5,8 +5,6 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/screens/home.dart';
@@ -146,7 +144,6 @@ void main() {
     ));
 
     // Create the finders
-    final completer = Completer<String>();
     final Finder searchinput = find.widgetWithText(
         TextFormField, 'Search by location');
     final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
@@ -158,5 +155,227 @@ void main() {
     await tester.pump();
 
     expect(MyHomePage().createState().getLocation(), isTrue);
+  });
+
+  testWidgets('check search location city string split', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+
+    final String input = 'Chico, CA, USA';
+
+    expect(MyHomePage().createState().getSplitAddress(input), ['Chico', 'CA', 'USA']);
+  });
+
+  testWidgets('check search location address string split', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+
+    final String input = '215 Orange St, Chico, CA 95928, USA';
+
+    expect(MyHomePage().createState().getSplitAddress(input),
+        ['215 Orange St', 'Chico', 'CA 95928', 'USA']);
+  });
+
+  test('Search input getter and setter', () {
+    final input = MyInput();
+    input.input = "chico, ca";
+    expect(input.input, "chico, ca");
+  });
+
+  test('Location getter and setter', () {
+    final loc = MyLoc();
+    loc.location = "Chico, CA, USA";
+    expect(loc.location, "Chico, CA, USA");
+  });
+
+  test('Failed Location getter and setter', () {
+    final loc = MyLoc();
+    final input = "notalocation";
+    loc.location = "Sorry, no search results for '" + input + "'.";
+    expect(loc.location, "Sorry, no search results for '" + input + "'.");
+  });
+
+  test('City getter and setter', () {
+    final city = MyCity();
+    city.city = "Chico";
+    expect(city.city, "Chico");
+  });
+
+  test('Coordinates getter and setter', () {
+    final coords = MyCoordinates();
+    coords.coordinates = '{39.7285,-121.8375}';
+    expect(coords.coordinates, '{39.7285,-121.8375}');
+  });
+
+  test('Location Found true - getter and setter', () {
+    final found = LocFound();
+    found.found = true;
+    expect(found.found, true);
+  });
+
+  test('Location Found false - getter and setter', () {
+    final found = LocFound();
+    found.found = false;
+    expect(found.found, false);
+  });
+
+  testWidgets('expect searchController text is not null', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'Chico, CA';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+  });
+
+  testWidgets('find getLocation is true', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'Chico, CA';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+  });
+
+  testWidgets('expect find searchResult widget', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'Chico, CA';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+
+    await tester.pump();
+    expect(find.byKey(Key("searchResult")), findsOneWidget);
+  });
+
+  testWidgets('expect "found" is false', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'notalocation';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+
+    await tester.pump();
+    expect(find.byKey(Key("searchResult")), findsOneWidget);
+
+    final found = LocFound();
+    await tester.pump();
+    expect(found.found, isFalse);
+  });
+
+  testWidgets('expect to find FailedSearch widget', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'notalocation';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+
+    await tester.pump();
+    expect(find.byKey(Key("searchResult")), findsOneWidget);
+
+    final found = LocFound();
+    await tester.pump();
+    expect(found.found, isFalse);
+
+    await tester.pump();
+    expect(find.byKey(Key("failedSearch")), findsOneWidget);
+  });
+
+  testWidgets('expect to find FailedSearch widget message', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'notalocation';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+
+    await tester.pump();
+    expect(find.byKey(Key("searchResult")), findsOneWidget);
+
+    // expect to find validateLocation() function
+    // haven't found way to test geocoder (which this function uses)
+    MyHomePage().createState().validateLocation();
   });
 }

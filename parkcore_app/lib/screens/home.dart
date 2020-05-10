@@ -25,11 +25,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final _searchKey = GlobalKey<FormState>();
   final _searchController = TextEditingController();
 
-  String _input = "none";
-  String _loc = "";
-  String _city = "";
-  String _coordinates = "";
-  bool _found = false;
+  MyInput _input = MyInput();
+  MyLoc _loc = MyLoc();
+  MyCity _city = MyCity();
+  MyCoordinates _coordinates = MyCoordinates();
+  LocFound _found = LocFound();
 
   @override
   void dispose() {
@@ -42,7 +42,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          key: Key('homeAppTitle'),
+        ),
         centerTitle: true,
         backgroundColor: Theme.of(context).backgroundColor,
         actions: <Widget>[
@@ -63,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               SizedBox(height: 10),
-              _input == "none" ? Text("") : SearchReturn(),
+              _input.input == "none" ? Text("") : SearchReturn(),
               SizedBox(height: 50),
               ParkCoreText(),
             ],
@@ -147,10 +150,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // When Search Button is clicked, try to find a location (set of coordinates)
   void submitSearch(String search) async {
-    assert(search != null);
+    //assert(search != null);
     if(getLocation() != null) {
       setState(() {
-        _input = "Find parking near: " + search;
+        _input.input = "Find parking near: " + search;
       });
     }
   }
@@ -161,13 +164,13 @@ class _MyHomePageState extends State<MyHomePage> {
       key: Key('searchResult'),
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text("$_input"),
+        Text(_input.input),
         SizedBox(height: 10.0),
         Divider(
           color: Colors.black,
           height: 20,
         ),
-        _found ? FoundResults() : FailedSearch(),
+        _found.found ? FoundResults() : FailedSearch(),
         Divider(
           color: Colors.black,
           height: 20,
@@ -191,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                 padding: EdgeInsets.all(10.0),
                 child: Text(
-                  _loc,
+                  _loc.location,
                   style: Theme.of(context).textTheme.display2,
                 ),
               ),
@@ -211,9 +214,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     MaterialPageRoute(
                       builder: (context) => FindParking(
                         title: 'Find Parking',
-                        city: _city,
-                        latlong: _coordinates == null ?
-                        '{39.7285,-121.8375}' : _coordinates,
+                        city: _city.city,
+                        latlong: _coordinates.coordinates == null ?
+                        '{39.7285,-121.8375}' : _coordinates.coordinates,
                       ),
                     ),
                   );
@@ -231,9 +234,10 @@ class _MyHomePageState extends State<MyHomePage> {
   // If Search was not successful, show error message
   Widget FailedSearch() {
     return Padding(
+      key: Key("failedSearch"),
       padding: EdgeInsets.all(10.0),
       child: Text(
-        _loc,
+        _loc.location,
         style: Theme.of(context).textTheme.display2,
       ),
     );
@@ -253,32 +257,64 @@ class _MyHomePageState extends State<MyHomePage> {
   // Use geocoder to search for a location that matches search result input
   void validateLocation() async {
     try {
-      var addresses =
-      await Geocoder.local.findAddressesFromQuery(_searchController.text);
-      var first = addresses.first;
-      var addr = first.addressLine.split(", ");
+      var addresses = await Geocoder.local.findAddressesFromQuery(_searchController.text);
+      var first = addresses.first; // Get Address
+      var addr = getSplitAddress(first.addressLine.toString()); // String []
 
-      print(first.addressLine + " : " + first.coordinates.toString());
-
+      // geocoder has different results depending on details given
+      // extracting city from the address so find_parking goes to specified city
       setState(() {
-        _found = true;
-        // geocoder has different results depending on details given
+        _found.found = true;
         if(addr.length <= 3){
-          _city = addr[0];  // when addr is: city, state, country
+          _city.city = addr[0];  // when addr is: city, state, country
         }
         else{
-          _city = addr[1]; // when addr is: address, city, state, country
+          _city.city = addr[1]; // when addr is: address, city, state, country
         }
-        _loc = "${first.addressLine}";
-        _coordinates = first.coordinates.toString();
+        _loc.location = "${first.addressLine}";
+        _coordinates.coordinates = first.coordinates.toString();
       });
     }
     catch (e) {
       print("Error occurred: $e");
       setState(() {
-        _found = false;
-        _loc = "Sorry, no search results for '" + _searchController.text + "'.";
+        _found.found = false;
+        _loc.location = "Sorry, no search results for '" + _searchController.text + "'.";
       });
     }
   }
+
+  List<String> getSplitAddress(String address){
+    return address.split(", ");
+  }
+}
+
+class MyInput {
+  String _input = "none";
+  String get input => _input;
+  set input(String input) => _input = input;
+}
+
+class MyLoc {
+  String _loc = "";
+  String get location => _loc;
+  set location(String loc) => _loc = loc;
+}
+
+class MyCity {
+  String _city = "";
+  String get city => _city;
+  set city(String city) => _city = city;
+}
+
+class MyCoordinates {
+  String _coordinates = "";
+  String get coordinates => _coordinates;
+  set coordinates(String coordinates) => _coordinates = coordinates;
+}
+
+class LocFound {
+  bool _found = false;
+  bool get found => _found;
+  set found(bool found) => _found = found;
 }
