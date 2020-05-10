@@ -223,12 +223,159 @@ void main() {
     expect(found.found, false);
   });
 
-//  testWidgets('find search results Go button', (
-//      WidgetTester tester) async {
-//    await tester.pumpWidget(MaterialApp(
-//      home: MyHomePage(title: "ParkCore"),
-//    ));
-//
-//    expect(find.byKey(Key("foundResult")), findsOneWidget);
-//  });
+  testWidgets('expect searchController text is not null', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'Chico, CA';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+  });
+
+  testWidgets('find getLocation is true', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'Chico, CA';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+  });
+
+  testWidgets('expect find searchResult widget', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'Chico, CA';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+
+    await tester.pump();
+    expect(find.byKey(Key("searchResult")), findsOneWidget);
+  });
+
+  testWidgets('expect "found" is false', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'notalocation';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+
+    await tester.pump();
+    expect(find.byKey(Key("searchResult")), findsOneWidget);
+
+    final found = LocFound();
+    await tester.pump();
+    expect(found.found, isFalse);
+  });
+
+  testWidgets('expect to find FailedSearch widget', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'notalocation';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+
+    await tester.pump();
+    expect(find.byKey(Key("searchResult")), findsOneWidget);
+
+    final found = LocFound();
+    await tester.pump();
+    expect(found.found, isFalse);
+
+    await tester.pump();
+    expect(find.byKey(Key("failedSearch")), findsOneWidget);
+  });
+
+  testWidgets('expect to find FailedSearch widget message', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: "ParkCore"),
+    ));
+    final _searchController = TextEditingController();
+    final Finder searchtext = find.widgetWithText(
+        TextFormField, 'Search by location');
+    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    _searchController.text = 'notalocation';
+    // Test form search field input
+    await tester.enterText(searchtext, _searchController.text);
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(_searchController.text, isNotNull);
+
+    await tester.pump();
+    expect(MyHomePage().createState().getLocation(), isTrue);
+
+    await tester.pump();
+    expect(find.byKey(Key("searchResult")), findsOneWidget);
+
+    // expect to find validateLocation() function
+    // haven't found way to test geocoder (which this function uses)
+    MyHomePage().createState().validateLocation();
+  });
 }

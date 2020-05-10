@@ -234,6 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // If Search was not successful, show error message
   Widget FailedSearch() {
     return Padding(
+      key: Key("failedSearch"),
       padding: EdgeInsets.all(10.0),
       child: Text(
         _loc.location,
