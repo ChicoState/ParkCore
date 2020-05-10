@@ -20,12 +20,14 @@ class MenuDrawer extends StatelessWidget {
             ),
           ),
           CreateMenuItem(
+            myKey: Key("homeKey"),
             context: context,
             icon: Icons.home,
             text: 'Home',
             route: '/home',
           ),
           CreateMenuItem(
+            myKey: Key("addParkingKey"),
             context: context,
             icon: Icons.directions_car,
             text: 'Post a Parking Space',
@@ -33,12 +35,14 @@ class MenuDrawer extends StatelessWidget {
           ),
           DefaultMap(context),
           CreateMenuItem(
+            myKey: Key("contactKey"),
             context: context,
             icon: Icons.contacts,
             text: 'Contact Us',
             route: '/contact',
           ),
           CreateMenuItem(
+            myKey: Key("aboutKey"),
             context: context,
             icon: Icons.sentiment_satisfied,
             text: 'About ParkCore',
@@ -51,8 +55,10 @@ class MenuDrawer extends StatelessWidget {
 }
 
 Widget CreateMenuItem(
-    {BuildContext context, IconData icon, String text, String route}) {
+    {Key myKey, BuildContext context, IconData icon, String text, String route}) {
   return ListTile(
+    //key: Key('menuItem'),
+    key: myKey,
     title: Row(
       children: <Widget>[
         Flexible(
@@ -89,6 +95,7 @@ Widget CreateMenuItem(
 
 Widget DefaultMap(BuildContext context) {
   return ListTile(
+    key: Key('menuMap'),
     title: Row(
       children: <Widget>[
         Flexible(
