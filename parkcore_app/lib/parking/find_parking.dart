@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geocoder/model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:great_circle_distance2/great_circle_distance2.dart';
@@ -605,9 +606,7 @@ class _MyFindParkingState extends State<FindParking> {
     }
   }
 
-  Widget displayDistance(String coordinates){
-
-    double adjustDistance(var i){
+  double adjustDistance(var i){
       if(i > 1){
         return i + i.floor()*.25;
       }
@@ -615,31 +614,31 @@ class _MyFindParkingState extends State<FindParking> {
         return i;
       }
     }
-    String haversize() {
+  String haversize(coordinates) {
 
-      var lat = num.parse(coordinates.substring(1, coordinates.indexOf(',')));
-      var long = num.parse(coordinates.substring(coordinates.indexOf(',') + 1, coordinates.length -1));
+    var lat = num.parse(coordinates.substring(1, coordinates.indexOf(',')));
+    var long = num.parse(coordinates.substring(coordinates.indexOf(',') + 1, coordinates.length -1));
 
-      final lat1 = 39.729918;
-      final lon1 =  -121.849759;
+    final lat1 = 39.729918;
+    final lon1 =  -121.849759;
 
-      final lat2 = lat;
-      final lon2 = long;
+    final lat2 = lat;
+    final lon2 = long;
 
-      var gcd = GreatCircleDistance.fromDegrees(
-        latitude1: lat1, longitude1: lon1, latitude2: lat2, longitude2: lon2);
+    var gcd = GreatCircleDistance.fromDegrees(
+      latitude1: lat1, longitude1: lon1, latitude2: lat2, longitude2: lon2);
 
-      /*print(
-        'Distance from location 1 to 2 using the Haversine formula is: ${(adjustDistance((gcd.haversineDistance()/1609)*15))}');*/
-      return(adjustDistance((gcd.haversineDistance()/1609))*25).round().toString();
+    return(adjustDistance((gcd.haversineDistance()/1609))*25).round().toString();
 
-    }
+  }
+
+  Widget displayDistance(String coordinates){
 
     return Container(
       padding: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget> [
-          Text(haversize() + ' Min' ?? 'null', style: TextStyle(fontSize: 15)),
+          Text(haversize(coordinates) + ' Min' ?? 'null', style: TextStyle(fontSize: 15)),
           Icon(Icons.directions_walk, size: 20,)
         ]
       )
