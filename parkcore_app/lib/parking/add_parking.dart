@@ -882,13 +882,6 @@ class _MyAddParkingState extends State<AddParking> {
     return null;
   }
 
-  String validateState(String value) {
-    if (value.isEmpty) {
-      return 'Field can\'t be empty';
-    }
-    return null;
-  }
-
   String validateZip(String value) {
     if (value.isEmpty) {
       return 'Field can\'t be empty';

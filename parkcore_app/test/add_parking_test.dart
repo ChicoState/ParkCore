@@ -235,24 +235,6 @@ void main() {
     expect(AddParking().createState().validateCity(''), "Field can\'t be empty");
   });
 
-  testWidgets('Validate state for parking space', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MaterialApp(
-      home: AddParking(title: 'Post Your Parking Space'),
-    ));
-
-    expect(AddParking().createState().validateState('CA'), isNull);
-  });
-
-  testWidgets('Check state for parking space is empty', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MaterialApp(
-      home: AddParking(title: 'Post Your Parking Space'),
-    ));
-
-    expect(AddParking().createState().validateState(''), "Field can\'t be empty");
-  });
-
   testWidgets('Enter zip for parking space', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(

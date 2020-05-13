@@ -91,7 +91,6 @@ class _MyFindParkingState extends State<FindParking> {
                               '\$75 or less', '\$100 or less'];
   bool _isVisible = false;
   bool pressed = false;
-  bool isLoading = true;
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     await Firestore.instance.collection('parkingSpaces')
