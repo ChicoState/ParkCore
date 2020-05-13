@@ -11,7 +11,7 @@ import Firebase
   ) -> Bool {
     FirebaseApp.configure()
     GeneratedPluginRegistrant.register(with: self)
-    GMSServices.provideAPIKey("YOUR_API_KEY")
+    GMSServices.provideAPIKey("AIzaSyDpQlncu1s_EM1DyWpKtFSP-0za67kJysM")
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
