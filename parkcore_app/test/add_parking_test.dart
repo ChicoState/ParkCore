@@ -11,7 +11,6 @@ import 'package:parkcore_app/parking/add_parking.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:parkcore_app/parking/random_coordinates.dart';
 
-
 void main() {
 
   testWidgets('Find Add Parking Form', (WidgetTester tester) async {
@@ -577,11 +576,27 @@ void main() {
 //    await tester.pumpWidget(MaterialApp(
 //      home: AddParking(title: 'Post Your Parking Space'),
 //    ));
-//
 //    final pageNum = PageNumber();
-//    pageNum.page++;
-//    await tester.pump();
-//    final formPage = AddParking().createState().formPages();
-//    expect(find.byType(Container), findsNWidgets(5));
+//    final parkingSpace = ParkingSpace();
+//    final formError = FormError();
+//    expect(find.text("Part 1 of 5"), findsOneWidget);
+//    parkingSpace.title = "My Title!";
+//    parkingSpace.address = "My address";
+//    parkingSpace.city = "notalocation";
+//    parkingSpace.state = "CA";
+//    parkingSpace.zip = "12345";
+//    parkingSpace.city_format = "";
+//    formError.invalidLoc = true;
+//    formError.errorMessage = "We can't find you!\nPlease enter a valid location.";
+////    await tester.pump(Duration(seconds: 3));
+////    await tester.pump(Duration(seconds: 3));
+//    var formPages = AddParking().createState().formPages();
+//    AddParking().createState().pageButton('Next: Parking Space Info');
+//    await tester.pump(Duration(seconds: 3));
+//    //await tester.pump(Duration(seconds: 3));
+//
+//   // expect(parkingSpace.coordinates, isNotNull);
+//    //expect(find.text("Part 2 of 5"), findsOneWidget);
 //  });
+
 }

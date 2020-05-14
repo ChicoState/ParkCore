@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
 
 void main() {
