@@ -6,8 +6,8 @@ import 'package:rxdart/rxdart.dart';
 class AuthService {
   //constructor 
   AuthService() {
-    //user = _auth.onAuthStateChanged;
-    user = Observable(_auth.onAuthStateChanged);
+    user = _auth.onAuthStateChanged;
+    //user = Observable(_auth.onAuthStateChanged);
 
     profile = user.switchMap((FirebaseUser u) {
       if (u != null) {
@@ -17,8 +17,8 @@ class AuthService {
             .snapshots()
             .map((snap) => snap.data);
       } else {
-        //return Stream.value({});
-        return Observable.just({});
+        return Stream.value({});
+        //return Observable.just({});
       }
     });
   }
@@ -27,10 +27,10 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
 
-  //Stream<FirebaseUser> user; //firebase user
-  //Stream<Map<String, dynamic>> profile;
-  Observable<FirebaseUser> user; //firebase user
-  Observable<Map<String, dynamic>> profile;
+  Stream<FirebaseUser> user; //firebase user
+  Stream<Map<String, dynamic>> profile;
+  //Observable<FirebaseUser> user; //firebase user
+  //Observable<Map<String, dynamic>> profile;
   PublishSubject loading = PublishSubject();
 
   Future<FirebaseUser> googleSignIn() async {
@@ -44,7 +44,7 @@ class AuthService {
     FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
 
     updateUserData(user);
-    print("signed in " + user.displayName);
+    print('signed in ' + user.displayName);
     loading.add(false);
     return user;
   }

@@ -31,8 +31,8 @@ dependencies:
   # login and auth
   firebase_auth: ^0.15.5
   google_sign_in: ^4.2.0
-  rxdart: 0.20.0
-  #rxdart: ^0.23.1
+  #rxdart: 0.20.0
+  rxdart: ^0.23.1
 
   google_maps_flutter: ^0.5.11
   http: ^0.12.0+1
