@@ -17,11 +17,11 @@ import 'package:parkcore_app/navigate/parkcore_button.dart';
 
 class AddParking extends StatefulWidget {
   AddParking({Key key, this.title}) : super(key: key);
-  // This widget is the "add parking" page of the app. It is stateful: it has a
+  // This widget is the 'add parking' page of the app. It is stateful: it has a
   // State object (defined below) that contains fields that affect how it looks.
   // This class is the configuration for the state. It holds the values (title)
   // provided by the parent (App widget) and used by the build method of the
-  // State. Fields in a Widget subclass are always marked "final".
+  // State. Fields in a Widget subclass are always marked 'final'.
 
   final String title;
 
@@ -56,7 +56,7 @@ class _MyAddParkingState extends State<AddParking> {
     });
   }
 
-  final format = DateFormat("HH:mm");
+  final format = DateFormat('HH:mm');
   final priceController = MoneyMaskedTextController(
       decimalSeparator: '.',
       thousandSeparator: ',',
@@ -66,7 +66,7 @@ class _MyAddParkingState extends State<AddParking> {
     if (curUser.currentUser != null) {
       return curUser.currentUser.displayName;
     } else {
-      return "no current user";
+      return 'no current user';
     }
   }
 
@@ -74,56 +74,56 @@ class _MyAddParkingState extends State<AddParking> {
     if (curUser.currentUser != null) {
       return curUser.currentUser.uid;
     } else {
-      return "no current user";
+      return 'no current user';
     }
   }
 
   final _stateData = [
-    {"display": "California", "value": "CA"},
+    {'display': 'California', 'value': 'CA'},
   ];
 
   final _sizeData = [
-    {"display": "Compact", "value": "Compact"},
-    {"display": "Regular", "value": "Regular"},
-    {"display": "Oversized", "value": "Oversized"},
+    {'display': 'Compact', 'value': 'Compact'},
+    {'display': 'Regular', 'value': 'Regular'},
+    {'display': 'Oversized', 'value': 'Oversized'},
   ];
 
   final _typeData = [
-    {"display": "Driveway", "value": "Driveway"},
-    {"display": "In a Parking Lot", "value": "Parking Lot"},
-    {"display": "On the Street", "value": "Street"},
+    {'display': 'Driveway', 'value': 'Driveway'},
+    {'display': 'In a Parking Lot', 'value': 'Parking Lot'},
+    {'display': 'On the Street', 'value': 'Street'},
   ];
 
   final _drivewayData = [
-    {"display": "N/A", "value": "N/A"},
-    {"display": "Left side", "value": "Left"},
-    {"display": "Right side", "value": "Right"},
-    {"display": "Center", "value": "Center"},
-    {"display": "Whole Driveway", "value": "Whole Driveway"},
+    {'display': 'N/A', 'value': 'N/A'},
+    {'display': 'Left side', 'value': 'Left'},
+    {'display': 'Right side', 'value': 'Right'},
+    {'display': 'Center', 'value': 'Center'},
+    {'display': 'Whole Driveway', 'value': 'Whole Driveway'},
   ];
 
   final _parkingSpaceTypeData = [
-    {"display": "N/A", "value": "N/A"},
-    {"display": "Angled", "value": "Angled"},
-    {"display": "Parallel", "value": "Parallel"},
-    {"display": "Perpendicular", "value": "Perpendicular"},
+    {'display': 'N/A', 'value': 'N/A'},
+    {'display': 'Angled', 'value': 'Angled'},
+    {'display': 'Parallel', 'value': 'Parallel'},
+    {'display': 'Perpendicular', 'value': 'Perpendicular'},
   ];
 
   final _parkingAmenities = [
-    {"display": "Lit", "value": "Lit"},
-    {"display": "Covered", "value": "Covered"},
-    {"display": "Security Camera", "value": "Security Camera"},
-    {"display": "EV Charging", "value": "EV Charging"},
+    {'display': 'Lit', 'value': 'Lit'},
+    {'display': 'Covered', 'value': 'Covered'},
+    {'display': 'Security Camera', 'value': 'Security Camera'},
+    {'display': 'EV Charging', 'value': 'EV Charging'},
   ];
 
   final _days = [
-    {"display": "Sunday", "value": "SUN"},
-    {"display": "Monday", "value": "MON"},
-    {"display": "Tuesday", "value": "TUE"},
-    {"display": "Wednesday", "value": "WED"},
-    {"display": "Thursday", "value": "THU"},
-    {"display": "Friday", "value": "FRI"},
-    {"display": "Saturday", "value": "SAT"},
+    {'display': 'Sunday', 'value': 'SUN'},
+    {'display': 'Monday', 'value': 'MON'},
+    {'display': 'Tuesday', 'value': 'TUE'},
+    {'display': 'Wednesday', 'value': 'WED'},
+    {'display': 'Thursday', 'value': 'THU'},
+    {'display': 'Friday', 'value': 'FRI'},
+    {'display': 'Saturday', 'value': 'SAT'},
   ];
 
   // Select an image via gallery or camera
@@ -183,7 +183,7 @@ class _MyAddParkingState extends State<AddParking> {
             children: <Widget>[
               formError.incomplete || formError.invalidLoc
                 ? Text(formError.errorMessage, style: TextStyle(color: Colors.red))
-                : Text("Part " + pageNum.page.toString() + " of 5"),
+                : Text('Part ' + pageNum.page.toString() + ' of 5'),
               SizedBox(height: 10),
               Form(
                 key: _formKey,
@@ -262,7 +262,7 @@ class _MyAddParkingState extends State<AddParking> {
         child: getType(),
       ),
       SizedBox(height: 10),
-      parkingSpace.type == "Driveway" ?
+      parkingSpace.type == 'Driveway' ?
       Container(
         decoration: BoxDecoration(color: Colors.green[50]),
         child: getDrivewayDetails(),
@@ -289,9 +289,9 @@ class _MyAddParkingState extends State<AddParking> {
         child: getDays(),
       ),
       SizedBox(height: 10),
-      getTime("start"),
+      getTime('start'),
       SizedBox(height: 10),
-      getTime("end"),
+      getTime('end'),
       SizedBox(height: 10),
       getPrice(),
       SizedBox(height: 30),
@@ -304,9 +304,9 @@ class _MyAddParkingState extends State<AddParking> {
       SizedBox(height: 10),
       Row(
         children: <Widget>[
-          getImageType("camera"),
+          getImageType('camera'),
           SizedBox(width: 10),
-          getImageType("gallery"),
+          getImageType('gallery'),
         ],
       ),
       SizedBox(height: 30),
@@ -461,11 +461,11 @@ class _MyAddParkingState extends State<AddParking> {
       onSaved: (value) {
         setState(() {
           if (value.isEmpty) {
-            parkingSpace.driveway = "N/A";
+            parkingSpace.driveway = 'N/A';
           } else {
             parkingSpace.driveway = value;
           }
-          parkingSpace.spaceType = "N/A";
+          parkingSpace.spaceType = 'N/A';
         });
       },
       onChanged: (value) {
@@ -487,11 +487,11 @@ class _MyAddParkingState extends State<AddParking> {
       onSaved: (value) {
         setState(() {
           if (value.isEmpty) {
-            parkingSpace.spaceType = "N/A";
+            parkingSpace.spaceType = 'N/A';
           } else {
             parkingSpace.spaceType = value;
           }
-          parkingSpace.driveway = "N/A";
+          parkingSpace.driveway = 'N/A';
         });
       },
       onChanged: (value) {
@@ -534,7 +534,7 @@ class _MyAddParkingState extends State<AddParking> {
       decoration: textFormFieldDeco('Other important details about your space:'),
       onSaved: (value) {
         if (value.isEmpty) {
-          parkingSpace.details = "";
+          parkingSpace.details = '';
         }
         setState(() {
           parkingSpace.details = value;
@@ -569,7 +569,7 @@ class _MyAddParkingState extends State<AddParking> {
     return DateTimeField(
       format: format,
       decoration: InputDecoration(
-        labelText: type == "start" ?
+        labelText: type == 'start' ?
           'Parking Space Available Starting at:':'Parking Space Available Until:',
       ),
       onShowPicker: (context, currentValue) async {
@@ -578,7 +578,7 @@ class _MyAddParkingState extends State<AddParking> {
           initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
         );
         setState(() {
-          type == "start" ?
+          type == 'start' ?
             parkingSpace.startTime = DateFormat('HH:mm').format(DateTimeField.convert(time))
             : parkingSpace.endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
         });
@@ -633,10 +633,10 @@ class _MyAddParkingState extends State<AddParking> {
         builder: (FormFieldState<File> state) {
           return RaisedButton(
             child: Icon(
-              type == "camera" ? Icons.photo_camera : Icons.photo_library,
+              type == 'camera' ? Icons.photo_camera : Icons.photo_library,
             ),
             onPressed: () =>
-              type == "camera" ?
+              type == 'camera' ?
               getImage(ImageSource.camera) : getImage(ImageSource.gallery),
             color: Theme.of(context).backgroundColor,
             textColor: Colors.white,
@@ -736,11 +736,11 @@ class _MyAddParkingState extends State<AddParking> {
 
               try {
                 createParkingSpace();
-                print("parking space added to database");
+                print('parking space added to database');
                 Navigator.pushReplacementNamed(context, '/form_success');
               }
               catch (e) {
-                print("Error occurred: $e");
+                print('Error occurred: $e');
               }
             },
             child: Text(
@@ -759,7 +759,7 @@ class _MyAddParkingState extends State<AddParking> {
     try {
       await getUniqueFile();
     } catch (e) {
-      print("Error occurred: $e");
+      print('Error occurred: $e');
     }
 
     var parkingData = {
@@ -799,28 +799,28 @@ class _MyAddParkingState extends State<AddParking> {
     if(pageNum.page == 1){
       try {
         _formKey.currentState.save();
-        var _geoAddress = parkingSpace.address + ", " + parkingSpace.city
-            + ", " + parkingSpace.zip;
+        var _geoAddress = parkingSpace.address + ', ' + parkingSpace.city
+            + ', ' + parkingSpace.zip;
         var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
         var first = addresses.first;
         parkingSpace.coordinates = first.coordinates.toString();
         parkingSpace.coord_rand = getRandomCoordinates(parkingSpace.coordinates);
 
-        print(first.addressLine + " : " + first.coordinates.toString());
-        print("random coordinates : " + parkingSpace.coord_rand);
+        print(first.addressLine + ' : ' + first.coordinates.toString());
+        print('random coordinates : ' + parkingSpace.coord_rand);
 
         setState(() {
-          //var addr = first.addressLine.split(", ");
+          //var addr = first.addressLine.split(', ');
           var addr = getSplitAddress(first.addressLine);
           parkingSpace.city_format = addr[1];
           formError.invalidLoc = false;
         });
       }
       catch (e) {
-        print("Error occurred: $e");
+        print('Error occurred: $e');
         setState(() {
           formError.invalidLoc = true;
-          formError.errorMessage = "We can't find you!\nPlease enter a valid location.";
+          formError.errorMessage = 'We can\'t find you!\nPlease enter a valid location.';
         });
       }
     }
@@ -828,7 +828,7 @@ class _MyAddParkingState extends State<AddParking> {
     if (!formError.invalidLoc) {
       if(!validateAndSave()){
         setState(() {
-          formError.errorMessage = "Make sure to fill out all required fields";
+          formError.errorMessage = 'Make sure to fill out all required fields';
           print(formError.errorMessage);
         });
       }
@@ -852,7 +852,7 @@ class _MyAddParkingState extends State<AddParking> {
   }
 
   List<String> getSplitAddress(String address){
-    return address.split(", ");
+    return address.split(', ');
   }
 
   String validateTitle(String value) {
@@ -867,7 +867,7 @@ class _MyAddParkingState extends State<AddParking> {
 
   String validateAddress(String value) {
     if (value.isEmpty) {
-      return "Field can\'t be empty";
+      return 'Field can\'t be empty';
     }
     if (value.length >= 60) {
       return 'Address cannot be more than 60 characters';
@@ -889,10 +889,10 @@ class _MyAddParkingState extends State<AddParking> {
     if (value.length != 5) {
       return 'Enter your 5 digit zip code';
     }
-    if (value.contains(" ")) {
+    if (value.contains(' ')) {
       return 'Field can\'t contain spaces';
     }
-    if(!RegExp("^[0-9]{5}\$").hasMatch(value)){
+    if(!RegExp('^[0-9]{5}\$').hasMatch(value)){
       return 'Enter a valid 5 digit US zip code';
     }
     return null;
@@ -902,7 +902,7 @@ class _MyAddParkingState extends State<AddParking> {
     if (value.isEmpty) {
       return 'Field can\'t be empty';
     }
-    if (value.contains(" ")) {
+    if (value.contains(' ')) {
       return 'Field can\'t contain spaces';
     }
     return null;

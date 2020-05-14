@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:parkcore_app/routes.dart';
 import 'package:parkcore_app/theme/style.dart';
 
-// This application can be run with "flutter run".
+// This application can be run with 'flutter run'.
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {

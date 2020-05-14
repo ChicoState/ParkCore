@@ -13,7 +13,7 @@ class MyHomePage extends StatefulWidget {
   // State object (defined below) that contains fields that affect how it looks.
   // This class is the configuration for the state. It holds the values (title)
   // provided by the parent (App widget) and used by the build method of the
-  // State. Fields in a Widget subclass are always marked "final".
+  // State. Fields in a Widget subclass are always marked 'final'.
 
   final String title;
 
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               SizedBox(height: 10),
-              _input.input == "none" ? Text("") : SearchReturn(),
+              _input.input == 'none' ? Text('') : SearchReturn(),
               SizedBox(height: 50),
               ParkCoreText(),
             ],
@@ -153,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //assert(search != null);
     if(getLocation() != null) {
       setState(() {
-        _input.input = "Find parking near: " + search;
+        _input.input = 'Find parking near: ' + search;
       });
     }
   }
@@ -182,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // If Search was successful, show the location that was found
   Widget FoundResults() {
     return Row(
-      key: Key("foundResult"),
+      key: Key('foundResult'),
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -207,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: [
               RaisedButton(
-                child: Text("Go!"),
+                child: Text('Go!'),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -234,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // If Search was not successful, show error message
   Widget FailedSearch() {
     return Padding(
-      key: Key("failedSearch"),
+      key: Key('failedSearch'),
       padding: EdgeInsets.all(10.0),
       child: Text(
         _loc.location,
@@ -249,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return true;
     }
     catch(e){
-      print("Error occurred: $e");
+      print('Error occurred: $e');
       return false;
     }
   }
@@ -271,44 +271,44 @@ class _MyHomePageState extends State<MyHomePage> {
         else{
           _city.city = addr[1]; // when addr is: address, city, state, country
         }
-        _loc.location = "${first.addressLine}";
+        _loc.location = '${first.addressLine}';
         _coordinates.coordinates = first.coordinates.toString();
       });
     }
     catch (e) {
-      print("Error occurred: $e");
+      print('Error occurred: $e');
       setState(() {
         _found.found = false;
-        _loc.location = "Sorry, no search results for '" + _searchController.text + "'.";
+        _loc.location = 'Sorry, no search results for '' + _searchController.text + ''.';
       });
     }
   }
 
   List<String> getSplitAddress(String address){
-    return address.split(", ");
+    return address.split(', ');
   }
 }
 
 class MyInput {
-  String _input = "none";
+  String _input = 'none';
   String get input => _input;
   set input(String input) => _input = input;
 }
 
 class MyLoc {
-  String _loc = "";
+  String _loc = '';
   String get location => _loc;
   set location(String loc) => _loc = loc;
 }
 
 class MyCity {
-  String _city = "";
+  String _city = '';
   String get city => _city;
   set city(String city) => _city = city;
 }
 
 class MyCoordinates {
-  String _coordinates = "";
+  String _coordinates = '';
   String get coordinates => _coordinates;
   set coordinates(String coordinates) => _coordinates = coordinates;
 }

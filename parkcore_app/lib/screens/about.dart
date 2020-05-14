@@ -12,8 +12,8 @@ class About extends StatefulWidget {
 }
 
 class _MyAboutState extends State<About>{
-  String about_us = "";
-  String about_us_short = "";
+  String about_us = '';
+  String about_us_short = '';
 
   Future<String> loadAboutUs() async {
     var about_us_text = await rootBundle.loadString('assets/text/about_us.txt');
