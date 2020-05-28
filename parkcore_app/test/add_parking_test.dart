@@ -440,7 +440,8 @@ void main() {
 
     final parkingSpace = ParkingSpace();
     final input = '215 Orange St, Chico, CA 95928, USA';
-    List<String> splitAddress = AddParking().createState().getSplitAddress(input);
+    //List<String>
+    var splitAddress = AddParking().createState().getSplitAddress(input);
     parkingSpace.city_format = splitAddress[1];
     expect(parkingSpace.city_format, 'Chico');
   });

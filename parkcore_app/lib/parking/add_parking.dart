@@ -144,9 +144,10 @@ class _MyAddParkingState extends State<AddParking> {
 
   // get download URL for image files
   Future<String> _uploadFile(filename) async {
-    final StorageReference ref =
-        FirebaseStorage.instance.ref().child('$filename.jpg');
-    final StorageUploadTask uploadTask = ref.putFile(
+    //StorageReference
+    final ref = FirebaseStorage.instance.ref().child('$filename.jpg');
+    //StorageUploadTask
+    final uploadTask = ref.putFile(
       _imageFile,
       StorageMetadata(
         contentLanguage: 'en',
@@ -788,7 +789,8 @@ class _MyAddParkingState extends State<AddParking> {
     };
 
     await Firestore.instance.runTransaction((transaction) async {
-      CollectionReference ref = Firestore.instance.collection('parkingSpaces');
+      //CollectionReference
+      var ref = Firestore.instance.collection('parkingSpaces');
       await ref.add(parkingData);
     });
   }

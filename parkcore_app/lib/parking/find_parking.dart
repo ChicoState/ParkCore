@@ -222,7 +222,8 @@ class _MyFindParkingState extends State<FindParking> {
 
         // If filter options are chosen, update the list of parking spaces shown
         if(numFilters > 0){
-          List<DocumentSnapshot> filtered = snapshot.data.documents;
+          //List<DocumentSnapshot>
+          var filtered = snapshot.data.documents;
           for(var i = 0; i < choice.length; i++){
             if(i < 2){ // Type or Size filter
               if(choice[i] != 'none'){
