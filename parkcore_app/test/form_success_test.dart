@@ -37,6 +37,6 @@ void main() {
     await tester.tap(showThanks);
     await tester.pump();
 
-    expect(find.text("Thank you!"), findsOneWidget);
+    expect(find.text('Thank you!'), findsOneWidget);
   });
 }

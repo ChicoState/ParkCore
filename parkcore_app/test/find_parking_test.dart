@@ -83,12 +83,12 @@ void main() {
     // Build an app with a Text widget that displays the letter 'H'.
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
-        body: Text("Let us know you're interested!"),
+        body: Text('Let us know you\'re interested!'),
       ),
     ));
 
     // Find a widget that displays the letter 'H'.
-    expect(find.text("Let us know you're interested!"), findsOneWidget);
+    expect(find.text('Let us know you\'re interested!'), findsOneWidget);
   });
 
   testWidgets('Haversize for Distance', (WidgetTester tester) async {

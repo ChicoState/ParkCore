@@ -13,7 +13,7 @@ void main() {
   testWidgets('Find Home Page Title', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Create the finder
@@ -27,7 +27,7 @@ void main() {
   testWidgets('find PARKCORE text', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Find text PARKCORE once
@@ -37,7 +37,7 @@ void main() {
   testWidgets('find PARKCORE tagline text', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Find tagline text once
@@ -47,7 +47,7 @@ void main() {
   testWidgets('Find Search Bar Form', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Finds 1 Form Widget
@@ -57,7 +57,7 @@ void main() {
   testWidgets('Find Search Bar Form Text Field', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Finds 1 TextFormField Widget (for search input field in 1 Form)
@@ -67,7 +67,7 @@ void main() {
   testWidgets('Find Home Page Buttons', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Finds 3 IconButton Widgets (search, ParkCore logo, and menu icons)
@@ -78,7 +78,7 @@ void main() {
       'Find One ParkCore Logo Icon Button', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Find 1 Icon Button with Semantics Label (ParkCore logo)
@@ -88,7 +88,7 @@ void main() {
   testWidgets('Find One Menu Icon Button', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Find 1 Menu Icon Button
@@ -98,7 +98,7 @@ void main() {
   testWidgets('Find One Search Icon Button', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Finds 1 Search IconButton
@@ -109,7 +109,7 @@ void main() {
       'Check search result not initially visible', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Expect Text Widget message
@@ -119,7 +119,7 @@ void main() {
   testWidgets('Check search input match', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Create the finders
@@ -140,7 +140,7 @@ void main() {
   testWidgets('check search successfully finds a location', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     // Create the finders
@@ -160,7 +160,7 @@ void main() {
   testWidgets('check search location city string split', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     final String input = 'Chico, CA, USA';
@@ -171,7 +171,7 @@ void main() {
   testWidgets('check search location address string split', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
 
     final String input = '215 Orange St, Chico, CA 95928, USA';
@@ -182,27 +182,26 @@ void main() {
 
   test('Search input getter and setter', () {
     final input = MyInput();
-    input.input = "chico, ca";
-    expect(input.input, "chico, ca");
+    input.input = 'chico, ca';
+    expect(input.input, 'chico, ca');
   });
 
   test('Location getter and setter', () {
     final loc = MyLoc();
-    loc.location = "Chico, CA, USA";
-    expect(loc.location, "Chico, CA, USA");
+    loc.location = 'Chico, CA, USA';
+    expect(loc.location, 'Chico, CA, USA');
   });
 
   test('Failed Location getter and setter', () {
     final loc = MyLoc();
-    final input = "notalocation";
-    loc.location = "Sorry, no search results for '" + input + "'.";
-    expect(loc.location, "Sorry, no search results for '" + input + "'.");
+    loc.location = 'Sorry, no search results for '' + input + ''.';
+    expect(loc.location, 'Sorry, no search results for '' + input + ''.');
   });
 
   test('City getter and setter', () {
     final city = MyCity();
-    city.city = "Chico";
-    expect(city.city, "Chico");
+    city.city = 'Chico';
+    expect(city.city, 'Chico');
   });
 
   test('Coordinates getter and setter', () {
@@ -226,7 +225,7 @@ void main() {
   testWidgets('expect searchController text is not null', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
     final Finder searchtext = find.widgetWithText(
@@ -245,7 +244,7 @@ void main() {
   testWidgets('find getLocation is true', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
     final Finder searchtext = find.widgetWithText(
@@ -267,7 +266,7 @@ void main() {
   testWidgets('expect find searchResult widget', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
     final Finder searchtext = find.widgetWithText(
@@ -286,13 +285,13 @@ void main() {
     expect(MyHomePage().createState().getLocation(), isTrue);
 
     await tester.pump();
-    expect(find.byKey(Key("searchResult")), findsOneWidget);
+    expect(find.byKey(Key('searchResult')), findsOneWidget);
   });
 
-  testWidgets('expect "found" is false', (
+  testWidgets('expect \'found\' is false', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
     final Finder searchtext = find.widgetWithText(
@@ -311,7 +310,7 @@ void main() {
     expect(MyHomePage().createState().getLocation(), isTrue);
 
     await tester.pump();
-    expect(find.byKey(Key("searchResult")), findsOneWidget);
+    expect(find.byKey(Key('searchResult')), findsOneWidget);
 
     final found = LocFound();
     await tester.pump();
@@ -321,7 +320,7 @@ void main() {
   testWidgets('expect to find FailedSearch widget', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
     final Finder searchtext = find.widgetWithText(
@@ -340,20 +339,20 @@ void main() {
     expect(MyHomePage().createState().getLocation(), isTrue);
 
     await tester.pump();
-    expect(find.byKey(Key("searchResult")), findsOneWidget);
+    expect(find.byKey(Key('searchResult')), findsOneWidget);
 
     final found = LocFound();
     await tester.pump();
     expect(found.found, isFalse);
 
     await tester.pump();
-    expect(find.byKey(Key("failedSearch")), findsOneWidget);
+    expect(find.byKey(Key('failedSearch')), findsOneWidget);
   });
 
   testWidgets('expect to find FailedSearch widget message', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: MyHomePage(title: "ParkCore"),
+      home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
     final Finder searchtext = find.widgetWithText(
@@ -372,7 +371,7 @@ void main() {
     expect(MyHomePage().createState().getLocation(), isTrue);
 
     await tester.pump();
-    expect(find.byKey(Key("searchResult")), findsOneWidget);
+    expect(find.byKey(Key('searchResult')), findsOneWidget);
 
     // expect to find validateLocation() function
     // haven't found way to test geocoder (which this function uses)

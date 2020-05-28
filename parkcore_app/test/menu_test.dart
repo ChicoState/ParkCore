@@ -40,10 +40,10 @@ void main() {
     ));
 
     // Find logoButton
-    expect(find.byKey(Key("homeKey")), findsOneWidget);
+    expect(find.byKey(Key('homeKey')), findsOneWidget);
   });
 
-  testWidgets('tap map item to go to "Find Parking"', (WidgetTester tester) async {
+  testWidgets('tap map item to go to Find Parking page', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
     final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
