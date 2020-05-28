@@ -43,7 +43,7 @@ class ContactUs extends StatelessWidget {
               ),
               child: Text(
                 'Contact ParkCore',
-                style: Theme.of(context).textTheme.display2,
+                style: Theme.of(context).textTheme.headline3,
               ),
             ),
           ],

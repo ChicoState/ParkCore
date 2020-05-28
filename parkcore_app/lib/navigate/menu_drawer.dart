@@ -76,7 +76,7 @@ Widget CreateMenuItem(
             padding: EdgeInsets.only(left: 3.0),
             child: Text(
               text,
-              style: Theme.of(context).textTheme.display2,
+              style: Theme.of(context).textTheme.headline3,
             ),
           ),
         ),
@@ -113,7 +113,7 @@ Widget DefaultMap(BuildContext context) {
             padding: EdgeInsets.only(left: 3.0),
             child: Text(
               'Visit Our Hometown!',
-              style: Theme.of(context).textTheme.display2,
+              style: Theme.of(context).textTheme.headline3,
             ),
           ),
         ),

@@ -620,7 +620,7 @@ class _MyAddParkingState extends State<AddParking> {
       child: _imageFile == null
         ? Text(
           'No image selected.',
-          style: Theme.of(context).textTheme.display2,
+          style: Theme.of(context).textTheme.headline3,
         )
         : Image.file(_imageFile),
     );
@@ -650,7 +650,7 @@ class _MyAddParkingState extends State<AddParking> {
     return [
       Text(
         'Review your information:',
-        style: Theme.of(context).textTheme.display2,
+        style: Theme.of(context).textTheme.headline3,
       ),
       SizedBox(height: 10),
       Text('Title: ' + parkingSpace.title),
@@ -693,7 +693,7 @@ class _MyAddParkingState extends State<AddParking> {
                   onPressed: validateAndSubmit,
                   child: Text(
                     buttonText,
-                    style: Theme.of(context).textTheme.display3,
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                   color: Theme.of(context).accentColor,
                 ),
@@ -715,7 +715,7 @@ class _MyAddParkingState extends State<AddParking> {
           },
           child: Text(
             'Restart Form',
-            style: Theme.of(context).textTheme.display3,
+            style: Theme.of(context).textTheme.headline4,
           ),
           color: Theme.of(context).backgroundColor,
         ),
@@ -745,7 +745,7 @@ class _MyAddParkingState extends State<AddParking> {
             },
             child: Text(
               'Submit',
-              style: Theme.of(context).textTheme.display3,
+              style: Theme.of(context).textTheme.headline4,
             ),
             color: Theme.of(context).accentColor,
           ),

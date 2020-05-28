@@ -410,7 +410,7 @@ class _MyFindParkingState extends State<FindParking> {
         child: ListTile(
           title: Text(
             'Size',
-            style: Theme.of(context).textTheme.display4,
+            style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
             hint: Text('Choose'),
@@ -441,7 +441,7 @@ class _MyFindParkingState extends State<FindParking> {
         child: ListTile(
           title: Text(
             'Type',
-            style: Theme.of(context).textTheme.display4,
+            style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
             hint: Text('Choose'),
@@ -472,7 +472,7 @@ class _MyFindParkingState extends State<FindParking> {
         child: ListTile(
           title: Text(
             'Price',
-            style: Theme.of(context).textTheme.display4,
+            style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
             hint: Text('Choose'),
@@ -510,7 +510,7 @@ class _MyFindParkingState extends State<FindParking> {
       },
       child: Text(
         'Amenities',
-        style: Theme.of(context).textTheme.display4,
+        style: Theme.of(context).textTheme.headline5,
       ),
       color: Colors.white60,
     );
@@ -743,7 +743,7 @@ class _MyFindParkingState extends State<FindParking> {
                     Text(
                       'We\'re not yet in\n' + widget.city +
                           '\nLet us know you\'re interested!',
-                      style: Theme.of(context).textTheme.display3,
+                      style: Theme.of(context).textTheme.headline4,
                       textAlign: TextAlign.center,
                     ),
                   ],

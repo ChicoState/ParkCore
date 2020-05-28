@@ -195,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: EdgeInsets.all(10.0),
                 child: Text(
                   _loc.location,
-                  style: Theme.of(context).textTheme.display2,
+                  style: Theme.of(context).textTheme.headline3,
                 ),
               ),
             ],
@@ -238,7 +238,7 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: EdgeInsets.all(10.0),
       child: Text(
         _loc.location,
-        style: Theme.of(context).textTheme.display2,
+        style: Theme.of(context).textTheme.headline3,
       ),
     );
   }
@@ -256,8 +256,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Use geocoder to search for a location that matches search result input
   void validateLocation() async {
+    var loc_input = _searchController.text;
     try {
-      var addresses = await Geocoder.local.findAddressesFromQuery(_searchController.text);
+      var addresses = await Geocoder.local.findAddressesFromQuery(loc_input);
       var first = addresses.first; // Get Address
       var addr = getSplitAddress(first.addressLine.toString()); // String []
 
@@ -279,7 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print('Error occurred: $e');
       setState(() {
         _found.found = false;
-        _loc.location = 'Sorry, no search results for '' + _searchController.text + ''.';
+        _loc.location = 'Sorry, no search results for "' + loc_input + '".';
       });
     }
   }

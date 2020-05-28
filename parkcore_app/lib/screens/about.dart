@@ -81,7 +81,7 @@ class _MyAboutState extends State<About>{
                 ),
                 child: Text(
                   about_us_short,
-                  style: Theme.of(context).textTheme.display2,
+                  style: Theme.of(context).textTheme.headline3,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -91,7 +91,7 @@ class _MyAboutState extends State<About>{
                   children: <Widget>[
                     Text(
                       about_us,
-                      style: Theme.of(context).textTheme.display2,
+                      style: Theme.of(context).textTheme.headline3,
                       textAlign: TextAlign.left,
                     )
                   ],
