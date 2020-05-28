@@ -26,8 +26,8 @@ class _MyAboutState extends State<About>{
   }
 
   void getText() async {
-    String text = await loadAboutUs();
-    String text_short = await loadAboutUsShort();
+    final text = await loadAboutUs();
+    final text_short = await loadAboutUsShort();
     setState(() {
       about_us = text;
       about_us_short = text_short;

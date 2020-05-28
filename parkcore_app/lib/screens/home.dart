@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:parkcore_app/screens/parkcore_text.dart';
 import 'package:geocoder/geocoder.dart';
@@ -25,11 +24,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final _searchKey = GlobalKey<FormState>();
   final _searchController = TextEditingController();
 
-  MyInput _input = MyInput();
-  MyLoc _loc = MyLoc();
-  MyCity _city = MyCity();
-  MyCoordinates _coordinates = MyCoordinates();
-  LocFound _found = LocFound();
+  final _input = MyInput();
+  final _loc = MyLoc();
+  final _city = MyCity();
+  final _coordinates = MyCoordinates();
+  final _found = LocFound();
 
   @override
   void dispose() {
