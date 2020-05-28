@@ -40,6 +40,7 @@ class _MyAddParkingState extends State<AddParking> {
   ParkingSpace parkingSpace = ParkingSpace();
   PageNumber pageNum = PageNumber();
   FormError formError = FormError();
+  final ImagePicker _picker = ImagePicker();
   File _imageFile;
 
   @override
@@ -127,11 +128,11 @@ class _MyAddParkingState extends State<AddParking> {
   ];
 
   // Select an image via gallery or camera
-  Future<void> getImage(ImageSource source) async {
-    File selected = await ImagePicker.pickImage(source: source);
+  Future<void> getUserImage(ImageSource source) async {
+    var selected = await _picker.getImage(source: source);
 
     setState(() {
-      _imageFile = selected;
+      _imageFile = File(selected.path);
     });
   }
 
@@ -637,7 +638,7 @@ class _MyAddParkingState extends State<AddParking> {
             ),
             onPressed: () =>
               type == 'camera' ?
-              getImage(ImageSource.camera) : getImage(ImageSource.gallery),
+              getUserImage(ImageSource.camera) : getUserImage(ImageSource.gallery),
             color: Theme.of(context).backgroundColor,
             textColor: Colors.white,
           );

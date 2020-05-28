@@ -49,7 +49,7 @@ dependencies:
   #flutter_google_places: ^0.2.4
 
   # for getting images from users
-  image_picker: ^0.6.3+4
+  image_picker: ^0.6.7
   firebase_storage: ^3.1.3
   uuid: 2.0.4
   #for Haversine Formula 
