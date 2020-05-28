@@ -214,8 +214,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       builder: (context) => FindParking(
                         title: 'Find Parking',
                         city: _city.city,
-                        latlong: _coordinates.coordinates == null ?
-                        '{39.7285,-121.8375}' : _coordinates.coordinates,
+                        latlong: _coordinates.coordinates =
+                            _coordinates.coordinates ?? '{39.7285,-121.8375}',
                       ),
                     ),
                   );
