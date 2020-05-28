@@ -47,6 +47,6 @@ void main() {
     await tester.tap(buttonFinder);
     await tester.pumpAndSettle();
     // Expect to navigate home
-    expect(find.byKey(Key("homeAppTitle")), findsOneWidget);
+    expect(find.byKey(Key('homeAppTitle')), findsOneWidget);
   });
 }
