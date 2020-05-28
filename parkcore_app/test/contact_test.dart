@@ -30,7 +30,7 @@ void main() {
           (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
+    final routes = <String, WidgetBuilder>{
       '/home' : (BuildContext context) => MyHomePage(title: 'ParkCore'),
     };
 
@@ -41,7 +41,7 @@ void main() {
     ));
 
     // Find logoButton
-    final Finder buttonFinder = find.byKey(Key('logoButton'));
+    final buttonFinder = find.byKey(Key('logoButton'));
     expect(buttonFinder, findsOneWidget);
     // Tap logoButton
     await tester.tap(buttonFinder);

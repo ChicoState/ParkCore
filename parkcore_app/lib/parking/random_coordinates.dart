@@ -4,7 +4,7 @@ String getRandomCoordinates(String loc){
   const start = '{';
   const mid = ',';
   const end = '}';
-  String rand_loc = '';
+  var rand_loc = '';
 
   final startIndex = loc.indexOf(start);
   final midIndex = loc.indexOf(mid, startIndex + start.length);

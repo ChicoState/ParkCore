@@ -31,7 +31,7 @@ void main() {
       home: FormSuccess(),
     ));
 
-    final Finder showThanks = find.byKey(Key('acornButton'));
+    final showThanks = find.byKey(Key('acornButton'));
 
     // Tap the acorn icon and trigger a snackbar with a message
     await tester.tap(showThanks);

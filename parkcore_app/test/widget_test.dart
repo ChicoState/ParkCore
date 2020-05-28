@@ -123,9 +123,9 @@ void main() {
     ));
 
     // Create the finders
-    final Finder searchinput = find.widgetWithText(
+    final searchinput = find.widgetWithText(
         TextFormField, 'Search by location');
-    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    final submit = find.widgetWithIcon(IconButton, Icons.search);
 
     // Test form search field input
     await tester.enterText(searchinput, 'Chico, CA');
@@ -144,9 +144,9 @@ void main() {
     ));
 
     // Create the finders
-    final Finder searchinput = find.widgetWithText(
+    final searchinput = find.widgetWithText(
         TextFormField, 'Search by location');
-    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    final submit = find.widgetWithIcon(IconButton, Icons.search);
 
     // Test form search field input
     await tester.enterText(searchinput, 'Chico, CA');
@@ -163,7 +163,7 @@ void main() {
       home: MyHomePage(title: 'ParkCore'),
     ));
 
-    final String input = 'Chico, CA, USA';
+    final input = 'Chico, CA, USA';
 
     expect(MyHomePage().createState().getSplitAddress(input), ['Chico', 'CA', 'USA']);
   });
@@ -174,7 +174,7 @@ void main() {
       home: MyHomePage(title: 'ParkCore'),
     ));
 
-    final String input = '215 Orange St, Chico, CA 95928, USA';
+    final input = '215 Orange St, Chico, CA 95928, USA';
 
     expect(MyHomePage().createState().getSplitAddress(input),
         ['215 Orange St', 'Chico', 'CA 95928', 'USA']);
@@ -228,9 +228,9 @@ void main() {
       home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
-    final Finder searchtext = find.widgetWithText(
+    final searchtext = find.widgetWithText(
         TextFormField, 'Search by location');
-    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    final submit = find.widgetWithIcon(IconButton, Icons.search);
     _searchController.text = 'Chico, CA';
     // Test form search field input
     await tester.enterText(searchtext, _searchController.text);
@@ -247,9 +247,9 @@ void main() {
       home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
-    final Finder searchtext = find.widgetWithText(
+    final searchtext = find.widgetWithText(
         TextFormField, 'Search by location');
-    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    final submit = find.widgetWithIcon(IconButton, Icons.search);
     _searchController.text = 'Chico, CA';
     // Test form search field input
     await tester.enterText(searchtext, _searchController.text);
@@ -269,9 +269,9 @@ void main() {
       home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
-    final Finder searchtext = find.widgetWithText(
+    final searchtext = find.widgetWithText(
         TextFormField, 'Search by location');
-    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    final submit = find.widgetWithIcon(IconButton, Icons.search);
     _searchController.text = 'Chico, CA';
     // Test form search field input
     await tester.enterText(searchtext, _searchController.text);
@@ -294,9 +294,9 @@ void main() {
       home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
-    final Finder searchtext = find.widgetWithText(
+    final searchtext = find.widgetWithText(
         TextFormField, 'Search by location');
-    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    final submit = find.widgetWithIcon(IconButton, Icons.search);
     _searchController.text = 'notalocation';
     // Test form search field input
     await tester.enterText(searchtext, _searchController.text);
@@ -323,9 +323,9 @@ void main() {
       home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
-    final Finder searchtext = find.widgetWithText(
+    final searchtext = find.widgetWithText(
         TextFormField, 'Search by location');
-    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    final submit = find.widgetWithIcon(IconButton, Icons.search);
     _searchController.text = 'notalocation';
     // Test form search field input
     await tester.enterText(searchtext, _searchController.text);
@@ -355,9 +355,9 @@ void main() {
       home: MyHomePage(title: 'ParkCore'),
     ));
     final _searchController = TextEditingController();
-    final Finder searchtext = find.widgetWithText(
+    final searchtext = find.widgetWithText(
         TextFormField, 'Search by location');
-    final Finder submit = find.widgetWithIcon(IconButton, Icons.search);
+    final submit = find.widgetWithIcon(IconButton, Icons.search);
     _searchController.text = 'notalocation';
     // Test form search field input
     await tester.enterText(searchtext, _searchController.text);

@@ -115,7 +115,7 @@ void main() {
     ));
 
     // Create the finders
-    final Finder title = find.byKey(Key('title'));
+    final title = find.byKey(Key('title'));
 
     // Test text field form input
     await tester.enterText(title, 'Parking Space Title');
@@ -148,7 +148,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    String longstr = 'too long parkin spot title'; //26 chars
+    var longstr = 'too long parkin spot title'; //26 chars
 
     expect(AddParking().createState().validateTitle(longstr),
         'Title cannot be more than 25 characters');
@@ -161,7 +161,7 @@ void main() {
     ));
 
     // Create the finders
-    final Finder address = find.byKey(Key('address'));
+    final address = find.byKey(Key('address'));
 
     // Test text field form input
     await tester.enterText(address, 'My Address');
@@ -194,7 +194,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    String longstr = 'abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz12345';
+    var longstr = 'abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz12345';
 
     expect(AddParking().createState().validateAddress(longstr),
         'Address cannot be more than 60 characters');
@@ -207,7 +207,7 @@ void main() {
     ));
 
     // Create the finders
-    final Finder city = find.byKey(Key('city'));
+    final city = find.byKey(Key('city'));
 
     // Test text field form input
     await tester.enterText(city, 'Chico');
@@ -241,7 +241,7 @@ void main() {
     ));
 
     // Create the finders
-    final Finder zip = find.byKey(Key('zip'));
+    final zip = find.byKey(Key('zip'));
 
     // Test text field form input
     await tester.enterText(zip, '95928');
@@ -439,7 +439,7 @@ void main() {
     ));
 
     final parkingSpace = ParkingSpace();
-    final String input = '215 Orange St, Chico, CA 95928, USA';
+    final input = '215 Orange St, Chico, CA 95928, USA';
     List<String> splitAddress = AddParking().createState().getSplitAddress(input);
     parkingSpace.city_format = splitAddress[1];
     expect(parkingSpace.city_format, 'Chico');

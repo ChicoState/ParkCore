@@ -138,7 +138,7 @@ class _MyAddParkingState extends State<AddParking> {
 
   // Get a unique ID for each image upload
   Future<void> getUniqueFile() async {
-    final String uuid = Uuid().v1();
+    final uuid = Uuid().v1();
     parkingSpace.downloadURL = await _uploadFile(uuid);
   }
 

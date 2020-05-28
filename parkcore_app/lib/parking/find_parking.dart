@@ -382,7 +382,7 @@ class _MyFindParkingState extends State<FindParking> {
   void showAll(){
     setState(() {
       numFilters = 0;
-      for(int i = 0; i < curFilter.length; i++){
+      for(var i = 0; i < curFilter.length; i++){
         curFilter[i] = 'All';
         selected[i] = false;
       }
