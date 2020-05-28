@@ -25,7 +25,7 @@ void main() {
 
     test('starts at main page', () async {
       // Use the `driver.getText` method to verify the counter starts at 0.
-      expect(await driver.getText(homeAppTitleFinder), "ParkCore");
+      expect(await driver.getText(homeAppTitleFinder), 'ParkCore');
     });
 
     test('click the logo button', () async {
@@ -33,7 +33,7 @@ void main() {
       await driver.tap(logoButtonFinder);
 
       // Then, verify the counter text is incremented by 1.
-      expect(await driver.getText(homeAppTitleFinder), "ParkCore");
+      expect(await driver.getText(homeAppTitleFinder), 'ParkCore');
     });
   });
 
