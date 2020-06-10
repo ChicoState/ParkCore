@@ -9,11 +9,11 @@ class ParkCoreText extends StatelessWidget {
       children: <Widget>[
         Text(
           'PARKCORE',
-          style: Theme.of(context).textTheme.headline,
+          style: Theme.of(context).textTheme.headline1,
         ),
         Text(
           'find a spot. go nuts.',
-          style: Theme.of(context).textTheme.display1,
+          style: Theme.of(context).textTheme.headline2,
         ),
         SizedBox(height: 10),
         Container(

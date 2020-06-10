@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geocoder/model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:great_circle_distance2/great_circle_distance2.dart';
@@ -60,11 +59,11 @@ class Spot{
 
 class FindParking extends StatefulWidget {
   FindParking({Key key, this.title, this.city, this.latlong}) : super(key: key);
-  // This widget is the "find parking" page of the app. It is stateful: it has a
+  // This widget is the 'find parking' page of the app. It is stateful: it has a
   // State object (defined below) that contains fields that affect how it looks.
   // This class is the configuration for the state. It holds the values (title)
   // provided by the parent (App widget) and used by the build method of the
-  // State. Fields in a Widget subclass are always marked "final".
+  // State. Fields in a Widget subclass are always marked 'final'.
 
   final String title;
   final String city;
@@ -80,19 +79,18 @@ class _MyFindParkingState extends State<FindParking> {
 
   // Variables below used for parking space filter options
   int numFilters = 0;
-  final List<String> docType = ["size", "type", "monthprice", "amenities"];
-  List<String> choice = ["none", "none", "none", "none", "none", "none", "none"];
-  List<String> curFilter = ["All", "All", "All", "All"];
-  String priceVal = "All";
+  final List<String> docType = ['size', 'type', 'monthprice', 'amenities'];
+  List<String> choice = ['none', 'none', 'none', 'none', 'none', 'none', 'none'];
+  List<String> curFilter = ['All', 'All', 'All', 'All'];
+  String priceVal = 'All';
   List<bool> selected = [false, false, false, false];
-  List<String> amenity = ["Lit", "Covered", "Security Camera", "EV Charging"];
+  List<String> amenity = ['Lit', 'Covered', 'Security Camera', 'EV Charging'];
   List<String> sizeOptions = ['All', 'Compact', 'Regular', 'Oversized'];
   List<String> typeOptions = ['All', 'Driveway', 'Parking Lot', 'Street'];
   List<String> priceOptions = ['All','\$25 or less', '\$50 or less',
                               '\$75 or less', '\$100 or less'];
   bool _isVisible = false;
   bool pressed = false;
-  bool isLoading = true;
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     await Firestore.instance.collection('parkingSpaces')
@@ -224,25 +222,26 @@ class _MyFindParkingState extends State<FindParking> {
 
         // If filter options are chosen, update the list of parking spaces shown
         if(numFilters > 0){
-          List<DocumentSnapshot> filtered = snapshot.data.documents;
+          //List<DocumentSnapshot>
+          var filtered = snapshot.data.documents;
           for(var i = 0; i < choice.length; i++){
             if(i < 2){ // Type or Size filter
-              if(choice[i] != "none"){
+              if(choice[i] != 'none'){
                 filtered = filtered.where((DocumentSnapshot docSnap) =>
                 docSnap[docType[i]] == choice[i]).toList();
               }
             }
             else if(i == 2){ // Price filter
-              if(choice[i] != "none"){
+              if(choice[i] != 'none'){
                 filtered = filtered.where((DocumentSnapshot docSnap) =>
                 double.parse(docSnap[docType[i]]) <= double.parse(choice[i])).toList();
               }
             }
             else{ // Amenities filters (i >= 3)
-              if(choice[i] != "none"){
+              if(choice[i] != 'none'){
                 filtered = filtered.where((DocumentSnapshot docSnap) =>
                   docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
-                    .split(", ").contains(choice[i])).toList();
+                    .split(', ').contains(choice[i])).toList();
               }
             }
           }
@@ -384,8 +383,8 @@ class _MyFindParkingState extends State<FindParking> {
   void showAll(){
     setState(() {
       numFilters = 0;
-      for(int i = 0; i < curFilter.length; i++){
-        curFilter[i] = "All";
+      for(var i = 0; i < curFilter.length; i++){
+        curFilter[i] = 'All';
         selected[i] = false;
       }
     });
@@ -412,7 +411,7 @@ class _MyFindParkingState extends State<FindParking> {
         child: ListTile(
           title: Text(
             'Size',
-            style: Theme.of(context).textTheme.display4,
+            style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
             hint: Text('Choose'),
@@ -443,7 +442,7 @@ class _MyFindParkingState extends State<FindParking> {
         child: ListTile(
           title: Text(
             'Type',
-            style: Theme.of(context).textTheme.display4,
+            style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
             hint: Text('Choose'),
@@ -474,13 +473,13 @@ class _MyFindParkingState extends State<FindParking> {
         child: ListTile(
           title: Text(
             'Price',
-            style: Theme.of(context).textTheme.display4,
+            style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
             hint: Text('Choose'),
             onChanged: (String changedValue) {
               setState(() {
-                if(changedValue == "All"){
+                if(changedValue == 'All'){
                   curFilter[2] = changedValue;
                   priceVal = changedValue;
                 }
@@ -490,7 +489,7 @@ class _MyFindParkingState extends State<FindParking> {
                 }
               });
             },
-            value: curFilter[2] == "All" ? curFilter[2] : priceVal,
+            value: curFilter[2] == 'All' ? curFilter[2] : priceVal,
             items: getFilterOptions(priceOptions),
             style: TextStyle(
               color: Color(0xFF358D5B),
@@ -512,7 +511,7 @@ class _MyFindParkingState extends State<FindParking> {
       },
       child: Text(
         'Amenities',
-        style: Theme.of(context).textTheme.display4,
+        style: Theme.of(context).textTheme.headline5,
       ),
       color: Colors.white60,
     );
@@ -536,26 +535,26 @@ class _MyFindParkingState extends State<FindParking> {
               children: [
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
-                  child: selected[0] ? Icon(Icons.lightbulb_outline):Text("Lit"),
+                  child: selected[0] ? Icon(Icons.lightbulb_outline):Text('Lit'),
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
-                  child: selected[1] ? Icon(Icons.beach_access): Text("Covered"),
+                  child: selected[1] ? Icon(Icons.beach_access): Text('Covered'),
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
-                  child: selected[2] ? Icon(Icons.videocam): Text("Security Camera"),
+                  child: selected[2] ? Icon(Icons.videocam): Text('Security Camera'),
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
-                  child: selected[3] ? Icon(Icons.battery_charging_full): Text("EV Charging"),
+                  child: selected[3] ? Icon(Icons.battery_charging_full): Text('EV Charging'),
                 ),
               ],
               isSelected: selected,
               onPressed: (int index) {
                 setState(() {
                   selected[index] = !selected[index];
-                  print("Selected: " + selected.toString());
+                  print('Selected: ' + selected.toString());
                 });
               },
               color: Theme.of(context).backgroundColor,
@@ -583,8 +582,8 @@ class _MyFindParkingState extends State<FindParking> {
     // If current filter was not requested, set corresponding choice to none
     // Else, apply the requested filter and increment numFilters
     for(var i = 0; i < curFilter.length; i++){
-      if(curFilter[i] == "All") {
-        choice[i] = "none";
+      if(curFilter[i] == 'All') {
+        choice[i] = 'none';
       }
       else{
         choice[i] = curFilter[i];
@@ -597,7 +596,7 @@ class _MyFindParkingState extends State<FindParking> {
     // Else, apply the requested amenity filter and increment numFilters
     for(var i = 0; i < selected.length; i++){
       if(!selected[i]){
-        choice[i+3] = "none";
+        choice[i+3] = 'none';
       }
       else{
         choice[i+3] = amenity[i];
@@ -743,9 +742,9 @@ class _MyFindParkingState extends State<FindParking> {
                 title: Row(
                   children: <Widget>[
                     Text(
-                      "We're not yet in\n" + widget.city +
-                          "\nLet us know you're interested!",
-                      style: Theme.of(context).textTheme.display3,
+                      'We\'re not yet in\n' + widget.city +
+                          '\nLet us know you\'re interested!',
+                      style: Theme.of(context).textTheme.headline4,
                       textAlign: TextAlign.center,
                     ),
                   ],

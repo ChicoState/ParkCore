@@ -20,14 +20,14 @@ class MenuDrawer extends StatelessWidget {
             ),
           ),
           CreateMenuItem(
-            myKey: Key("homeKey"),
+            myKey: Key('homeKey'),
             context: context,
             icon: Icons.home,
             text: 'Home',
             route: '/home',
           ),
           CreateMenuItem(
-            myKey: Key("addParkingKey"),
+            myKey: Key('addParkingKey'),
             context: context,
             icon: Icons.directions_car,
             text: 'Post a Parking Space',
@@ -35,14 +35,14 @@ class MenuDrawer extends StatelessWidget {
           ),
           DefaultMap(context),
           CreateMenuItem(
-            myKey: Key("contactKey"),
+            myKey: Key('contactKey'),
             context: context,
             icon: Icons.contacts,
             text: 'Contact Us',
             route: '/contact',
           ),
           CreateMenuItem(
-            myKey: Key("aboutKey"),
+            myKey: Key('aboutKey'),
             context: context,
             icon: Icons.sentiment_satisfied,
             text: 'About ParkCore',
@@ -76,7 +76,7 @@ Widget CreateMenuItem(
             padding: EdgeInsets.only(left: 3.0),
             child: Text(
               text,
-              style: Theme.of(context).textTheme.display2,
+              style: Theme.of(context).textTheme.headline3,
             ),
           ),
         ),
@@ -113,7 +113,7 @@ Widget DefaultMap(BuildContext context) {
             padding: EdgeInsets.only(left: 3.0),
             child: Text(
               'Visit Our Hometown!',
-              style: Theme.of(context).textTheme.display2,
+              style: Theme.of(context).textTheme.headline3,
             ),
           ),
         ),

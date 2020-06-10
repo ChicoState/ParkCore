@@ -19,7 +19,7 @@ void main() {
 //    await tester.pumpWidget(MaterialApp(
 //      home: About(),
 //    ));
-//    String about_us_short = "";
+//    String about_us_short = '';
 //
 //    Future<String> short_text;
 //    await tester.pumpWidget(Builder(

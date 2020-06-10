@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
 
 void main() {
@@ -84,12 +83,12 @@ void main() {
     // Build an app with a Text widget that displays the letter 'H'.
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
-        body: Text("Let us know you're interested!"),
+        body: Text('Let us know you\'re interested!'),
       ),
     ));
 
     // Find a widget that displays the letter 'H'.
-    expect(find.text("Let us know you're interested!"), findsOneWidget);
+    expect(find.text('Let us know you\'re interested!'), findsOneWidget);
   });
 
   testWidgets('Haversize for Distance', (WidgetTester tester) async {

@@ -29,7 +29,7 @@ void main() {
   testWidgets('Find home menu item key', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
+    final routes = <String, WidgetBuilder>{
       '/home' : (BuildContext context) => MyHomePage(title: 'ParkCore'),
     };
 
@@ -40,13 +40,13 @@ void main() {
     ));
 
     // Find logoButton
-    expect(find.byKey(Key("homeKey")), findsOneWidget);
+    expect(find.byKey(Key('homeKey')), findsOneWidget);
   });
 
-  testWidgets('tap map item to go to "Find Parking"', (WidgetTester tester) async {
+  testWidgets('tap map item to go to Find Parking page', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
+    final routes = <String, WidgetBuilder>{
       '/find_parking': (context) => FindParking(
         title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}',
       ),
@@ -59,7 +59,7 @@ void main() {
     ));
 
     // Find logoButton
-    final Finder buttonFinder = find.byKey(Key('menuMap'));
+    final buttonFinder = find.byKey(Key('menuMap'));
     await tester.tap(buttonFinder);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
@@ -70,7 +70,7 @@ void main() {
   testWidgets('Tap Home button in menu', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
+    final routes = <String, WidgetBuilder>{
       '/home' : (BuildContext context) => MyHomePage(title: 'ParkCore'),
     };
 
@@ -81,7 +81,7 @@ void main() {
     ));
 
     // Find logoButton
-    final Finder buttonFinder = find.byKey(Key('homeKey'));
+    final buttonFinder = find.byKey(Key('homeKey'));
     await tester.tap(buttonFinder);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
@@ -92,7 +92,7 @@ void main() {
   testWidgets('Tap Add Parking button in menu', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
+    final routes = <String, WidgetBuilder>{
       '/add_parking': (context) => AddParking(title: 'Post Your Parking Space'),
     };
 
@@ -103,7 +103,7 @@ void main() {
     ));
 
     // Find logoButton
-    final Finder buttonFinder = find.byKey(Key('addParkingKey'));
+    final buttonFinder = find.byKey(Key('addParkingKey'));
     await tester.tap(buttonFinder);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
@@ -114,7 +114,7 @@ void main() {
   testWidgets('Tap Contact Us button in menu', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
+    final routes = <String, WidgetBuilder>{
       '/contact': (context) => ContactUs(),
     };
 
@@ -125,7 +125,7 @@ void main() {
     ));
 
     // Find logoButton
-    final Finder buttonFinder = find.byKey(Key('contactKey'));
+    final buttonFinder = find.byKey(Key('contactKey'));
     await tester.tap(buttonFinder);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
@@ -136,7 +136,7 @@ void main() {
   testWidgets('Tap About Us button in menu', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
-    final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
+    final routes = <String, WidgetBuilder>{
       '/about': (context) => About(),
     };
 
@@ -147,7 +147,7 @@ void main() {
     ));
 
     // Find logoButton
-    final Finder buttonFinder = find.byKey(Key('aboutKey'));
+    final buttonFinder = find.byKey(Key('aboutKey'));
     await tester.tap(buttonFinder);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));

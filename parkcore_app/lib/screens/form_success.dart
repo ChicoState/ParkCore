@@ -65,7 +65,7 @@ class FormSuccess extends StatelessWidget {
               fit: FlexFit.tight,
               child: Text(
                 'PARKCORE',
-                style: Theme.of(context).textTheme.headline,
+                style: Theme.of(context).textTheme.headline1,
               ),
             ),
             Flexible(
@@ -73,7 +73,7 @@ class FormSuccess extends StatelessWidget {
               fit: FlexFit.tight,
               child: Text(
                 'find a spot. go nuts.',
-                style: Theme.of(context).textTheme.display1,
+                style: Theme.of(context).textTheme.headline2,
               ),
             ),
             Flexible(
@@ -86,7 +86,7 @@ class FormSuccess extends StatelessWidget {
               fit: FlexFit.tight,
               child: Text(
                 'thank you for joining the scurry!',
-                style: Theme.of(context).textTheme.display2,
+                style: Theme.of(context).textTheme.headline3,
               ),
             ),
             Flexible(

@@ -12,8 +12,8 @@ class About extends StatefulWidget {
 }
 
 class _MyAboutState extends State<About>{
-  String about_us = "";
-  String about_us_short = "";
+  String about_us = '';
+  String about_us_short = '';
 
   Future<String> loadAboutUs() async {
     var about_us_text = await rootBundle.loadString('assets/text/about_us.txt');
@@ -26,8 +26,8 @@ class _MyAboutState extends State<About>{
   }
 
   void getText() async {
-    String text = await loadAboutUs();
-    String text_short = await loadAboutUsShort();
+    final text = await loadAboutUs();
+    final text_short = await loadAboutUsShort();
     setState(() {
       about_us = text;
       about_us_short = text_short;
@@ -81,7 +81,7 @@ class _MyAboutState extends State<About>{
                 ),
                 child: Text(
                   about_us_short,
-                  style: Theme.of(context).textTheme.display2,
+                  style: Theme.of(context).textTheme.headline3,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -91,7 +91,7 @@ class _MyAboutState extends State<About>{
                   children: <Widget>[
                     Text(
                       about_us,
-                      style: Theme.of(context).textTheme.display2,
+                      style: Theme.of(context).textTheme.headline3,
                       textAlign: TextAlign.left,
                     )
                   ],

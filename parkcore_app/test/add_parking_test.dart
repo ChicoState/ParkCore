@@ -11,7 +11,6 @@ import 'package:parkcore_app/parking/add_parking.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:parkcore_app/parking/random_coordinates.dart';
 
-
 void main() {
 
   testWidgets('Find Add Parking Form', (WidgetTester tester) async {
@@ -41,7 +40,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(find.text("Part 1 of 5"), findsOneWidget);
+    expect(find.text('Part 1 of 5'), findsOneWidget);
   });
 
   testWidgets('Find Parking Form Buttons', (WidgetTester tester) async {
@@ -116,13 +115,13 @@ void main() {
     ));
 
     // Create the finders
-    final Finder title = find.byKey(Key('title'));
+    final title = find.byKey(Key('title'));
 
     // Test text field form input
     await tester.enterText(title, 'Parking Space Title');
 
     // Expect Text Widget message
-    expect(find.text("Parking Space Title"), findsOneWidget);
+    expect(find.text('Parking Space Title'), findsOneWidget);
   });
 
   testWidgets('Validate title for parking space', (WidgetTester tester) async {
@@ -140,7 +139,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().validateTitle(''), "Field can\'t be empty");
+    expect(AddParking().createState().validateTitle(''), 'Field can\'t be empty');
   });
 
   testWidgets('Check parking space title length', (WidgetTester tester) async {
@@ -149,7 +148,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    String longstr = "too long parkin spot title"; //26 chars
+    var longstr = 'too long parkin spot title'; //26 chars
 
     expect(AddParking().createState().validateTitle(longstr),
         'Title cannot be more than 25 characters');
@@ -162,13 +161,13 @@ void main() {
     ));
 
     // Create the finders
-    final Finder address = find.byKey(Key('address'));
+    final address = find.byKey(Key('address'));
 
     // Test text field form input
     await tester.enterText(address, 'My Address');
 
     // Expect Text Widget message
-    expect(find.text("My Address"), findsOneWidget);
+    expect(find.text('My Address'), findsOneWidget);
   });
 
   testWidgets('Validate address for parking space', (WidgetTester tester) async {
@@ -186,7 +185,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().validateAddress(''), "Field can\'t be empty");
+    expect(AddParking().createState().validateAddress(''), 'Field can\'t be empty');
   });
 
   testWidgets('Validate address length', (WidgetTester tester) async {
@@ -195,10 +194,10 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    String longstr = "abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz12345";
+    var longstr = 'abcdefghijklmnopqrstuvwxyz1234abcdefghijklmnopqrstuvwxyz12345';
 
     expect(AddParking().createState().validateAddress(longstr),
-        "Address cannot be more than 60 characters");
+        'Address cannot be more than 60 characters');
   });
 
   testWidgets('Enter city for parking space', (WidgetTester tester) async {
@@ -208,13 +207,13 @@ void main() {
     ));
 
     // Create the finders
-    final Finder city = find.byKey(Key('city'));
+    final city = find.byKey(Key('city'));
 
     // Test text field form input
     await tester.enterText(city, 'Chico');
 
     // Expect Text Widget message
-    expect(find.text("Chico"), findsOneWidget);
+    expect(find.text('Chico'), findsOneWidget);
   });
 
   testWidgets('Validate city for parking space', (WidgetTester tester) async {
@@ -232,25 +231,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().validateCity(''), "Field can\'t be empty");
-  });
-
-  testWidgets('Validate state for parking space', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MaterialApp(
-      home: AddParking(title: 'Post Your Parking Space'),
-    ));
-
-    expect(AddParking().createState().validateState('CA'), isNull);
-  });
-
-  testWidgets('Check state for parking space is empty', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MaterialApp(
-      home: AddParking(title: 'Post Your Parking Space'),
-    ));
-
-    expect(AddParking().createState().validateState(''), "Field can\'t be empty");
+    expect(AddParking().createState().validateCity(''), 'Field can\'t be empty');
   });
 
   testWidgets('Enter zip for parking space', (WidgetTester tester) async {
@@ -260,13 +241,13 @@ void main() {
     ));
 
     // Create the finders
-    final Finder zip = find.byKey(Key('zip'));
+    final zip = find.byKey(Key('zip'));
 
     // Test text field form input
     await tester.enterText(zip, '95928');
 
     // Expect Text Widget message
-    expect(find.text("95928"), findsOneWidget);
+    expect(find.text('95928'), findsOneWidget);
   });
 
   testWidgets('Validate zip for parking space', (WidgetTester tester) async {
@@ -284,7 +265,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().validateZip(''), "Field can\'t be empty");
+    expect(AddParking().createState().validateZip(''), 'Field can\'t be empty');
   });
 
   testWidgets('Check zip for parking space too short', (WidgetTester tester) async {
@@ -311,7 +292,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().validateZip('12 45'), "Field can\'t contain spaces");
+    expect(AddParking().createState().validateZip('12 45'), 'Field can\'t contain spaces');
   });
 
   testWidgets('Check if zip has non-numeric', (WidgetTester tester) async {
@@ -320,7 +301,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().validateZip('12a45'), "Enter a valid 5 digit US zip code");
+    expect(AddParking().createState().validateZip('12a45'), 'Enter a valid 5 digit US zip code');
   });
 
   testWidgets('Check if zip has special', (WidgetTester tester) async {
@@ -329,7 +310,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().validateZip('12-45'), "Enter a valid 5 digit US zip code");
+    expect(AddParking().createState().validateZip('12-45'), 'Enter a valid 5 digit US zip code');
   });
 
   testWidgets('Check if parking space price is empty', (WidgetTester tester) async {
@@ -338,7 +319,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().validatePrice(''), "Field can\'t be empty");
+    expect(AddParking().createState().validatePrice(''), 'Field can\'t be empty');
   });
 
   testWidgets('Check if parking space price has spaces', (WidgetTester tester) async {
@@ -347,7 +328,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().validatePrice('1 2'), "Field can\'t contain spaces");
+    expect(AddParking().createState().validatePrice('1 2'), 'Field can\'t contain spaces');
   });
 
   testWidgets('Check no username', (WidgetTester tester) async {
@@ -356,7 +337,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().getUserName(), "no current user");
+    expect(AddParking().createState().getUserName(), 'no current user');
   });
 
   testWidgets('Check no user id', (WidgetTester tester) async {
@@ -365,7 +346,7 @@ void main() {
       home: AddParking(title: 'Post Your Parking Space'),
     ));
 
-    expect(AddParking().createState().getUserID(), "no current user");
+    expect(AddParking().createState().getUserID(), 'no current user');
   });
 
   testWidgets('Check user loaded', (WidgetTester tester) async {
@@ -411,143 +392,144 @@ void main() {
 
   test('Form Error message getter and setter', () {
     final formError = FormError();
-    formError.errorMessage = "We can't find you!\nPlease enter a valid location.";
-    expect(formError.errorMessage, "We can't find you!\nPlease enter a valid location.");
+    formError.errorMessage = 'We can\'t find you!\nPlease enter a valid location.';
+    expect(formError.errorMessage, 'We can\'t find you!\nPlease enter a valid location.');
   });
 
   test('Parking Space Title getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.title = "My Parking Space";
-    expect(parkingSpace.title, "My Parking Space");
+    parkingSpace.title = 'My Parking Space';
+    expect(parkingSpace.title, 'My Parking Space');
   });
 
   test('Parking Space Address getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.address = "123 Main St";
-    expect(parkingSpace.address, "123 Main St");
+    parkingSpace.address = '123 Main St';
+    expect(parkingSpace.address, '123 Main St');
   });
 
   test('Parking Space City getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.city = "Chico";
-    expect(parkingSpace.city, "Chico");
+    parkingSpace.city = 'Chico';
+    expect(parkingSpace.city, 'Chico');
   });
 
   test('Parking Space State getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.state = "CA";
-    expect(parkingSpace.state, "CA");
+    parkingSpace.state = 'CA';
+    expect(parkingSpace.state, 'CA');
   });
 
   test('Parking Space Zip getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.zip = "95928";
-    expect(parkingSpace.zip, "95928");
+    parkingSpace.zip = '95928';
+    expect(parkingSpace.zip, '95928');
   });
 
   test('Parking Space City (formatted) getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.city_format = "Chico";
-    expect(parkingSpace.city_format, "Chico");
+    parkingSpace.city_format = 'Chico';
+    expect(parkingSpace.city_format, 'Chico');
   });
 
   testWidgets('check address formatted after string split', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
-      home: AddParking(title: "Post Your Parking Space"),
+      home: AddParking(title: 'Post Your Parking Space'),
     ));
 
     final parkingSpace = ParkingSpace();
-    final String input = '215 Orange St, Chico, CA 95928, USA';
-    List<String> splitAddress = AddParking().createState().getSplitAddress(input);
+    final input = '215 Orange St, Chico, CA 95928, USA';
+    //List<String>
+    var splitAddress = AddParking().createState().getSplitAddress(input);
     parkingSpace.city_format = splitAddress[1];
-    expect(parkingSpace.city_format, "Chico");
+    expect(parkingSpace.city_format, 'Chico');
   });
 
   test('Parking Space Size getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.size = "Compact";
-    expect(parkingSpace.size, "Compact");
+    parkingSpace.size = 'Compact';
+    expect(parkingSpace.size, 'Compact');
   });
 
   test('Parking Space Type getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.type = "Driveway";
-    expect(parkingSpace.type, "Driveway");
+    parkingSpace.type = 'Driveway';
+    expect(parkingSpace.type, 'Driveway');
   });
 
   test('Parking Space Driveway getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.driveway = "Left";
-    expect(parkingSpace.driveway, "Left");
+    parkingSpace.driveway = 'Left';
+    expect(parkingSpace.driveway, 'Left');
   });
 
   test('Parking Space Type -- Space Type getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.spaceType = "Parallel";
-    expect(parkingSpace.spaceType, "Parallel");
+    parkingSpace.spaceType = 'Parallel';
+    expect(parkingSpace.spaceType, 'Parallel');
   });
 
   test('Parking Space Amenities getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.myAmenities = ["Lit", "Covered", "Security Camera", "EV Charging"];
-    expect(parkingSpace.myAmenities, ["Lit", "Covered", "Security Camera", "EV Charging"]);
+    parkingSpace.myAmenities = ['Lit', 'Covered', 'Security Camera', 'EV Charging'];
+    expect(parkingSpace.myAmenities, ['Lit', 'Covered', 'Security Camera', 'EV Charging']);
   });
 
   test('Parking Space Details getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.details = "down an alley";
-    expect(parkingSpace.details, "down an alley");
+    parkingSpace.details = 'down an alley';
+    expect(parkingSpace.details, 'down an alley');
   });
 
   test('Parking Space Days Available getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.myDays = ["MON", "TUE", "WED", "THU", "FRI"];
-    expect(parkingSpace.myDays, ["MON", "TUE", "WED", "THU", "FRI"]);
+    parkingSpace.myDays = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+    expect(parkingSpace.myDays, ['MON', 'TUE', 'WED', 'THU', 'FRI']);
   });
 
   test('Parking Space Start Time getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.startTime = "09:00";
-    expect(parkingSpace.startTime, "09:00");
+    parkingSpace.startTime = '09:00';
+    expect(parkingSpace.startTime, '09:00');
   });
 
   test('Parking Space End Time getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.endTime = "20:00";
-    expect(parkingSpace.endTime, "20:00");
+    parkingSpace.endTime = '20:00';
+    expect(parkingSpace.endTime, '20:00');
   });
 
   test('Parking Space Price getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.price = "42.00";
-    expect(parkingSpace.price, "42.00");
+    parkingSpace.price = '42.00';
+    expect(parkingSpace.price, '42.00');
   });
 
   test('Parking Space image download url getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.downloadURL = "https://firebasestorage.googleapis.com/v0/b/parkcore-7e1db.appspot.com/o/ec6dfa50-73a5-11ea-ff1e-8963043440f0.jpg?alt=media&token=2125fdf0-1f32-4ab3-a27a-86b286862e1f";
-    expect(parkingSpace.downloadURL, "https://firebasestorage.googleapis.com/v0/b/parkcore-7e1db.appspot.com/o/ec6dfa50-73a5-11ea-ff1e-8963043440f0.jpg?alt=media&token=2125fdf0-1f32-4ab3-a27a-86b286862e1f");
+    parkingSpace.downloadURL = 'https://firebasestorage.googleapis.com/v0/b/parkcore-7e1db.appspot.com/o/ec6dfa50-73a5-11ea-ff1e-8963043440f0.jpg?alt=media&token=2125fdf0-1f32-4ab3-a27a-86b286862e1f';
+    expect(parkingSpace.downloadURL, 'https://firebasestorage.googleapis.com/v0/b/parkcore-7e1db.appspot.com/o/ec6dfa50-73a5-11ea-ff1e-8963043440f0.jpg?alt=media&token=2125fdf0-1f32-4ab3-a27a-86b286862e1f');
   });
 
   test('Parking Space Coordinates getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.coordinates = "{39.7285,-121.8375}";
-    expect(parkingSpace.coordinates, "{39.7285,-121.8375}");
+    parkingSpace.coordinates = '{39.7285,-121.8375}';
+    expect(parkingSpace.coordinates, '{39.7285,-121.8375}');
   });
 
   test('Parking Space Random Coordinates Latitude getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.coordinates = "{39.7285,-121.8375}";
+    parkingSpace.coordinates = '{39.7285,-121.8375}';
     parkingSpace.coord_rand = getRandomCoordinates(parkingSpace.coordinates);
-    expect(parkingSpace.coord_rand.contains("39"), isTrue);
+    expect(parkingSpace.coord_rand.contains('39'), isTrue);
   });
 
   test('Parking Space Random Coordinates Longitude getter and setter', () {
     final parkingSpace = ParkingSpace();
-    parkingSpace.coordinates = "{39.7285,-121.8375}";
+    parkingSpace.coordinates = '{39.7285,-121.8375}';
     parkingSpace.coord_rand = getRandomCoordinates(parkingSpace.coordinates);
-    expect(parkingSpace.coord_rand.contains("-121"), isTrue);
+    expect(parkingSpace.coord_rand.contains('-121'), isTrue);
   });
 
   testWidgets('Parking Form Check that page number increases', (WidgetTester tester) async {
@@ -580,26 +562,55 @@ void main() {
 //    // Create the finders
 //    final Finder title = find.byKey(Key('title'));
 //    final parkingSpace = ParkingSpace();
-//    final Finder submit = find.widgetWithText(RaisedButton, "Next: Parking Space Info");
+//    final Finder submit = find.widgetWithText(RaisedButton, 'Next: Parking Space Info');
 //
 //    // Test text field form input
 //    await tester.enterText(title, 'My Parking Space!');
 //    await tester.tap(submit);
 //    await tester.pump();
 //    // Expect Text Widget message
-//    expect(parkingSpace.title, "My Parking Space!");
+//    expect(parkingSpace.title, 'My Parking Space!');
 //  });
 
-//  testWidgets('check form page 2 returns Containers', (WidgetTester tester) async {
-//    // Build our app and trigger a frame.
-//    await tester.pumpWidget(MaterialApp(
-//      home: AddParking(title: 'Post Your Parking Space'),
-//    ));
+  testWidgets('check form page 2 returns Containers', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking(title: 'Post Your Parking Space'),
+    ));
+    final formError = FormError();
+    final pageNum = PageNumber();
+
 //
-//    final pageNum = PageNumber();
-//    pageNum.page++;
-//    await tester.pump();
-//    final formPage = AddParking().createState().formPages();
-//    expect(find.byType(Container), findsNWidgets(5));
-//  });
+//    BuildContext capturedContext;
+//    await tester.pumpWidget(
+//        Builder(
+//            builder: (BuildContext context) {
+//              capturedContext = context;
+//              return Container();
+//            }
+//        )
+//    );
+
+    final parkingSpace = ParkingSpace();
+    expect(find.text('Part 1 of 5'), findsOneWidget);
+    parkingSpace.title = 'My Title!';
+    parkingSpace.address = 'My address';
+    parkingSpace.city = 'notalocation';
+    parkingSpace.state = 'CA';
+    parkingSpace.zip = '12345';
+    parkingSpace.city_format = '';
+    formError.invalidLoc = true;
+    formError.errorMessage = 'We can\'t find you!\nPlease enter a valid location.';
+    pageNum.page += 1;
+    await tester.pump(Duration(seconds: 3));
+    await tester.pump(Duration(seconds: 3));
+
+   // AddParking().createState().validateAndSave();
+   // var formPages = AddParking().createState().formPages();
+    //AddParking().createState().pageButton('Next: Parking Space Info');
+
+   // expect(parkingSpace.coordinates, isNotNull);
+   // expect(find.text('Part 2 of 5'), findsOneWidget);
+  });
+
 }

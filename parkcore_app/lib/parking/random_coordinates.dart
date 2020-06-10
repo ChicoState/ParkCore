@@ -1,10 +1,10 @@
 import 'dart:math' as math;
 
 String getRandomCoordinates(String loc){
-  const start = "{";
-  const mid = ",";
-  const end = "}";
-  String rand_loc = "";
+  const start = '{';
+  const mid = ',';
+  const end = '}';
+  var rand_loc = '';
 
   final startIndex = loc.indexOf(start);
   final midIndex = loc.indexOf(mid, startIndex + start.length);
@@ -25,6 +25,6 @@ String getRandomCoordinates(String loc){
   var lat = x + double.parse(loc.substring(startIndex + start.length, midIndex));
   var long = y + double.parse(loc.substring(midIndex + mid.length, endIndex));
 
-  rand_loc = "{" + lat.toString() + "," + long.toString() + "}";
+  rand_loc = '{' + lat.toString() + ',' + long.toString() + '}';
   return rand_loc;
 }
