@@ -312,7 +312,6 @@ class _MyAddParking2State extends State<AddParking2> {
   // Validate form (page 2) -
   // if complete, go to next page; otherwise, set error message
   void validateAndSubmit() async {
-    print("Calling validateAndSubmit");
     if(validateAndSave()){
       goToNextPage();
     }
@@ -327,7 +326,6 @@ class _MyAddParking2State extends State<AddParking2> {
   // 'Size' and 'Type' are not optional, so if these values have not been
   // selected, the form is still incomplete. Other fields may be left blank.
   bool validateAndSave() {
-    print("calling validateAndSave");
     if(parkingData2.size == null || parkingData2.type == null) {
       formError.incomplete = true;
       return false;
@@ -338,9 +336,8 @@ class _MyAddParking2State extends State<AddParking2> {
     return true;
   }
 
-  // Navigate to page 2 of form (passing parkingData and curUser objects)
+  // Navigate to form page 3 (pass existing parkingData & curUser objects)
   void goToNextPage() {
-    print("Go to page 3");
     Navigator.push(
       context,
       MaterialPageRoute(

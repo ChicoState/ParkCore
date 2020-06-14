@@ -344,7 +344,7 @@ class _MyAddParking1State extends State<AddParking1> {
     }
   }
 
-  // Navigate to page 2 of form (passing parkingData and curUser objects)
+  // Navigate to form page 2 (pass existing parkingData and curUser objects)
   void goToNextPage() {
     Navigator.push(
       context,
