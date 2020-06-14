@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:parkcore_app/models/ParkingData.dart';
+import 'package:parkcore_app/models/ParkingData2.dart';
 import 'package:parkcore_app/models/CurrentUser.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geocoder/geocoder.dart';
-import 'package:parkcore_app/parking/random_coordinates.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'pform_helpers.dart';
+import 'add_parking3.dart';
 
 class AddParking2 extends StatefulWidget {
   AddParking2({Key key, this.title, this.parkingData, this.curUser}) : super(key: key);
@@ -29,34 +29,48 @@ class AddParking2 extends StatefulWidget {
 class _MyAddParking2State extends State<AddParking2> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-//  ParkingData parkingData = ParkingData(
-//    null, null, null, null, null, null, null, null, null, null, null,
-//    null, null, null, null, null, null, null, null, null, null,
-//  );
- // CurrentUser curUser = CurrentUser(null);
+  // parkingData2 params: size, type, driveway, spaceType, amenities, details
+  ParkingData2 parkingData2 = ParkingData2(null, null, '', '', null, '');
   FormError formError = FormError();
+
+  final _sizeData = [
+    {'display': 'Compact', 'value': 'Compact'},
+    {'display': 'Regular', 'value': 'Regular'},
+    {'display': 'Oversized', 'value': 'Oversized'},
+  ];
+
+  final _typeData = [
+    {'display': 'Driveway', 'value': 'Driveway'},
+    {'display': 'In a Parking Lot', 'value': 'Parking Lot'},
+    {'display': 'On the Street', 'value': 'Street'},
+  ];
+
+  final _drivewayData = [
+    {'display': 'N/A', 'value': 'N/A'},
+    {'display': 'Left side', 'value': 'Left'},
+    {'display': 'Right side', 'value': 'Right'},
+    {'display': 'Center', 'value': 'Center'},
+    {'display': 'Whole Driveway', 'value': 'Whole Driveway'},
+  ];
+
+  final _parkingSpaceTypeData = [
+    {'display': 'N/A', 'value': 'N/A'},
+    {'display': 'Angled', 'value': 'Angled'},
+    {'display': 'Parallel', 'value': 'Parallel'},
+    {'display': 'Perpendicular', 'value': 'Perpendicular'},
+  ];
+
+  final _parkingAmenities = [
+    {'display': 'Lit', 'value': 'Lit'},
+    {'display': 'Covered', 'value': 'Covered'},
+    {'display': 'Security Camera', 'value': 'Security Camera'},
+    {'display': 'EV Charging', 'value': 'EV Charging'},
+  ];
 
   @override
   void initState() {
     super.initState();
-    //loadCurrentUser();
   }
-
-//  void loadCurrentUser() {
-//    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
-//      setState(() {
-//        curUser.currentUser = user;
-//      });
-//    });
-//  }
-//
-//  String getUserName() {
-//    if (curUser.currentUser != null) {
-//      return curUser.currentUser.displayName;
-//    } else {
-//      return 'no current user';
-//    }
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,16 +96,15 @@ class _MyAddParking2State extends State<AddParking2> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-//              formError.incomplete || formError.invalidLoc
-//                  ? Text(formError.errorMessage, style: TextStyle(color: Colors.red))
-//                  : Text('Part ' + pageNum.page.toString() + ' of 5'),
-              Text('Part 2 of 5'),
+              formError.incomplete || formError.invalidLoc
+                ? Text(formError.errorMessage, style: TextStyle(color: Colors.red))
+                : Text('Part 2 of 5'),
               SizedBox(height: 10),
               Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: review() + page2Button(),
+                  children: buildParkingType() + page2Button(),
                 ),
               ),
             ],
@@ -101,40 +114,175 @@ class _MyAddParking2State extends State<AddParking2> {
     );
   }
 
-  List<Widget> review() {
+  List<Widget> buildParkingType() {
     return [
-      Text(
-        'Review your information:',
-        style: Theme.of(context).textTheme.headline3,
+      Container(
+        decoration: BoxDecoration(
+          color: formError.incomplete ? Colors.red[50] : Colors.green[50],
+        ),
+        child: getSize(),
       ),
       SizedBox(height: 10),
-      Text('Title: ' + widget.parkingData.title),
-      Text('Address: ' + widget.parkingData.address),
-      Text('City: ' + widget.parkingData.city_format),
-      Text('State: ' + widget.parkingData.state),
-      Text('Zip: ' + widget.parkingData.zip),
-//      Text('Size: ' + widget.parkingData.size),
-//      Text('Type: ' + widget.parkingData.type),
-//      Text('Driveway: ' + widget.parkingData.driveway),
-//      Text('Space Type: ' + widget.parkingData.spaceType),
-//      Text('Amenities: ' + widget.parkingData.myAmenities.toString()),
-//      Text('Additional Details: ' + widget.parkingData.details),
-//      Text('Days Available: ' + widget.parkingData.myDays.toString()),
-//      Text('Available Starting at: ' + widget.parkingData.startTime),
-//      Text('Available Until: ' + widget.parkingData.endTime),
-//      Text('Price per month: \$' + widget.parkingData.price),
+      Container(
+        decoration: BoxDecoration(
+          color: formError.incomplete ? Colors.red[50] : Colors.green[50],
+        ),
+        child: getType(),
+      ),
       SizedBox(height: 10),
-      Text('Additional info connected to this parking space:'),
-      Text('Parking Space Owner: ' + getUserName(widget.curUser.currentUser)),
-      Text('Parking Space Coordinates: ' + widget.parkingData.coordinates),
+      parkingData2.type == 'Driveway' ?
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getDrivewayDetails(),
+      ):
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getSpaceType(),
+      ),
       SizedBox(height: 10),
-      //restart(),
-      SizedBox(height: 50),
+      Container(
+        decoration: BoxDecoration(color: Colors.green[50]),
+        child: getAmenities(),
+      ),
+      SizedBox(height: 10),
+      getDetails(),
+      SizedBox(height: 30),
     ];
   }
 
-  // Page 1 Parking Form Widgets (title, full address)
+  // Page 2 Parking Form Widgets (Parking Space Information)
 
+  Widget getSize() {
+    return DropDownFormField(
+      titleText: '* Parking Space Size',
+      hintText: 'Select one:',
+      required: true,
+      value: parkingData2.size,
+      onSaved: (value) {
+        setState(() {
+          parkingData2.size = value;
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          parkingData2.size = value;
+        });
+      },
+      dataSource: _sizeData,
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget getType() {
+    return DropDownFormField(
+      titleText: '* Type of Parking Space',
+      hintText: 'Select one:',
+      required: true,
+      value: parkingData2.type,
+      onSaved: (value) {
+        setState(() {
+          parkingData2.type = value;
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          parkingData2.type = value;
+        });
+      },
+      dataSource: _typeData,
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget getDrivewayDetails() {
+    return DropDownFormField(
+      titleText: 'Driveway Parking Space Info:',
+      hintText: 'Select one:',
+      value: parkingData2.driveway,
+      onSaved: (value) {
+        setState(() {
+          if (value == null) {
+            parkingData2.driveway = 'N/A';
+          } else {
+            parkingData2.driveway = value;
+          }
+          parkingData2.spaceType = 'N/A';
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          parkingData2.driveway = value;
+        });
+      },
+      dataSource: _drivewayData,
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget getSpaceType() {
+    return DropDownFormField(
+      titleText: 'Additional Parking Space Info',
+      hintText: 'Select one:',
+      value: parkingData2.spaceType,
+      onSaved: (value) {
+        setState(() {
+          if (value == null) {
+            parkingData2.spaceType = 'N/A';
+          } else {
+            parkingData2.spaceType = value;
+          }
+          parkingData2.driveway = 'N/A';
+        });
+      },
+      onChanged: (value) {
+        setState(() {
+          parkingData2.spaceType = value;
+        });
+      },
+      dataSource: _parkingSpaceTypeData,
+      textField: 'display',
+      valueField: 'value',
+    );
+  }
+
+  Widget getAmenities() {
+    return MultiSelectFormField(
+      autovalidate: false,
+      titleText: 'Parking Spot Amenities',
+      dataSource: _parkingAmenities,
+      textField: 'display',
+      valueField: 'value',
+      okButtonLabel: 'OK',
+      cancelButtonLabel: 'CANCEL',
+      hintText: 'Select all that apply',
+      initialValue: parkingData2.myAmenities,
+      onSaved: (value) {
+        if (value == null) return;
+        setState(() {
+          parkingData2.myAmenities = value;
+        });
+      },
+    );
+  }
+
+  Widget getDetails() {
+    return TextFormField(
+      key: Key('details'),
+      autofocus: true,
+      keyboardType: TextInputType.multiline,
+      maxLines: 6,
+      decoration: textFormFieldDeco('Other important details about your space:'),
+      onSaved: (value) {
+        if (value.isEmpty) return;
+        setState(() {
+          parkingData2.details = value;
+        });
+      },
+    );
+  }
 
   List<Widget> page2Button() {
     return [
@@ -148,7 +296,7 @@ class _MyAddParking2State extends State<AddParking2> {
                 RaisedButton(
                   onPressed: validateAndSubmit,
                   child: Text(
-                    'Next',
+                    'Next: Price & Availability',
                     style: themeData.textTheme.headline4,
                   ),
                   color: themeData.accentColor,
@@ -161,28 +309,48 @@ class _MyAddParking2State extends State<AddParking2> {
     ];
   }
 
-
+  // Validate form (page 2) -
+  // if complete, go to next page; otherwise, set error message
   void validateAndSubmit() async {
-  // check additional validators
-    if(!validateAndSave()){
+    print("Calling validateAndSubmit");
+    if(validateAndSave()){
+      goToNextPage();
+    }
+    else{
       setState(() {
         formError.errorMessage = 'Make sure to fill out all required fields';
-        print(formError.errorMessage);
       });
     }
   }
 
-  // Check individual form validators, go to next page
+  // Confirm page 2 is complete and save the current state of the form.
+  // 'Size' and 'Type' are not optional, so if these values have not been
+  // selected, the form is still incomplete. Other fields may be left blank.
   bool validateAndSave() {
-    final form = _formKey.currentState;
-    if (form.validate()) {
-      form.save();
-      if (formError.incomplete) {
-        return false;
-      }
-      Navigator.pushReplacementNamed(context, '/parking3');
-      return true;
+    print("calling validateAndSave");
+    if(parkingData2.size == null || parkingData2.type == null) {
+      formError.incomplete = true;
+      return false;
     }
-    return false;
+
+    formError.incomplete = false;
+    _formKey.currentState.save();
+    return true;
+  }
+
+  // Navigate to page 2 of form (passing parkingData and curUser objects)
+  void goToNextPage() {
+    print("Go to page 3");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddParking3(
+          title: widget.title,
+          parkingData: widget.parkingData,
+          parkingData2: parkingData2,
+          curUser: widget.curUser,
+        ),
+      ),
+    );
   }
 }
