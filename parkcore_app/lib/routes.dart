@@ -6,6 +6,8 @@ import 'package:parkcore_app/parking/find_parking.dart';
 import 'package:parkcore_app/screens/form_success.dart';
 import 'package:parkcore_app/screens/contact.dart';
 import 'package:parkcore_app/screens/about.dart';
+import 'package:parkcore_app/parking/pform/add_parking1.dart';
+import 'package:parkcore_app/parking/pform/add_parking2.dart';
 
 final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
   '/': (context) => LoginPage(),
@@ -17,4 +19,7 @@ final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
   '/form_success': (context) => FormSuccess(),
   '/contact': (context) => ContactUs(),
   '/about': (context) => About(),
+  '/add_parking1': (context) => AddParking1(title: 'Post New Parking Space'),
+  '/add_parking2': (context) => AddParking2(
+    title: 'Post New Parking Space', parkingData: null, curUser: null),
 };
