@@ -27,7 +27,7 @@ class AddParking1 extends StatefulWidget {
 class _MyAddParking1State extends State<AddParking1> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  ParkingData parkingData = ParkingData(null, null, null, null, null, null, null, null);
+  ParkingData parkingData = ParkingData('', '', '', '', '', '', '', '');
   CurrentUser curUser = CurrentUser(null);
   FormError formError = FormError();
   final _stateData = [
@@ -174,12 +174,12 @@ class _MyAddParking1State extends State<AddParking1> {
       value: parkingData.state,
       onSaved: (value) {
         setState(() {
-          formError.incomplete = false;
           parkingData.state = value;
         });
       },
       onChanged: (value) {
         setState(() {
+          formError.incomplete = false;
           parkingData.state = value;
         });
       },
@@ -228,6 +228,29 @@ class _MyAddParking1State extends State<AddParking1> {
     ];
   }
 
+  // Validate form (page 1) - Check if state has been selected.
+  // Then check if title, address, city, and zip are valid, and if so,
+  // check if the geocoder returns a valid set of coordinates.
+  // Otherwise, return appropriate error message.
+  void validateAndSubmit() async {
+    final form = _formKey.currentState;
+    if(parkingData.state.isEmpty){
+      setState(() {
+        formError.incomplete = true;
+        formError.errorMessage = 'Make sure to select a state';
+      });
+    }
+
+    if(form.validate()){
+      validateGeo();
+    }
+    else{
+      setState(() {
+        formError.errorMessage = 'Make sure to fill out all required fields';
+      });
+    }
+  }
+
   // Form Validators
 
   String validateTitle(String value) {
@@ -273,29 +296,6 @@ class _MyAddParking1State extends State<AddParking1> {
     return null;
   }
 
-  // Validate form (page 1) - Check if state has been selected.
-  // Then check if title, address, city, and zip are valid, and if so,
-  // check if the geocoder returns a valid set of coordinates.
-  // Otherwise, return appropriate error message.
-  void validateAndSubmit() async {
-    final form = _formKey.currentState;
-    if (parkingData.state == null) {
-      setState(() {
-        formError.incomplete = true;
-        formError.errorMessage = 'Make sure to select a state';
-      });
-    }
-
-    if(form.validate()){
-      validateGeo();
-    }
-    else{
-      setState(() {
-        formError.errorMessage = 'Make sure to fill out all required fields';
-      });
-    }
-  }
-
   // Create coordinates associated with the given address (if possible)
   void validateGeo() async {
     try {
@@ -324,22 +324,24 @@ class _MyAddParking1State extends State<AddParking1> {
       });
     }
 
-    // if location was valid, confirm page 1 is complete, and go to next page
-    if (!formError.invalidLoc) {
-      if(validateAndSave()){
-        goToNextPage();
-      }
+    // confirm page 1 entries are complete and valid, & if so, go to next page
+    if(validateAndSave()){
+      goToNextPage();
     }
   }
 
-  //Confirm page 1 is complete, save the current state of the form, set UID
+  // Confirm page 1 is complete, save the current state of the form & set UID
+  // then go to next page of form
   bool validateAndSave() {
-    if (formError.incomplete) {
+    if (formError.incomplete || formError.invalidLoc) {
       return false;
     }
-    _formKey.currentState.save();
-    parkingData.uid = getUserID(curUser.currentUser);
-    return true;
+    else {
+      _formKey.currentState.save();
+      parkingData.uid = getUserID(curUser.currentUser);
+      goToNextPage();
+      return true;
+    }
   }
 
   // Navigate to page 2 of form (passing parkingData and curUser objects)
