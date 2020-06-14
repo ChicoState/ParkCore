@@ -27,9 +27,7 @@ class AddParking1 extends StatefulWidget {
 class _MyAddParking1State extends State<AddParking1> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  ParkingData parkingData = ParkingData(
-      null, null, null, null, null, null, null, null
-  );
+  ParkingData parkingData = ParkingData(null, null, null, null, null, null, null, null);
   CurrentUser curUser = CurrentUser(null);
   FormError formError = FormError();
   final _stateData = [
@@ -49,22 +47,6 @@ class _MyAddParking1State extends State<AddParking1> {
       });
     });
   }
-
-//  String getUserName() {
-//    if (curUser.currentUser != null) {
-//      return curUser.currentUser.displayName;
-//    } else {
-//      return 'no current user';
-//    }
-//  }
-//
-//  String getUserID() {
-//    if (curUser.currentUser != null) {
-//      return curUser.currentUser.uid;
-//    } else {
-//      return 'no current user';
-//    }
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,12 +174,8 @@ class _MyAddParking1State extends State<AddParking1> {
       value: parkingData.state,
       onSaved: (value) {
         setState(() {
-          if (parkingData.state.isEmpty) {
-            formError.incomplete = true;
-          } else {
-            formError.incomplete = false;
-            parkingData.state = value;
-          }
+          formError.incomplete = false;
+          parkingData.state = value;
         });
       },
       onChanged: (value) {
@@ -250,6 +228,8 @@ class _MyAddParking1State extends State<AddParking1> {
     ];
   }
 
+  // Form Validators
+
   String validateTitle(String value) {
     if (value.isEmpty) {
       return 'Field can\'t be empty';
@@ -293,26 +273,31 @@ class _MyAddParking1State extends State<AddParking1> {
     return null;
   }
 
+  // Validate form (page 1) - Check if state has been selected.
+  // Then check if title, address, city, and zip are valid, and if so,
+  // check if the geocoder returns a valid set of coordinates.
+  // Otherwise, return appropriate error message.
   void validateAndSubmit() async {
     final form = _formKey.currentState;
-    if (form.validate()){
-      validateGeo();
-//      // if location was valid, check additional validators
-//      print('invalidLoc? '+ formError.invalidLoc.toString());
-//      if (!formError.invalidLoc) {
-//        if(!validateAndSave()){
-//          setState(() {
-//            formError.errorMessage = 'Make sure to fill out all required fields';
-//            print(formError.errorMessage);
-//          });
-//        }
-//      }
+    if (parkingData.state == null) {
+      setState(() {
+        formError.incomplete = true;
+        formError.errorMessage = 'Make sure to select a state';
+      });
     }
 
+    if(form.validate()){
+      validateGeo();
+    }
+    else{
+      setState(() {
+        formError.errorMessage = 'Make sure to fill out all required fields';
+      });
+    }
   }
 
+  // Create coordinates associated with the given address (if possible)
   void validateGeo() async {
-    // After address info is input, create associated coordinates (if possible),
     try {
       _formKey.currentState.save();
       var _geoAddress = parkingData.address + ', ' + parkingData.city
@@ -324,10 +309,9 @@ class _MyAddParking1State extends State<AddParking1> {
 
       print(first.addressLine + ' : ' + first.coordinates.toString());
       print('random coordinates : ' + parkingData.coord_rand);
+      var addr = first.addressLine.split(', ');
 
       setState(() {
-        //var addr = first.addressLine.split(', ');
-        var addr = getSplitAddress(first.addressLine);
         parkingData.city_format = addr[1];
         formError.invalidLoc = false;
       });
@@ -340,28 +324,26 @@ class _MyAddParking1State extends State<AddParking1> {
       });
     }
 
-    // if location was valid, check additional validators
+    // if location was valid, confirm page 1 is complete, and go to next page
     if (!formError.invalidLoc) {
-      if(!validateAndSave()){
-        setState(() {
-          formError.errorMessage = 'Make sure to fill out all required fields';
-          print(formError.errorMessage);
-        });
-      }
-      else{
+      if(validateAndSave()){
         goToNextPage();
       }
     }
   }
 
-  List<String> getSplitAddress(String address){
-    return address.split(', ');
+  //Confirm page 1 is complete, save the current state of the form, set UID
+  bool validateAndSave() {
+    if (formError.incomplete) {
+      return false;
+    }
+    _formKey.currentState.save();
+    parkingData.uid = getUserID(curUser.currentUser);
+    return true;
   }
 
+  // Navigate to page 2 of form (passing parkingData and curUser objects)
   void goToNextPage() {
-    //Navigator.pushReplacementNamed(context, '/add_parking2');
-    print("title: " + widget.title);
-    print("parking space title: " + parkingData.title);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -373,48 +355,4 @@ class _MyAddParking1State extends State<AddParking1> {
       ),
     );
   }
-
-  // Check individual form validators, go to next page
-  bool validateAndSave() {
-    print("validateAndSave");
-    if (formError.incomplete) {
-      return false;
-    }
-    _formKey.currentState.save();
-    parkingData.uid = getUserID(curUser.currentUser);
-    print("ParkingData: " + parkingData.uid);
-//    Navigator.pushReplacement(
-//      context,
-//      MaterialPageRoute(
-//        builder: (context) => AddParking2(
-//          title: widget.title,
-//          parkingData: parkingData,
-//          curUser: curUser,
-//        ),
-//      ),
-//    );
-    return true;
-  }
-//    final form = _formKey.currentState;
-//    if (form.validate()) {
-//      form.save();
-//      if (formError.incomplete) {
-//        return false;
-//      }
-//      //Navigator.pushReplacementNamed(context, '/parking2');
-//      parkingData.uid = getUserID(curUser.currentUser);
-//      Navigator.pushReplacement(
-//        context,
-//        MaterialPageRoute(
-//          builder: (context) => AddParking2(
-//            title: widget.title,
-//            parkingData: parkingData,
-//            curUser: curUser,
-//          ),
-//        ),
-//      );
-//      return true;
-//    }
-//    return false;
-//  }
 }
