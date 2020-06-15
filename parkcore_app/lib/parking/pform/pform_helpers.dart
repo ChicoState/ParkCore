@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/theme/style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:parkcore_app/navigate/parkcore_button.dart';
 
 ThemeData themeData = appTheme();
+
+AppBar parkingFormAppBar(){
+  return AppBar(
+    title: Text('Post Your Parking Space'),
+    centerTitle: true,
+    backgroundColor: themeData.backgroundColor,
+    actions: <Widget>[
+      LogoButton(),
+    ],
+  );
+}
 
 InputDecoration textFormFieldDeco(String label) {
   return InputDecoration(
@@ -10,7 +22,6 @@ InputDecoration textFormFieldDeco(String label) {
     focusedBorder: OutlineInputBorder(
       borderSide: BorderSide(
         color: themeData.backgroundColor,
-        //color: Theme.of(context).backgroundColor,
       ),
     ),
   );
@@ -32,33 +43,6 @@ String getUserID(FirebaseUser user) {
   }
 }
 
-//List<Widget> pageButton(String buttonText) {
-//  return [
-//    Row(
-//      children: <Widget>[
-//        Expanded(
-//          child: Column(
-//            crossAxisAlignment: CrossAxisAlignment.center,
-//            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//            children: [
-//              RaisedButton(
-//                onPressed: () {
-//                  validateAndSubmit;
-//                },
-//                child: Text(
-//                  buttonText,
-//                  style: themeData.textTheme.headline4,
-//                ),
-//                color: themeData.accentColor,
-//              ),
-//            ],
-//          ),
-//        ),
-//      ],
-//    ),
-//  ];
-//}
-
 class FormError {
   bool _incomplete = false;
   bool _invalidLoc = false;
@@ -73,26 +57,3 @@ class FormError {
   String get errorMessage => _errorMessage;
   set errorMessage(String errorMessage) => _errorMessage = errorMessage;
 }
-
-
-//class ParkingFormHelpers extends StatelessWidget {
-//  ParkingFormHelpers({Key key}) : super(key: key);
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return MaterialApp(
-//      theme: appTheme(),
-//    );
-//  }
-//
-//  InputDecoration textFormFieldDeco(String label) {
-//    return InputDecoration(
-//      labelText: label,
-//      focusedBorder: OutlineInputBorder(
-//        borderSide: BorderSide(
-//          color: Theme.of(context).backgroundColor,
-//        ),
-//      ),
-//    );
-//  }
-//}
