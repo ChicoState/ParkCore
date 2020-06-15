@@ -3,14 +3,13 @@ import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:parkcore_app/models/ParkingData.dart';
 import 'package:parkcore_app/models/ParkingData2.dart';
 import 'package:parkcore_app/models/CurrentUser.dart';
-import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'pform_helpers.dart';
 import 'add_parking3.dart';
 
 class AddParking2 extends StatefulWidget {
-  AddParking2({Key key, this.title, this.parkingData, this.curUser}) : super(key: key);
+  AddParking2({Key key, this.parkingData, this.curUser}) : super(key: key);
 
   // This widget is the 'add parking' page of the app. It is stateful: it has a
   // State object (defined below) that contains fields that affect how it looks.
@@ -18,7 +17,6 @@ class AddParking2 extends StatefulWidget {
   // provided by the parent (App widget) and used by the build method of the
   // State. Fields in a Widget subclass are always marked 'final'.
 
-  final String title;
   final ParkingData parkingData;
   final CurrentUser curUser;
 
@@ -80,14 +78,7 @@ class _MyAddParking2State extends State<AddParking2> {
     // Build a Form widget using the _formKey created above.
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).backgroundColor,
-        actions: <Widget>[
-          LogoButton(),
-        ],
-      ),
+      appBar: parkingFormAppBar(),
       drawer: MenuDrawer(),
       body: SingleChildScrollView(
         child: Padding(
@@ -96,8 +87,8 @@ class _MyAddParking2State extends State<AddParking2> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              formError.incomplete || formError.invalidLoc
-                ? Text(formError.errorMessage, style: TextStyle(color: Colors.red))
+              formError.incomplete ?
+                Text(formError.errorMessage, style: TextStyle(color: Colors.red))
                 : Text('Part 2 of 5'),
               SizedBox(height: 10),
               Form(
@@ -342,7 +333,6 @@ class _MyAddParking2State extends State<AddParking2> {
       context,
       MaterialPageRoute(
         builder: (context) => AddParking3(
-          title: widget.title,
           parkingData: widget.parkingData,
           parkingData2: parkingData2,
           curUser: widget.curUser,

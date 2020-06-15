@@ -4,7 +4,6 @@ import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:parkcore_app/models/ParkingData.dart';
 import 'package:parkcore_app/models/ParkingData2.dart';
 import 'package:parkcore_app/models/ParkingData3.dart';
@@ -14,7 +13,7 @@ import 'add_parking_review.dart';
 
 class AddParking3 extends StatefulWidget {
   AddParking3({
-    Key key, this.title, this.parkingData, this.parkingData2, this.curUser
+    Key key, this.parkingData, this.parkingData2, this.curUser
   }) : super(key: key);
 
   // This widget is the 'add parking' page of the app. It is stateful: it has a
@@ -23,7 +22,6 @@ class AddParking3 extends StatefulWidget {
   // provided by the parent (App widget) and used by the build method of the
   // State. Fields in a Widget subclass are always marked 'final'.
 
-  final String title;
   final ParkingData parkingData;
   final ParkingData2 parkingData2;
   final CurrentUser curUser;
@@ -36,7 +34,6 @@ class _MyAddParking3State extends State<AddParking3> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   ParkingData3 parkingData3 = ParkingData3(null, '', '', '');
-  // CurrentUser curUser = CurrentUser(null);
   FormError formError = FormError();
   final format = DateFormat('HH:mm');
   final priceController = MoneyMaskedTextController(
@@ -66,14 +63,7 @@ class _MyAddParking3State extends State<AddParking3> {
     // Build a Form widget using the _formKey created above.
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).backgroundColor,
-        actions: <Widget>[
-          LogoButton(),
-        ],
-      ),
+      appBar: parkingFormAppBar(),
       drawer: MenuDrawer(),
       body: SingleChildScrollView(
         child: Padding(
@@ -82,8 +72,8 @@ class _MyAddParking3State extends State<AddParking3> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              formError.incomplete || formError.invalidLoc
-                ? Text(formError.errorMessage, style: TextStyle(color: Colors.red))
+              formError.incomplete ?
+                Text(formError.errorMessage, style: TextStyle(color: Colors.red))
                 : Text('Part 3 of 5'),
               SizedBox(height: 10),
               Form(
@@ -121,7 +111,7 @@ class _MyAddParking3State extends State<AddParking3> {
   Widget getDays() {
     return MultiSelectFormField(
       autovalidate: false,
-      titleText: '* Days Available',
+      titleText: 'Days Available',
       dataSource: _days,
       textField: 'display',
       valueField: 'value',
@@ -200,16 +190,6 @@ class _MyAddParking3State extends State<AddParking3> {
     ];
   }
 
-//  void validateAndSubmit() async {
-//    // check additional validators
-//    if(!validateAndSave()){
-//      setState(() {
-//        formError.errorMessage = 'Make sure to fill out all required fields';
-//        print(formError.errorMessage);
-//      });
-//    }
-//  }
-
   // Validate form (page 3) -
   // if complete, go to next page; otherwise, set error message
   void validateAndSubmit() async {
@@ -224,23 +204,9 @@ class _MyAddParking3State extends State<AddParking3> {
     }
   }
 
-  // Check individual form validators, go to next page
-//  bool validateAndSave() {
-//    final form = _formKey.currentState;
-//    if (form.validate()) {
-//      form.save();
-//      if (formError.incomplete) {
-//        return false;
-//      }
-//      Navigator.pushReplacementNamed(context, '/add_parking_review');
-//      return true;
-//    }
-//    return false;
-//  }
-
-  // Confirm page 2 is complete and save the current state of the form.
-  // 'Size' and 'Type' are not optional, so if these values have not been
-  // selected, the form is still incomplete. Other fields may be left blank.
+  // Confirm page 3 is complete and save the current state of the form.
+  // 'Price' is not optional, so if this value has not been selected,
+  // the form is still incomplete. Other fields may be left blank.
   bool validateAndSave() {
     var form = _formKey.currentState;
     if(!form.validate()) {
@@ -253,12 +219,11 @@ class _MyAddParking3State extends State<AddParking3> {
     return true;
   }
 
+  // A controller (priceController) and keyboardType (TextInputType.number)
+  // are used to ensure a valid USD amount is entered
   String validatePrice(String value) {
-    if (value.isEmpty) {
-      return 'Field can\'t be empty';
-    }
-    if (value.contains(' ')) {
-      return 'Field can\'t contain spaces';
+    if (value == "0.00") {
+      return 'Value must be greater than \$0.00';
     }
     return null;
   }
@@ -269,7 +234,6 @@ class _MyAddParking3State extends State<AddParking3> {
       context,
       MaterialPageRoute(
         builder: (context) => AddParkingReview(
-          title: widget.title,
           parkingData: widget.parkingData,
           parkingData2: widget.parkingData2,
           parkingData3: parkingData3,

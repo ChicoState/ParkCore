@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:parkcore_app/models/ParkingData.dart';
 import 'package:parkcore_app/models/CurrentUser.dart';
-import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geocoder/geocoder.dart';
@@ -56,14 +55,7 @@ class _MyAddParking1State extends State<AddParking1> {
     // Build a Form widget using the _formKey created above.
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).backgroundColor,
-        actions: <Widget>[
-          LogoButton(),
-        ],
-      ),
+      appBar: parkingFormAppBar(),
       drawer: MenuDrawer(),
       body: SingleChildScrollView(
         child: Padding(
@@ -100,7 +92,7 @@ class _MyAddParking1State extends State<AddParking1> {
         ),
         child: Text(
           'Adding a parking space owned by: ' + getUserName(curUser.currentUser)
-              + '\nRequired fields marked with *',
+            + '\nRequired fields marked with *',
           textAlign: TextAlign.center,
         ),
       ),
@@ -131,7 +123,7 @@ class _MyAddParking1State extends State<AddParking1> {
       autofocus: true,
       validator: validateTitle,
       decoration: textFormFieldDeco(
-          '* Enter a descriptive title for your parking space:'),
+        '* Enter a descriptive title for your parking space:'),
       onSaved: (value) {
         setState(() {
           parkingData.title = value;
@@ -168,7 +160,7 @@ class _MyAddParking1State extends State<AddParking1> {
 
   Widget getState() {
     return DropDownFormField(
-      titleText: 'State',
+      titleText: '* State:',
       hintText: '* Currently only available in California:',
       required: true,
       value: parkingData.state,
@@ -350,7 +342,6 @@ class _MyAddParking1State extends State<AddParking1> {
       context,
       MaterialPageRoute(
         builder: (context) => AddParking2(
-          title: widget.title,
           parkingData: parkingData,
           curUser: curUser,
         ),
