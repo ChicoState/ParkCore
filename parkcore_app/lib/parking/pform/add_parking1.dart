@@ -26,6 +26,8 @@ class AddParking1 extends StatefulWidget {
 class _MyAddParking1State extends State<AddParking1> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // parkingData params:
+  // title, address, city, state, zip, uid, coordinates, random coordinates
   ParkingData parkingData = ParkingData('', '', '', '', '', '', '', '');
   CurrentUser curUser = CurrentUser(null);
   FormError formError = FormError();
@@ -72,7 +74,7 @@ class _MyAddParking1State extends State<AddParking1> {
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: buildAddress() + page1Button(),
+                  children: buildAddress(),
                 ),
               ),
             ],
@@ -91,7 +93,7 @@ class _MyAddParking1State extends State<AddParking1> {
           color: Colors.green[50],
         ),
         child: Text(
-          'Adding a parking space owned by: ' + getUserName(curUser.currentUser)
+          'Add a parking space owned by ' + getUserName(curUser.currentUser)
             + '\nRequired fields marked with *',
           textAlign: TextAlign.center,
         ),
@@ -111,7 +113,8 @@ class _MyAddParking1State extends State<AddParking1> {
       ),
       SizedBox(height: 10),
       getZip(),
-      SizedBox(height: 30),
+      SizedBox(height: 10),
+      page1Button(),
     ];
   }
 
@@ -195,29 +198,20 @@ class _MyAddParking1State extends State<AddParking1> {
     );
   }
 
-  List<Widget> page1Button() {
-    return [
-      Row(
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                RaisedButton(
-                  onPressed: validateAndSubmit,
-                  child: Text(
-                    'Next: Parking Space Info',
-                    style: themeData.textTheme.headline4,
-                  ),
-                  color: themeData.accentColor,
-                ),
-              ],
-            ),
+  Widget page1Button() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        RaisedButton(
+          onPressed: validateAndSubmit,
+          child: Text(
+            'Next: Parking Space Info',
+            style: themeData.textTheme.headline4,
           ),
-        ],
-      ),
-    ];
+          color: themeData.accentColor,
+        ),
+      ],
+    );
   }
 
   // Validate form (page 1) - Check if state has been selected.

@@ -59,7 +59,7 @@ class _MyAddParkingReviewState extends State<AddParkingReview> {
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: review() + pageReviewButton(),
+                  children: review(),
                 ),
               ),
             ],
@@ -96,49 +96,23 @@ class _MyAddParkingReviewState extends State<AddParkingReview> {
       Text('Parking Space Owner: ' + getUserName(widget.curUser.currentUser)),
       Text('Parking Space Coordinates: ' + widget.parkingData.coordinates),
       SizedBox(height: 10),
-      restart(),
-      SizedBox(height: 50),
+      pageReviewButton(),
+      SizedBox(height: 10),
+      restart(context),
     ];
   }
 
-  List<Widget> pageReviewButton() {
-    return [
-      Row(
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                RaisedButton(
-                  onPressed: goToNextPage,
-                  child: Text(
-                    'Add Image & Submit',
-                    style: themeData.textTheme.headline4,
-                  ),
-                  color: themeData.accentColor,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ];
-  }
-
-  Widget restart() {
+  Widget pageReviewButton() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
         RaisedButton(
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/add_parking');
-          },
+          onPressed: goToNextPage,
           child: Text(
-            'Restart Form',
-            style: Theme.of(context).textTheme.headline4,
+            'Add Image & Submit',
+            style: themeData.textTheme.headline4,
           ),
-          color: Theme.of(context).backgroundColor,
+          color: themeData.accentColor,
         ),
       ],
     );

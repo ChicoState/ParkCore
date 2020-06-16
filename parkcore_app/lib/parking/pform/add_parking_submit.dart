@@ -67,7 +67,7 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: buildImages() + submitParking(),
+                  children: buildImages(),
                 ),
               ),
             ],
@@ -88,7 +88,10 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
           getImageType('gallery'),
         ],
       ),
-      SizedBox(height: 30),
+      SizedBox(height: 10),
+      submitParking(),
+      SizedBox(height: 10),
+      restart(context),
     ];
   }
 
@@ -157,35 +160,33 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
     return downloadURL.toString();
   }
 
-  List<Widget> submitParking() {
-    return [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            key: Key('submit'),
-            onPressed: () {
-              final form = _formKey.currentState;
-              form.save();
+  Widget submitParking() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        RaisedButton(
+          key: Key('submit'),
+          onPressed: () {
+            final form = _formKey.currentState;
+            form.save();
 
-              try {
-                createParkingSpace();
-                print('parking space added to database');
-                Navigator.pushReplacementNamed(context, '/form_success');
-              }
-              catch (e) {
-                print('Error occurred: $e');
-              }
-            },
-            child: Text(
-              'Submit',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            color: Theme.of(context).accentColor,
+            try {
+              createParkingSpace();
+              print('parking space added to database');
+              Navigator.pushReplacementNamed(context, '/form_success');
+            }
+            catch (e) {
+              print('Error occurred: $e');
+            }
+          },
+          child: Text(
+            'Submit',
+            style: Theme.of(context).textTheme.headline4,
           ),
-        ],
-      ),
-    ];
+          color: Theme.of(context).accentColor,
+        ),
+      ],
+    );
   }
 
   // Create ParkingSpaces database entry

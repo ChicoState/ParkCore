@@ -43,6 +43,24 @@ String getUserID(FirebaseUser user) {
   }
 }
 
+Widget restart(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      RaisedButton(
+        onPressed: () {
+          Navigator.pushReplacementNamed(context, '/add_parking1');
+        },
+        child: Text(
+          'Restart Form',
+          style: Theme.of(context).textTheme.headline4,
+        ),
+        color: Theme.of(context).backgroundColor,
+      ),
+    ],
+  );
+}
+
 class FormError {
   bool _incomplete = false;
   bool _invalidLoc = false;

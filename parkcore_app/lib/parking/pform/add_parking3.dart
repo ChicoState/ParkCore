@@ -33,6 +33,7 @@ class AddParking3 extends StatefulWidget {
 class _MyAddParking3State extends State<AddParking3> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  // parkingData3 params: days, start time, end time, price
   ParkingData3 parkingData3 = ParkingData3(null, '', '', '');
   FormError formError = FormError();
   final format = DateFormat('HH:mm');
@@ -80,7 +81,7 @@ class _MyAddParking3State extends State<AddParking3> {
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: buildAvailability() + page3Button(),
+                  children: buildAvailability(),
                 ),
               ),
             ],
@@ -102,7 +103,10 @@ class _MyAddParking3State extends State<AddParking3> {
       getTime('end'),
       SizedBox(height: 10),
       getPrice(),
-      SizedBox(height: 30),
+      SizedBox(height: 10),
+      page3Button(),
+      SizedBox(height: 10),
+      restart(context),
     ];
   }
 
@@ -165,29 +169,20 @@ class _MyAddParking3State extends State<AddParking3> {
     );
   }
 
-  List<Widget> page3Button() {
-    return [
-      Row(
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                RaisedButton(
-                  onPressed: validateAndSubmit,
-                  child: Text(
-                    'Review',
-                    style: themeData.textTheme.headline4,
-                  ),
-                  color: themeData.accentColor,
-                ),
-              ],
-            ),
+  Widget page3Button() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        RaisedButton(
+          onPressed: validateAndSubmit,
+          child: Text(
+            'Review',
+            style: themeData.textTheme.headline4,
           ),
-        ],
-      ),
-    ];
+          color: themeData.accentColor,
+        ),
+      ],
+    );
   }
 
   // Validate form (page 3) -

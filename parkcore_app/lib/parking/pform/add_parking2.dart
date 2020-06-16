@@ -95,7 +95,8 @@ class _MyAddParking2State extends State<AddParking2> {
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: buildParkingType() + page2Button(),
+                  children: buildParkingType(),
+                  //children: buildParkingType() + page2Button(),
                 ),
               ),
             ],
@@ -137,7 +138,10 @@ class _MyAddParking2State extends State<AddParking2> {
       ),
       SizedBox(height: 10),
       getDetails(),
-      SizedBox(height: 30),
+      SizedBox(height: 10),
+      page2Button(),
+      SizedBox(height: 10),
+      restart(context),
     ];
   }
 
@@ -264,7 +268,7 @@ class _MyAddParking2State extends State<AddParking2> {
       key: Key('details'),
       autofocus: true,
       keyboardType: TextInputType.multiline,
-      maxLines: 6,
+      maxLines: 3,
       decoration: textFormFieldDeco('Other important details about your space:'),
       onSaved: (value) {
         if (value.isEmpty) return;
@@ -275,29 +279,20 @@ class _MyAddParking2State extends State<AddParking2> {
     );
   }
 
-  List<Widget> page2Button() {
-    return [
-      Row(
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                RaisedButton(
-                  onPressed: validateAndSubmit,
-                  child: Text(
-                    'Next: Price & Availability',
-                    style: themeData.textTheme.headline4,
-                  ),
-                  color: themeData.accentColor,
-                ),
-              ],
-            ),
+  Widget page2Button() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        RaisedButton(
+          onPressed: validateAndSubmit,
+          child: Text(
+            'Next: Price & Availability',
+            style: themeData.textTheme.headline4,
           ),
-        ],
-      ),
-    ];
+          color: themeData.accentColor,
+        ),
+      ],
+    );
   }
 
   // Validate form (page 2) -
