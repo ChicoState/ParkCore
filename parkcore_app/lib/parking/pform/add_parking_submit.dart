@@ -197,29 +197,15 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
       print('Error occurred: $e');
     }
 
-    var allParkingData = {
-      'title': widget.parkingData.title,
-      'address': widget.parkingData.address,
-      'city': widget.parkingData.city_format,
-      'state': widget.parkingData.state,
-      'zip': widget.parkingData.zip,
-      'coordinates': widget.parkingData.coordinates, // generated from the input address
-      'coordinates_r': widget.parkingData.coord_rand, // random coordinates near actual address
-      'uid': widget.parkingData.uid, // parkingSpace owner is the current user
-      'size': widget.parkingData2.size,
-      'type': widget.parkingData2.type,
-      'driveway': widget.parkingData2.driveway,
-      'spacetype': widget.parkingData2.spaceType,
-      'amenities': widget.parkingData2.myAmenities.toString(),
-      'spacedetails': widget.parkingData2.details,
-      'days': widget.parkingData3.myDays.toString(),
-      'starttime': widget.parkingData3.startTime,
-      'endtime': widget.parkingData3.endTime,
-      'monthprice': widget.parkingData3.price,
+    Map<String, dynamic> allParkingData = {
       'downloadURL': _downloadURL, // for the image (put in firebase storage)
       'reserved': [].toString(), // list of UIDs (if reserved, starts empty)
       'cur_tenant': '', // current tenant (a UID, or empty if spot is available)
     };
+
+    allParkingData.addAll(widget.parkingData.toJson());
+    allParkingData.addAll(widget.parkingData2.toJson());
+    allParkingData.addAll(widget.parkingData3.toJson());
 
     await Firestore.instance.runTransaction((transaction) async {
       //CollectionReference

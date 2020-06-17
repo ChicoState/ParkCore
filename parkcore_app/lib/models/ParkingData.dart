@@ -10,9 +10,6 @@ class ParkingData {
     this.uid,
     this.coordinates,
     this.coord_rand,
-//    this.downloadURL,
-//    this.reserved,
-//    this.cur_tenant,
   );
 
   String title = '';
@@ -24,10 +21,6 @@ class ParkingData {
   String uid = ''; // parkingSpace owner is the current user
   String coordinates = '';
   String coord_rand = '';
-//  String downloadURL = '';
-//  String uid = ''; // parkingSpace owner is the current user
-//  String reserved = ''; // list of UIDs (if reserved, starts empty)
-//  String cur_tenant = ''; // current tenant (a UID, or empty if spot is available)
 
   Map<String, dynamic> toJson() => {
     'title': title,
@@ -38,8 +31,5 @@ class ParkingData {
     'uid': uid,
     'coordinates': coordinates, // generated from the input address
     'coordinates_r': coord_rand, // random coordinates near actual address
-//    'downloadURL': downloadURL, // for the image (put in firebase storage)
-//    'reserved': [].toString(), // list of UIDs (if reserved, starts empty)
-//    'cur_tenant': '', // current tenant (a UID, or empty if spot is available)
   };
 }
