@@ -5,7 +5,8 @@ import 'package:parkcore_app/screens/home.dart';
 import 'package:parkcore_app/screens/contact.dart';
 import 'package:parkcore_app/screens/about.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
-import 'package:parkcore_app/parking/add_parking.dart';
+//import 'package:parkcore_app/parking/add_parking.dart';
+import 'package:parkcore_app/parking/pform/add_parking1.dart';
 
 void main() {
   testWidgets('Find Menu Drawer Logo', (WidgetTester tester) async {
@@ -89,11 +90,32 @@ void main() {
     expect(titleFinder, findsOneWidget);
   });
 
-  testWidgets('Tap Add Parking button in menu', (WidgetTester tester) async {
+//  testWidgets('Tap Add Parking button in menu', (WidgetTester tester) async {
+//    // Build our app and trigger a frame.
+//
+//    final routes = <String, WidgetBuilder>{
+//      '/add_parking': (context) => AddParking(title: 'Post Your Parking Space'),
+//    };
+//
+//    await tester.pumpWidget(MaterialApp(
+//      home: MenuDrawer(),
+//      initialRoute: '/',
+//      routes: routes,
+//    ));
+//
+//    // Find logoButton
+//    final buttonFinder = find.byKey(Key('addParkingKey'));
+//    await tester.tap(buttonFinder);
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 10));
+//    final titleFinder = find.text('Post Your Parking Space');
+//    expect(titleFinder, findsOneWidget);
+//  });
+  testWidgets('Tap New Add Parking button in menu', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
     final routes = <String, WidgetBuilder>{
-      '/add_parking': (context) => AddParking(title: 'Post Your Parking Space'),
+      '/add_parking1': (context) => AddParking1(title: 'Post Your Parking Space'),
     };
 
     await tester.pumpWidget(MaterialApp(
@@ -103,7 +125,7 @@ void main() {
     ));
 
     // Find logoButton
-    final buttonFinder = find.byKey(Key('addParkingKey'));
+    final buttonFinder = find.byKey(Key('addParking1Key'));
     await tester.tap(buttonFinder);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
