@@ -3,8 +3,10 @@ import 'package:parkcore_app/theme/style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 
+// Methods and class that are used by parking form pages
 ThemeData themeData = appTheme();
 
+// Consistent AppBar for all pages of parking form
 AppBar parkingFormAppBar(){
   return AppBar(
     title: Text('Post Your Parking Space'),
@@ -16,6 +18,7 @@ AppBar parkingFormAppBar(){
   );
 }
 
+// Consistent decoration for text form field input
 InputDecoration textFormFieldDeco(String label) {
   return InputDecoration(
     labelText: label,
@@ -43,6 +46,7 @@ String getUserID(FirebaseUser user) {
   }
 }
 
+// Button to restart form
 Widget restart(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.end,
@@ -61,6 +65,8 @@ Widget restart(BuildContext context) {
   );
 }
 
+// Errors in the form may be marked incomplete or invalid; if so, an error
+// message is set and shown to the user when they click the 'Next' button
 class FormError {
   bool _incomplete = false;
   bool _invalidLoc = false;
