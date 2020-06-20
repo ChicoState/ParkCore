@@ -169,6 +169,7 @@ class _MyAddParking3State extends State<AddParking3> {
     );
   }
 
+  // Page3Button validates form input and navigates to page 4 of form
   Widget page3Button() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -188,7 +189,6 @@ class _MyAddParking3State extends State<AddParking3> {
   // Validate form (page 3) -
   // if complete, go to next page; otherwise, set error message
   void validateAndSubmit() async {
-    print("Calling validateAndSubmit");
     if(validateAndSave()){
       goToNextPage();
     }
@@ -215,7 +215,8 @@ class _MyAddParking3State extends State<AddParking3> {
   }
 
   // A controller (priceController) and keyboardType (TextInputType.number)
-  // are used to ensure a valid USD amount is entered
+  // are used to ensure a valid USD amount is entered. Then validatePrice()
+  // ensures that a month price has been chosen (default is 0.00)
   String validatePrice(String value) {
     if (value == "0.00") {
       return 'Value must be greater than \$0.00';

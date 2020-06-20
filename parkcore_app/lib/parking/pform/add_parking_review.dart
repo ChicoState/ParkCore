@@ -118,7 +118,7 @@ class _MyAddParkingReviewState extends State<AddParkingReview> {
     );
   }
 
-  // Navigate to form review page (pass existing parkingData & curUser objects)
+  // Navigate to form submit page (pass existing parkingData & curUser objects)
   void goToNextPage() {
     Navigator.push(
       context,

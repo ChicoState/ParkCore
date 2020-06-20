@@ -9,6 +9,8 @@ import 'package:parkcore_app/parking/random_coordinates.dart';
 import 'pform_helpers.dart';
 import 'add_parking2.dart';
 
+// Conversion to multi-page form adapted from:
+// https://www.youtube.com/watch?v=IxCeJS9yA8w&list=PL_D-RntzgLvbbB7Uub06wW44znOoWJro4&index=16
 class AddParking1 extends StatefulWidget {
   AddParking1({Key key, this.title}) : super(key: key);
   // This widget is the 'add parking' page of the app. It is stateful: it has a
@@ -106,6 +108,7 @@ class _MyAddParking1State extends State<AddParking1> {
       getCity(),
       SizedBox(height: 10),
       Container(
+        key: Key('stateField'),
         decoration: BoxDecoration(
           color: formError.incomplete ? Colors.red[50] : Colors.green[50],
         ),
@@ -198,6 +201,7 @@ class _MyAddParking1State extends State<AddParking1> {
     );
   }
 
+  // Page1Button validates & submits 1st page of form before going to next page
   Widget page1Button() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -214,13 +218,13 @@ class _MyAddParking1State extends State<AddParking1> {
     );
   }
 
-  // Validate form (page 1) - Check if state has been selected.
-  // Then check if title, address, city, and zip are valid, and if so,
-  // check if the geocoder returns a valid set of coordinates.
+  // Validate form (page 1) - Check if state has been selected (dropdown field).
+  // Then check if title, address, city, and zip are valid (text fields), and
+  // if so, check if the geocoder returns a valid set of coordinates.
   // Otherwise, return appropriate error message.
   void validateAndSubmit() async {
     final form = _formKey.currentState;
-    if(parkingData.state.isEmpty){
+    if(parkingData.state == ''){
       setState(() {
         formError.incomplete = true;
         formError.errorMessage = 'Make sure to select a state';
@@ -237,7 +241,7 @@ class _MyAddParking1State extends State<AddParking1> {
     }
   }
 
-  // Form Validators
+  // Form Validators called by form.validate()
 
   String validateTitle(String value) {
     if (value.isEmpty) {
@@ -282,7 +286,12 @@ class _MyAddParking1State extends State<AddParking1> {
     return null;
   }
 
+  // If address input is valid according to form validators,
   // Create coordinates associated with the given address (if possible)
+  // Also create a set of nearby random coordinates, which can be used to show
+  // approximate location for the parking space, and help preserve user privacy
+  // After geocoder is complete, confirm form page 1 entries are complete and
+  // valid before navigating to next page
   void validateGeo() async {
     try {
       _formKey.currentState.save();
@@ -310,22 +319,19 @@ class _MyAddParking1State extends State<AddParking1> {
       });
     }
 
-    // confirm page 1 entries are complete and valid, & if so, go to next page
     if(validateAndSave()){
       goToNextPage();
     }
   }
 
-  // Confirm page 1 is complete, save the current state of the form & set UID
-  // then go to next page of form
+  // Confirm page 1 is complete (no empty fields, location is valid),
+  // then set UID and return true (go to next page of form)
   bool validateAndSave() {
     if (formError.incomplete || formError.invalidLoc) {
       return false;
     }
-    else {
-      _formKey.currentState.save();
+    else{
       parkingData.uid = getUserID(curUser.currentUser);
-      goToNextPage();
       return true;
     }
   }

@@ -96,7 +96,6 @@ class _MyAddParking2State extends State<AddParking2> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: buildParkingType(),
-                  //children: buildParkingType() + page2Button(),
                 ),
               ),
             ],
@@ -109,6 +108,7 @@ class _MyAddParking2State extends State<AddParking2> {
   List<Widget> buildParkingType() {
     return [
       Container(
+        key: Key('sizeField'),
         decoration: BoxDecoration(
           color: formError.incomplete ? Colors.red[50] : Colors.green[50],
         ),
@@ -116,6 +116,7 @@ class _MyAddParking2State extends State<AddParking2> {
       ),
       SizedBox(height: 10),
       Container(
+        key: Key('typeField'),
         decoration: BoxDecoration(
           color: formError.incomplete ? Colors.red[50] : Colors.green[50],
         ),
@@ -191,6 +192,7 @@ class _MyAddParking2State extends State<AddParking2> {
     );
   }
 
+  // Provides additional parking space info if 'Driveway' is chosen for Type
   Widget getDrivewayDetails() {
     return DropDownFormField(
       titleText: 'Driveway Parking Space Info:',
@@ -217,6 +219,7 @@ class _MyAddParking2State extends State<AddParking2> {
     );
   }
 
+  // Provides add'l parking space info if 'Parking Lot' or 'Street' chosen for Type
   Widget getSpaceType() {
     return DropDownFormField(
       titleText: 'Additional Parking Space Info',
@@ -279,6 +282,7 @@ class _MyAddParking2State extends State<AddParking2> {
     );
   }
 
+  // Page2Button validates form input and navigates to page 3 of form
   Widget page2Button() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,

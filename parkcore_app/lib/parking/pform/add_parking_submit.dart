@@ -100,11 +100,11 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
   Widget showImage() {
     return Center(
       child: _imageFile == null
-          ? Text(
-        'No image selected.',
-        style: Theme.of(context).textTheme.headline3,
-      )
-          : Image.file(_imageFile),
+        ? Text(
+          'No image selected.',
+          style: Theme.of(context).textTheme.headline3,
+        )
+        : Image.file(_imageFile),
     );
   }
 
@@ -160,6 +160,9 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
     return downloadURL.toString();
   }
 
+  // Submit Button for form to add a Parking Space:
+  // create a parking space (with all data) that can be saved as JSON in
+  // Firestore, then navigate to 'success' page (form was submitted)
   Widget submitParking() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -172,7 +175,6 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
 
             try {
               createParkingSpace();
-              print('parking space added to database');
               Navigator.pushReplacementNamed(context, '/form_success');
             }
             catch (e) {
@@ -189,7 +191,8 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
     );
   }
 
-  // Create ParkingSpaces database entry
+  // Create ParkingSpaces database entry using all parkingData, then add the
+  // Map<String, dynamic> (in JSON format) to Firestore
   Future<void> createParkingSpace() async {
     try {
       await getUniqueFile();
