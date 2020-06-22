@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:parkcore_app/parking/pform/add_parking1.dart';
 import 'package:parkcore_app/parking/pform/add_parking2.dart';
 import 'package:parkcore_app/parking/pform/pform_helpers.dart';
 import 'package:parkcore_app/models/ParkingData2.dart';
@@ -117,6 +118,15 @@ void main() {
     ));
 
     expect(find.byType(RaisedButton),findsNWidgets(2));
+  });
+
+  testWidgets('Find Parking Form page 2 restart button', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+
+    expect(find.widgetWithText(RaisedButton, 'Restart Form'), findsOneWidget);
   });
 
   testWidgets('Find Parking Form page 2 submit button', (WidgetTester tester) async {
@@ -361,6 +371,123 @@ void main() {
     expect(decoration.color, Colors.red[50]);
   });
 
+  testWidgets('test enter details text only', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+    final detailstext = find.byKey(Key('details'));
+
+    // Test form search field input
+    await tester.enterText(detailstext, 'near Acker Gym');
+    // Create the finders
+    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
+
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('Make sure to fill out all required fields'), findsOneWidget);
+  });
+
+  testWidgets('test form error incomplete is false', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+    ParkingData2 parkingData = ParkingData2(null, null, '', '', null, '');
+    FormError formError = FormError();
+    final detailstext = find.byKey(Key('details'));
+
+    // Test form search field input
+    parkingData.size = 'Compact';
+    parkingData.type = 'Parking Lot';
+    await tester.enterText(detailstext, 'near Acker Gym');
+    // Create the finders
+    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
+
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(formError.incomplete, isFalse);
+  });
+
+  testWidgets('expect restart button to go to page 1 of form', (
+      WidgetTester tester) async {
+
+    final routes = <String, WidgetBuilder>{
+      '/add_parking1': (context) => AddParking1(title: "Post Your Parking Space"),
+    };
+
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+      initialRoute: '/',
+      routes: routes,
+    ));
+
+    final buttonFinder = find.byKey(Key('restartbutton'));
+    await tester.tap(buttonFinder);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+
+    final textFinder = find.text('Post Your Parking Space');
+    expect(textFinder, findsOneWidget);
+  });
+
+    // Can't test selecting options from dropdown, so since those fields are
+    // required, we can't test navigation to next page
+//  testWidgets('Test go to page 3 from page 2', (WidgetTester tester) async {
+//    // Build our app and trigger a frame.
+//
+//    final routes = <String, WidgetBuilder>{
+//      '/add_parking3': (context) => AddParking3(parkingData: null, parkingData2: null, curUser: null),
+//    };
+//
+//    await tester.pumpWidget(MaterialApp(
+//      home: AddParking2(parkingData: null, curUser: null),
+//      initialRoute: '/',
+//      routes: routes,
+//    ));
+//
+//    ParkingData2 parkingData = ParkingData2(null, null, '', '', null, '');
+//    final detailstext = find.byKey(Key('details'));
+//
+//    // Test form search field input
+//    parkingData.size = 'Compact';
+//    parkingData.type = 'Parking Lot';
+//    await tester.enterText(detailstext, 'near Acker Gym');
+//    // Create the finders
+//    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
+//    await tester.tap(submit);
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 10));
+//    expect(find.text('Part 3 of 5'), findsOneWidget);
+//  });
+
+//  testWidgets('find driveway options after choosing Driveway as Type', (
+//      WidgetTester tester) async {
+//    await tester.pumpWidget(MaterialApp(
+//      home: AddParking2(parkingData: null, curUser: null),
+//    ));
+//    ParkingData2 parkingData2 = ParkingData2(null, 'Driveway', '', '', null, '');
+//
+//    // Create the finders
+//    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
+//
+//    // Tap the search icon and trigger a frame
+//    await tester.tap(submit);
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 10));
+//    expect(parkingData2.type, 'Driveway');
+//
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 10));
+//    final Container container = tester.widget(find.byKey(Key('drivewayField')));
+//    final BoxDecoration decoration = container.decoration as BoxDecoration;
+//    expect(decoration.color, Colors.green[50]);
+//  });
+
 //  testWidgets('find Driveway form field', (
 //      WidgetTester tester) async {
 //    await tester.pumpWidget(MaterialApp(
@@ -371,58 +498,5 @@ void main() {
 //    await tester.pump();
 //    await tester.pump(const Duration(milliseconds: 10));
 //    expect(find.widgetWithText(DropDownFormField, 'Driveway Parking Space Info:'),findsOneWidget);
-//  });
-
-//  testWidgets('expect incomplete form error is true', (
-//      WidgetTester tester) async {
-//    await tester.pumpWidget(MaterialApp(
-//      home: AddParking2(parkingData: null, curUser: null),
-//    ));
-//    final formError = FormError();
-//    // Create the finders
-//    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
-//
-//    // Tap the search icon and trigger a frame
-//    await tester.tap(submit);
-//    await tester.pump();
-//    await tester.pump(const Duration(milliseconds: 10));
-//    await tester.pump(const Duration(milliseconds: 10));
-//    expect(formError.incomplete, isTrue);
-//  });
-
-//  testWidgets('if State not selected, box returns red', (WidgetTester tester) async {
-//    // Build our app and trigger a frame.
-//
-//    final routes = <String, WidgetBuilder>{
-//      '/add_parking2': (context) => AddParking2(parkingData: null, curUser: null),
-//    };
-//
-//    await tester.pumpWidget(MaterialApp(
-//      home: AddParking1(),
-//      initialRoute: '/',
-//      routes: routes,
-//    ));
-//
-//    ParkingData parkingData = ParkingData('','','','','','','','');
-//    // Test text field form input
-//    final titletext = find.byKey(Key('title'));
-//    final addresstext = find.byKey(Key('address'));
-//    final citytext = find.byKey(Key('city'));
-//    final ziptext = find.byKey(Key('zip'));
-//
-//    // Test form search field input
-//    await tester.enterText(titletext, 'Acker Gym');
-//    await tester.enterText(addresstext, '135 Acker Gym');
-//    await tester.enterText(citytext, 'Chico');
-//    await tester.enterText(ziptext, '95929');
-//
-//    // Find logoButton
-//    final submit = find.widgetWithText(RaisedButton, 'Next: Parking Space Info');
-//    await tester.tap(submit);
-//    await tester.pump();
-//    await tester.pump(const Duration(milliseconds: 10));
-//    final Container container = tester.widget(find.byKey(Key('stateField')));
-//    final BoxDecoration decoration = container.decoration as BoxDecoration;
-//    expect(decoration.color, Colors.red[50]);
 //  });
 }
