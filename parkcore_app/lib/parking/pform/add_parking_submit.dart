@@ -3,7 +3,6 @@ import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:parkcore_app/models/ParkingData.dart';
 import 'package:parkcore_app/models/ParkingData2.dart';
 import 'package:parkcore_app/models/ParkingData3.dart';
-import 'package:parkcore_app/models/CurrentUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,7 +24,7 @@ class AddParkingSubmit extends StatefulWidget {
   final ParkingData parkingData;
   final ParkingData2 parkingData2;
   final ParkingData3 parkingData3;
-  final CurrentUser curUser;
+  final String curUser;
 
   @override
   _MyAddParkingSubmitState createState() => _MyAddParkingSubmitState();
@@ -173,13 +172,8 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
             final form = _formKey.currentState;
             form.save();
 
-            try {
-              createParkingSpace();
-              Navigator.pushReplacementNamed(context, '/form_success');
-            }
-            catch (e) {
-              print('Error occurred: $e');
-            }
+            createParkingSpace();
+            Navigator.pushReplacementNamed(context, '/form_success');
           },
           child: Text(
             'Submit',
@@ -194,10 +188,13 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
   // Create ParkingSpaces database entry using all parkingData, then add the
   // Map<String, dynamic> (in JSON format) to Firestore
   Future<void> createParkingSpace() async {
-    try {
+    // If user uploads an image, create a unique file id with a unique download
+    // URL for storage in Firestore; else, downloadURL is null (image optional)
+    if(_imageFile != null){
       await getUniqueFile();
-    } catch (e) {
-      print('Error occurred: $e');
+    }
+    else{
+      _downloadURL = '';
     }
 
     Map<String, dynamic> allParkingData = {

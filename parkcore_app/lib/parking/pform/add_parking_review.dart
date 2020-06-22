@@ -3,7 +3,6 @@ import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:parkcore_app/models/ParkingData.dart';
 import 'package:parkcore_app/models/ParkingData2.dart';
 import 'package:parkcore_app/models/ParkingData3.dart';
-import 'package:parkcore_app/models/CurrentUser.dart';
 import 'pform_helpers.dart';
 import 'add_parking_submit.dart';
 
@@ -21,7 +20,7 @@ class AddParkingReview extends StatefulWidget {
   final ParkingData parkingData;
   final ParkingData2 parkingData2;
   final ParkingData3 parkingData3;
-  final CurrentUser curUser;
+  final String curUser;
 
   @override
   _MyAddParkingReviewState createState() => _MyAddParkingReviewState();
@@ -93,7 +92,7 @@ class _MyAddParkingReviewState extends State<AddParkingReview> {
       Text('Price per month: \$' + widget.parkingData3.price),
       SizedBox(height: 10),
       Text('Additional info connected to this parking space:'),
-      Text('Parking Space Owner: ' + getUserName(widget.curUser.currentUser)),
+      Text('Parking Space Owner: ' + widget.curUser),
       Text('Parking Space Coordinates: ' + widget.parkingData.coordinates),
       SizedBox(height: 10),
       pageReviewButton(),

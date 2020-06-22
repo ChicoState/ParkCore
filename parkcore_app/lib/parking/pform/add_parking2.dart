@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:parkcore_app/navigate/menu_drawer.dart';
 import 'package:parkcore_app/models/ParkingData.dart';
 import 'package:parkcore_app/models/ParkingData2.dart';
-import 'package:parkcore_app/models/CurrentUser.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'pform_helpers.dart';
@@ -18,7 +17,7 @@ class AddParking2 extends StatefulWidget {
   // State. Fields in a Widget subclass are always marked 'final'.
 
   final ParkingData parkingData;
-  final CurrentUser curUser;
+  final String curUser;
 
   @override
   _MyAddParking2State createState() => _MyAddParking2State();
@@ -125,6 +124,7 @@ class _MyAddParking2State extends State<AddParking2> {
       SizedBox(height: 10),
       parkingData2.type == 'Driveway' ?
       Container(
+        key: Key('drivewayField'),
         decoration: BoxDecoration(color: Colors.green[50]),
         child: getDrivewayDetails(),
       ):

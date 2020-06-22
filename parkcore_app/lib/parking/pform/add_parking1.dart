@@ -31,7 +31,7 @@ class _MyAddParking1State extends State<AddParking1> {
   // parkingData params:
   // title, address, city, state, zip, uid, coordinates, random coordinates
   ParkingData parkingData = ParkingData('', '', '', '', '', '', '', '');
-  CurrentUser curUser = CurrentUser(null);
+  CurrentUser curUser = CurrentUser(null, '', '');
   FormError formError = FormError();
   final _stateData = [
     {'display': 'California', 'value': 'CA'},
@@ -47,6 +47,8 @@ class _MyAddParking1State extends State<AddParking1> {
     FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
         curUser.currentUser = user;
+        curUser.name = user.displayName;
+        curUser.id = user.uid;
       });
     });
   }
@@ -95,8 +97,8 @@ class _MyAddParking1State extends State<AddParking1> {
           color: Colors.green[50],
         ),
         child: Text(
-          'Add a parking space owned by ' + getUserName(curUser.currentUser)
-            + '\nRequired fields marked with *',
+          'Add a parking space owned by ' + curUser.getUserName()
+              + '\nRequired fields marked with *',
           textAlign: TextAlign.center,
         ),
       ),
@@ -331,7 +333,7 @@ class _MyAddParking1State extends State<AddParking1> {
       return false;
     }
     else{
-      parkingData.uid = getUserID(curUser.currentUser);
+      parkingData.uid = curUser.getUserID();
       return true;
     }
   }
@@ -343,7 +345,7 @@ class _MyAddParking1State extends State<AddParking1> {
       MaterialPageRoute(
         builder: (context) => AddParking2(
           parkingData: parkingData,
-          curUser: curUser,
+          curUser: curUser.getUserName(),
         ),
       ),
     );

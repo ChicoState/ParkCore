@@ -7,7 +7,6 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:parkcore_app/models/ParkingData.dart';
 import 'package:parkcore_app/models/ParkingData2.dart';
 import 'package:parkcore_app/models/ParkingData3.dart';
-import 'package:parkcore_app/models/CurrentUser.dart';
 import 'pform_helpers.dart';
 import 'add_parking_review.dart';
 
@@ -24,7 +23,7 @@ class AddParking3 extends StatefulWidget {
 
   final ParkingData parkingData;
   final ParkingData2 parkingData2;
-  final CurrentUser curUser;
+  final String curUser;
 
   @override
   _MyAddParking3State createState() => _MyAddParking3State();

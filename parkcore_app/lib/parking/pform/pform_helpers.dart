@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:parkcore_app/theme/style.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 
 // Methods and class that are used by parking form pages
@@ -30,28 +29,13 @@ InputDecoration textFormFieldDeco(String label) {
   );
 }
 
-String getUserName(FirebaseUser user) {
-  if (user != null) {
-    return user.displayName;
-  } else {
-    return 'no current user';
-  }
-}
-
-String getUserID(FirebaseUser user) {
-  if (user != null) {
-    return user.uid;
-  } else {
-    return 'no current user';
-  }
-}
-
 // Button to restart form
 Widget restart(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.end,
     children: [
       RaisedButton(
+        key: Key('restartbutton'),
         onPressed: () {
           Navigator.pushReplacementNamed(context, '/add_parking1');
         },
