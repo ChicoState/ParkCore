@@ -26,12 +26,19 @@ class MenuDrawer extends StatelessWidget {
             text: 'Home',
             route: '/home',
           ),
+//          CreateMenuItem(
+//            myKey: Key('addParkingKey'),
+//            context: context,
+//            icon: Icons.directions_car,
+//            text: 'Post a Parking Space',
+//            route: '/add_parking',
+//          ),
           CreateMenuItem(
-            myKey: Key('addParkingKey'),
+            myKey: Key('addParking1Key'),
             context: context,
             icon: Icons.directions_car,
             text: 'Post a Parking Space',
-            route: '/add_parking',
+            route: '/add_parking1',
           ),
           DefaultMap(context),
           CreateMenuItem(
