@@ -24,28 +24,28 @@ void main() {
     // parkingData3 params: days, start time, end time, price
     final parkingData = ParkingData3(null, '', '', '');
     parkingData.myDays = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['days'], '[MON, TUE, WED, THU, FRI]');
   });
 
   test('ParkingData3 Start Time get and set', () {
     final parkingData = ParkingData3(null, '', '', '');
     parkingData.startTime = '09:00';
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['starttime'], '09:00');
   });
 
   test('ParkingData3 End Time get and set', () {
     final parkingData = ParkingData3(null, '', '', '');
     parkingData.endTime = '20:00';
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['endtime'], '20:00');
   });
 
   test('Parking Space Price getter and setter', () {
     final parkingData = ParkingData3(null, '', '', '');
     parkingData.price = '42.00';
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['monthprice'], '42.00');
   });
 
@@ -256,7 +256,7 @@ void main() {
     ParkingData2 parkData2 = ParkingData2('Compact', 'Parking Lot', 'N/A', 'Angled',
         ['Lit', 'Covered', 'Security Camera', 'EV Charging'], 'AdditionalDetails');
     ParkingData3 parkData3 = ParkingData3(['MON','WED','FRI'], '08:00', '16:00', '');
-    String username = "Grace Hopper";
+    String username = 'Grace Hopper';
 
     final routes = <String, WidgetBuilder>{
       '/add_parking_review': (context) => AddParkingReview(

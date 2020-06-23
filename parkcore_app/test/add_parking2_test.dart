@@ -12,7 +12,7 @@ void main() {
   test('ParkingData2 size is null', () {
     // parkingData2 params: size, type, driveway, spaceType, amenities, details
     final parkingData = ParkingData2(null, null, '', '', null, '');
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['size'], null);
   });
 
@@ -20,7 +20,7 @@ void main() {
     // parkingData2 params: size, type, driveway, spaceType, amenities, details
     final parkingData = ParkingData2(null, null, '', '', null, '');
     parkingData.size = 'Compact';
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['size'], 'Compact');
   });
 
@@ -28,35 +28,35 @@ void main() {
     // parkingData2 params: size, type, driveway, spaceType, amenities, details
     final parkingData = ParkingData2(null, null, '', '', null, '');
     parkingData.type = 'Driveway';
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['type'], 'Driveway');
   });
 
   test('ParkingData2 Driveway set as Left', () {
     final parkingData = ParkingData2(null, null, '', '', null, '');
     parkingData.driveway = 'Left';
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['driveway'], 'Left');
   });
 
   test('ParkingData2 Type -- Space Type set as Parallel', () {
     final parkingData = ParkingData2(null, null, '', '', null, '');
     parkingData.spaceType = 'Parallel';
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['spacetype'], 'Parallel');
   });
 
   test('ParkingData2 Amenities all selected', () {
     final parkingData = ParkingData2(null, null, '', '', null, '');
     parkingData.myAmenities = ['Lit', 'Covered', 'Security Camera', 'EV Charging'];
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['amenities'], '[Lit, Covered, Security Camera, EV Charging]');
   });
 
   test('ParkingData2 Details set', () {
     final parkingData = ParkingData2(null, null, '', '', null, '');
     parkingData.details = 'down an alley';
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['spacedetails'], 'down an alley');
   });
 
@@ -417,7 +417,7 @@ void main() {
       WidgetTester tester) async {
 
     final routes = <String, WidgetBuilder>{
-      '/add_parking1': (context) => AddParking1(title: "Post Your Parking Space"),
+      '/add_parking1': (context) => AddParking1(title: 'Post Your Parking Space'),
     };
 
     await tester.pumpWidget(MaterialApp(

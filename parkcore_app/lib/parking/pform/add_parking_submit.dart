@@ -197,11 +197,13 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
       _downloadURL = '';
     }
 
-    Map<String, dynamic> allParkingData = {
+    //Map<String, dynamic>
+    var allParkingData = {
       'downloadURL': _downloadURL, // for the image (put in firebase storage)
-      'reserved': [].toString(), // list of UIDs (if reserved, starts empty)
+      'reserved': [], // list of UIDs (if reserved, starts empty)
       'cur_tenant': '', // current tenant (a UID, or empty if spot is available)
     };
+    allParkingData['reserved'] = allParkingData['reserved'].toString();
 
     allParkingData.addAll(widget.parkingData.toJson());
     allParkingData.addAll(widget.parkingData2.toJson());

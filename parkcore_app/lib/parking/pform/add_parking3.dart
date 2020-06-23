@@ -217,7 +217,7 @@ class _MyAddParking3State extends State<AddParking3> {
   // are used to ensure a valid USD amount is entered. Then validatePrice()
   // ensures that a month price has been chosen (default is 0.00)
   String validatePrice(String value) {
-    if (value == "0.00") {
+    if (value == '0.00') {
       return 'Value must be greater than \$0.00';
     }
     return null;

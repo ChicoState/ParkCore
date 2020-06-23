@@ -344,7 +344,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
-    CurrentUser curUser = CurrentUser(null, '', '');
+    final curUser = CurrentUser(null, '', '');
     expect(curUser.getUserName(), 'no current user');
   });
 
@@ -353,7 +353,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
-    CurrentUser curUser = CurrentUser(null, '', '');
+    final curUser = CurrentUser(null, '', '');
     expect(curUser.getUserID(), 'no current user');
   });
 
@@ -376,7 +376,7 @@ void main() {
     final curUser = CurrentUser(null,'','');
 
     AddParking1().createState().loadCurrentUser();
-    Map<String, dynamic> curUserJson = curUser.toJson();
+    final curUserJson = curUser.toJson();
     expect(curUserJson['currentUser'], null);
   });
 
@@ -416,14 +416,14 @@ void main() {
     // title, address, city, state, zip, uid, coordinates, random coordinates
     final parkingData =
         ParkingData('My Parking Space', '', '', '', '', '', '', '');
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['title'], 'My Parking Space');
   });
 
   test('Parking Space Address Json', () {
     // title, address, city, state, zip, uid, coordinates, random coordinates
     final parkingData = ParkingData('', '123 Main St', '', '', '', '', '', '');
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['address'], '123 Main St');
   });
 
@@ -431,28 +431,28 @@ void main() {
     // title, address, city, state, zip, uid, coordinates, random coordinates
     final parkingData = ParkingData('', '', 'Chico', '', '', '', '', '');
     parkingData.city_format = parkingData.city;
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['city'], 'Chico');
   });
 
   test('Parking Space State Json', () {
     // title, address, city, state, zip, uid, coordinates, random coordinates
     final parkingData = ParkingData('', '', '', 'CA', '', '', '', '');
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['state'], 'CA');
   });
 
   test('Parking Space Zip Json', () {
     // title, address, city, state, zip, uid, coordinates, random coordinates
     final parkingData = ParkingData('', '', '', '', '95928', '', '', '');
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['zip'], '95928');
   });
 
   test('ParkingData Coordinates get and set', () {
     final parkingData = ParkingData('', '', '', '', '', '', '', '');
     parkingData.coordinates = '{39.7285,-121.8375}';
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['coordinates'], '{39.7285,-121.8375}');
   });
 
@@ -460,7 +460,7 @@ void main() {
     final parkingData = ParkingData('', '', '', '', '', '', '', '');
     parkingData.coordinates = '{39.7285,-121.8375}';
     parkingData.coord_rand = getRandomCoordinates(parkingData.coordinates);
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['coordinates_r'].contains('39'), isTrue);
   });
 
@@ -468,7 +468,7 @@ void main() {
     final parkingData = ParkingData('', '', '', '', '', '', '', '');
     parkingData.coordinates = '{39.7285,-121.8375}';
     parkingData.coord_rand = getRandomCoordinates(parkingData.coordinates);
-    Map<String, dynamic> parkingJson = parkingData.toJson();
+    final parkingJson = parkingData.toJson();
     expect(parkingJson['coordinates_r'].contains('-121'), isTrue);
   });
 
