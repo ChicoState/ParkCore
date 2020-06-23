@@ -251,12 +251,12 @@ void main() {
 
   testWidgets('Test go to page 4 from page 3', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    ParkingData parkData1 = ParkingData('MyTitle', '123 Main St', 'Chico', 'CA',
+    final parkData1 = ParkingData('MyTitle', '123 Main St', 'Chico', 'CA',
         '95929', 'randomuid', '{39.7285,-121.8375}', '{39.7285,-121.8375}');
-    ParkingData2 parkData2 = ParkingData2('Compact', 'Parking Lot', 'N/A', 'Angled',
+    final parkData2 = ParkingData2('Compact', 'Parking Lot', 'N/A', 'Angled',
         ['Lit', 'Covered', 'Security Camera', 'EV Charging'], 'AdditionalDetails');
-    ParkingData3 parkData3 = ParkingData3(['MON','WED','FRI'], '08:00', '16:00', '');
-    String username = 'Grace Hopper';
+    final parkData3 = ParkingData3(['MON','WED','FRI'], '08:00', '16:00', '');
+    final username = 'Grace Hopper';
 
     final routes = <String, WidgetBuilder>{
       '/add_parking_review': (context) => AddParkingReview(
@@ -285,11 +285,11 @@ void main() {
 
   testWidgets('Test button to restart form', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    ParkingData parkData1 = ParkingData('MyTitle', '123 Main St', 'Chico', 'CA',
+    final parkData1 = ParkingData('MyTitle', '123 Main St', 'Chico', 'CA',
         '95929', 'randomuid', '{39.7285,-121.8375}', '{39.7285,-121.8375}');
-    ParkingData2 parkData2 = ParkingData2('Compact', 'Parking Lot', 'N/A', 'Angled',
+    final parkData2 = ParkingData2('Compact', 'Parking Lot', 'N/A', 'Angled',
         ['Lit', 'Covered', 'Security Camera', 'EV Charging'], 'AdditionalDetails');
-    String username = 'Grace Hopper';
+    final username = 'Grace Hopper';
 
     final routes = <String, WidgetBuilder>{
       '/add_parking1': (context) => AddParking1(title: 'Post Your Parking Space'),

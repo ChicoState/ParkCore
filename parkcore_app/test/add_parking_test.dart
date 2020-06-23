@@ -598,8 +598,8 @@ void main() {
     await tester.tap(submit);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
-    final Container container = tester.widget(find.byKey(Key('stateField')));
-    final BoxDecoration decoration = container.decoration as BoxDecoration;
+    final container = tester.widget(find.byKey(Key('stateField'))) as Container;
+    final decoration = container.decoration as BoxDecoration;
     expect(decoration.color, Colors.red[50]);
   });
 
@@ -612,7 +612,7 @@ void main() {
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
 
-    ParkingData parkingData = ParkingData('', '', '', '', '', '', '', '');
+    var parkingData = ParkingData('', '', '', '', '', '', '', '');
     // Test text field form input
     final titletext = find.byKey(Key('title'));
     final addresstext = find.byKey(Key('address'));

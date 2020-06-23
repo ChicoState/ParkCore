@@ -347,8 +347,8 @@ void main() {
     await tester.tap(submit);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
-    final Container container = tester.widget(find.byKey(Key('sizeField')));
-    final BoxDecoration decoration = container.decoration as BoxDecoration;
+    final container = tester.widget(find.byKey(Key('sizeField'))) as Container;
+    final decoration = container.decoration as BoxDecoration;
     expect(decoration.color, Colors.red[50]);
   });
 
@@ -366,8 +366,8 @@ void main() {
     await tester.tap(submit);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
-    final Container container = tester.widget(find.byKey(Key('typeField')));
-    final BoxDecoration decoration = container.decoration as BoxDecoration;
+    final container = tester.widget(find.byKey(Key('typeField'))) as Container;
+    final decoration = container.decoration as BoxDecoration;
     expect(decoration.color, Colors.red[50]);
   });
 
@@ -395,8 +395,8 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    ParkingData2 parkingData = ParkingData2(null, null, '', '', null, '');
-    FormError formError = FormError();
+    var parkingData = ParkingData2(null, null, '', '', null, '');
+    var formError = FormError();
     final detailstext = find.byKey(Key('details'));
 
     // Test form search field input
