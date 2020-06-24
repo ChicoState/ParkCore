@@ -642,7 +642,8 @@ void main() {
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
 
-    var parkingData = ParkingData('', '', '', 'CA', '', '', '', '');
+    var parkingData = ParkingData('', '', '', '', '', '', '', '');
+    parkingData.state = 'CA';
 
     // Find submit Button
     final submit =
@@ -659,8 +660,6 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
-
-    var parkingData = ParkingData('', '', '', '', '', '', '', '');
 
     // Find submit Button
     final submit =

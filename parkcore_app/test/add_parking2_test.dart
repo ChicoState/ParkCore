@@ -459,7 +459,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    ParkingData2 parkingData2 = ParkingData2(null, '', '', '', null, '');
+    var parkingData2 = ParkingData2(null, '', '', '', null, '');
     parkingData2.type = 'Driveway';
 
     // Create the finders
@@ -490,7 +490,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    ParkingData2 parkingData2 = ParkingData2(null, '', '', '', null, '');
+    var parkingData2 = ParkingData2(null, '', '', '', null, '');
     parkingData2.type = 'Parking Lot';
     parkingData2.spaceType = 'Perpendicular';
 
@@ -509,7 +509,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    ParkingData2 parkingData2 = ParkingData2(null, '', '', '', null, '');
+    var parkingData2 = ParkingData2(null, '', '', '', null, '');
     parkingData2.myAmenities = ['Lit'];
 
     // Create the finders
