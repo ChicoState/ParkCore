@@ -173,7 +173,8 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
             form.save();
 
             createParkingSpace();
-            Navigator.pushReplacementNamed(context, '/form_success');
+            Navigator.of(context)
+              .pushNamedAndRemoveUntil('/form_success', (Route<dynamic> route) => false);
           },
           child: Text(
             'Submit',

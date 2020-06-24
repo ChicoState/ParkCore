@@ -635,6 +635,43 @@ void main() {
     expect(find.text('Make sure to select a state'), findsOneWidget);
   });
 
+  testWidgets('if state is selected, California text is found',
+      (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking1(title: 'Post Your Parking Space'),
+    ));
+
+    var parkingData = ParkingData('', '', '', 'CA', '', '', '', '');
+
+    // Find submit Button
+    final submit =
+    find.widgetWithText(RaisedButton, 'Next: Parking Space Info');
+    await tester.tap(submit);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.widgetWithText(DropDownFormField, 'California'), findsOneWidget);
+  });
+
+  testWidgets('find text if state is not selected',
+      (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking1(title: 'Post Your Parking Space'),
+    ));
+
+    var parkingData = ParkingData('', '', '', '', '', '', '', '');
+
+    // Find submit Button
+    final submit =
+    find.widgetWithText(RaisedButton, 'Next: Parking Space Info');
+    await tester.tap(submit);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    final txt = '* Currently only available in California:';
+    expect(find.widgetWithText(DropDownFormField, txt), findsOneWidget);
+  });
+
   testWidgets('if zip code is not valid, correct error message after submit',
       (WidgetTester tester) async {
     // Build our app and trigger a frame.
@@ -663,6 +700,9 @@ void main() {
     expect(find.text('Enter a valid 5 digit US zip code'), findsOneWidget);
   });
 
-  // Can't test selecting options from dropdown, so since those fields are
-  // required, we can't test navigation to next page (same issue on page 2)
+  // After button is pressed to go to next page, the geocoder is used to
+  // create a set of coordinates to go with the provided address. Geocoder
+  // works in practice, but doesn't seem to work with flutter_test. Also,
+  // can't test selecting options from dropdown, so since those fields are
+  // required, we can't test navigation to next page (same issue on page 2).
 }

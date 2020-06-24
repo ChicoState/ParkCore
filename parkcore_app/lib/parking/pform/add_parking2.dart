@@ -302,6 +302,7 @@ class _MyAddParking2State extends State<AddParking2> {
   // Validate form (page 2) -
   // if complete, go to next page; otherwise, set error message
   void validateAndSubmit() async {
+    _formKey.currentState.validate();
     if(validateAndSave()){
       goToNextPage();
     }
@@ -316,13 +317,13 @@ class _MyAddParking2State extends State<AddParking2> {
   // 'Size' and 'Type' are not optional, so if these values have not been
   // selected, the form is still incomplete. Other fields may be left blank.
   bool validateAndSave() {
+    _formKey.currentState.save();
     if(parkingData2.size == null || parkingData2.type == null) {
       formError.incomplete = true;
       return false;
     }
 
     formError.incomplete = false;
-    _formKey.currentState.save();
     return true;
   }
 
