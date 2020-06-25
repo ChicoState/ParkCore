@@ -500,13 +500,13 @@ void main() {
     final formError = FormError();
     // Create the finders
 
-    // Test text field form input
+    // Find text fields for form input
     final titletext = find.byKey(Key('title'));
     final addresstext = find.byKey(Key('address'));
     final citytext = find.byKey(Key('city'));
     final ziptext = find.byKey(Key('zip'));
 
-    // Test form search field input
+    // Test form text field input
     await tester.enterText(titletext, 'MySpace Title');
     await tester.enterText(addresstext, '123 Main St');
     await tester.enterText(citytext, 'Chico');
@@ -580,13 +580,13 @@ void main() {
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
 
-    // Test text field form input
+    // Find text fields for form input
     final titletext = find.byKey(Key('title'));
     final addresstext = find.byKey(Key('address'));
     final citytext = find.byKey(Key('city'));
     final ziptext = find.byKey(Key('zip'));
 
-    // Test form search field input
+    // Test form text field input
     await tester.enterText(titletext, 'Acker Gym');
     await tester.enterText(addresstext, '135 Acker Gym');
     await tester.enterText(citytext, 'Chico');
@@ -613,14 +613,14 @@ void main() {
     ));
 
     var parkingData = ParkingData('', '', '', '', '', '', '', '');
-    // Test text field form input
+    // Find text fields for form input
     final titletext = find.byKey(Key('title'));
     final addresstext = find.byKey(Key('address'));
     final citytext = find.byKey(Key('city'));
     parkingData.state = 'CA';
     final ziptext = find.byKey(Key('zip'));
 
-    // Test form search field input
+    // Test form text field input
     await tester.enterText(titletext, 'Acker Gym');
     await tester.enterText(addresstext, '135 Acker Gym');
     await tester.enterText(citytext, 'Chico');
@@ -678,13 +678,13 @@ void main() {
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
 
-    // Test text field form input
+    // Find text fields for form input
     final titletext = find.byKey(Key('title'));
     final addresstext = find.byKey(Key('address'));
     final citytext = find.byKey(Key('city'));
     final ziptext = find.byKey(Key('zip'));
 
-    // Test form search field input
+    // Test form text field input
     await tester.enterText(titletext, 'Acker Gym');
     await tester.enterText(addresstext, '135 Acker Gym');
     await tester.enterText(citytext, 'Chico');

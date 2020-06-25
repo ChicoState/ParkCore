@@ -223,7 +223,7 @@ class _MyAddParking3State extends State<AddParking3> {
     return null;
   }
 
-  // Navigate to form review page (pass existing parkingData & curUser objects)
+  // Navigate to form review page (pass existing parkingData & curUser name)
   void goToNextPage() {
     Navigator.push(
       context,
