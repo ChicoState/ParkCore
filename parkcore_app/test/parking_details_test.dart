@@ -5,7 +5,7 @@ import 'package:parkcore_app/screens/home.dart';
 import 'package:parkcore_app/models/Spot.dart';
 
 void main() {
-  final myMap = Map<String,dynamic>();
+  var myMap = <String,dynamic>{};
   myMap['title'] = 'My Parking Spot';
   myMap['address'] = '123 Main St';
   myMap['amenities'] = '[Lit, Covered, Security Camera, EV Charging]';
