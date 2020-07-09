@@ -23,6 +23,30 @@ void main() {
     expect(find.widgetWithText(RaisedButton, 'Show distance to CSU, Chico'), findsOneWidget);
   });
 
+  testWidgets('Tap Calculate Distance Button', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+    ));
+
+    final buttontxt = 'Show distance to CSU, Chico';
+    final buttonFinder = find.widgetWithText(RaisedButton, buttontxt);
+    await tester.tap(buttonFinder);
+    await tester.pump();
+    // Expect to still be on Find Parking page
+    expect(find.text('Find Parking'), findsOneWidget);
+  });
+
+  testWidgets('Find LinearProgressIndicator Widget', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+    ));
+
+    // Find Widget for LinearProgressIndicator widget
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+  });
+
   /*testWidgets('Flat Button Field', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
