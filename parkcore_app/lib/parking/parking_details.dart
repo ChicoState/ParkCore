@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 //import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:parkcore_app/parking/find_parking.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:parkcore_app/models/Spot.dart';
+
 
 class Users {
   Users.fromMap(Map<String, dynamic>map, {this.reference})
