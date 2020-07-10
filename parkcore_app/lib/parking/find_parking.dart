@@ -171,7 +171,7 @@ class _MyFindParkingState extends State<FindParking> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
         if(snapshot.data.documents.isEmpty){
-         return _noSpaces(context);
+          return _noSpaces(context);
         }
 
         // If filter options are chosen, update the list of parking spaces shown
@@ -680,6 +680,7 @@ class _MyFindParkingState extends State<FindParking> {
 
   Widget _noSpaces(BuildContext context){
     return Align(
+      key: Key('nospaces'),
       alignment: Alignment.bottomCenter,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10.0),

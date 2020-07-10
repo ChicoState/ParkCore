@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
+// look into cloud_firestore_mocks (Flutter Package)
+// http://blog.wafrat.com/how-to-write-unit-tests-for-firebase-in-flutter/
 
 void main() {
   testWidgets('Find the Find Parking page title', (WidgetTester tester) async {
@@ -73,19 +75,6 @@ void main() {
     final expected = [all, compact, reg, over];
     expect(dropdownlist[3].value, expected[3].value);
   });
-
-//  testWidgets('test checkFilters function', (WidgetTester tester) async {
-//    // Build our app and trigger a frame.
-//    await tester.pumpWidget(MaterialApp(
-//      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
-//    ));
-//    var numFilters = 0;
-//    numFilters++;
-//    FindParking().createState().checkFilters();
-//    await tester.pump();
-//    await tester.pump(const Duration(milliseconds: 10));
-//    expect(numFilters, equals(0));
-//  });
 
   testWidgets('Finds Price Filter', (WidgetTester tester) async {
     // Build an app with a Text widget that displays the letter 'H'.
@@ -219,6 +208,32 @@ void main() {
     // Search for the childWidget in the tree and verify it exists.
     expect(find.byWidget(childWidget), findsOneWidget);
   });
+
+//  testWidgets('Find noSpaces body', (WidgetTester tester) async {
+//    // Build our app and trigger a frame.
+//    await tester.pumpWidget(MaterialApp(
+//      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+//    ));
+//
+//    // Find Widget for LinearProgressIndicator widget
+//    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 10));
+//    expect(find.byKey(Key('nospaces')), findsOneWidget);
+//  });
+
+//  testWidgets('test checkFilters function', (WidgetTester tester) async {
+//    // Build our app and trigger a frame.
+//    await tester.pumpWidget(MaterialApp(
+//      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+//    ));
+//    var numFilters = 0;
+//    numFilters++;
+//    FindParking().createState().checkFilters();
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 10));
+//    expect(numFilters, equals(0));
+//  });
 
   /*testWidgets('Flat Button Field', (WidgetTester tester) async {
     // Build our app and trigger a frame.

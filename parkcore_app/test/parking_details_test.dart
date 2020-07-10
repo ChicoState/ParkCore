@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/parking/parking_details.dart';
-import 'package:parkcore_app/parking/find_parking.dart';
+//import 'package:parkcore_app/parking/find_parking.dart';
 import 'package:parkcore_app/screens/home.dart';
 import 'package:parkcore_app/models/Spot.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
