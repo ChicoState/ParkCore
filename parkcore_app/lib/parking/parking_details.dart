@@ -89,18 +89,29 @@ class DetailScreen extends StatelessWidget {
   }
 
   Widget _detailsBody(BuildContext context){
+    if(spot.uid == 'no current user'){
+      return _details(context, null);
+    }
+
     return StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('users').where('uid', isEqualTo: spot.uid).snapshots(),
       builder: (context, snapshot) {
-       if (!snapshot.hasData) return LinearProgressIndicator();
+        if (!snapshot.hasData) return LinearProgressIndicator();
 
-       return _details(context, snapshot.data.documents[0]);
-     },
+        return _details(context, snapshot.data.documents[0]);
+      },
     );
   }
+
   Widget _details(BuildContext context, DocumentSnapshot data) {
 
-    final currentUser = Users.fromSnapshot(data);
+    //final currentUser = Users.fromSnapshot(data);
+    var currentUser;
+    var userExists = false;
+    if(data != null){
+      currentUser = Users.fromSnapshot(data);
+      userExists = true;
+    }
 
     bool check(String string){
       if(string == 'N/A' || string == '[]' || string == ''){
@@ -120,13 +131,19 @@ class DetailScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Padding(
+            key: Key('spotimage'),
             padding: EdgeInsets.only(bottom: 10.0),
-            child: Image(
+            child: userExists ?
+            Image(
               image: NetworkImage(spot.image ?? 'https://homestaymatch.com/images/no-image-available.png'),
               width: 100,
               height: 225,
               fit: BoxFit.cover,
             )
+            :SizedBox(
+              height: 20,
+              child: Card(color: Theme.of(context).accentColor.withOpacity(0.3)),
+            ),
           ),
           Padding(
             padding: EdgeInsets.all(10.0),
@@ -147,18 +164,20 @@ class DetailScreen extends StatelessWidget {
                   child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                   ClipRRect(
-                    borderRadius: BorderRadius.circular(50.0),
-                    child: Image(
-                      fit: BoxFit.cover,
-                      width: 50,
-                      image: NetworkImage(currentUser.photoURL ?? 'https://img.favpng.com/6/14/19/computer-icons-user-profile-icon-design-png-favpng-vcvaCZNwnpxfkKNYzX3fYz7h2.jpg'),
-                      ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(50.0),
+                      child: userExists ?
+                      Image(
+                        fit: BoxFit.cover,
+                        width: 50,
+                        image: NetworkImage(currentUser.photoURL ?? 'https://img.favpng.com/6/14/19/computer-icons-user-profile-icon-design-png-favpng-vcvaCZNwnpxfkKNYzX3fYz7h2.jpg'),
+                      )
+                      :SizedBox(height: 10),
                     ),
-                    Text(currentUser.displayName),
+                    Text(userExists ? currentUser.displayName : 'Name Withheld'),
                     RatingBar(
                       itemSize: 20,
-                      initialRating: currentUser.rating.toDouble(),
+                      initialRating: userExists ? currentUser.rating.toDouble() : 0.0,
                       unratedColor: Colors.purple[100],
                       minRating: 1,
                       direction: Axis.horizontal,
@@ -210,7 +229,7 @@ class DetailScreen extends StatelessWidget {
                   child: Text(spot.amenities.substring(1, spot.amenities.length-1)),
                 ),
             ],
-          ) : SizedBox(),
+          ) : SizedBox(key: Key('amenitiesSizedBox')),
           check(spot.starttime) || check(spot.endtime) ? Row(
             children: <Widget>[   
                 Container(
@@ -222,7 +241,7 @@ class DetailScreen extends StatelessWidget {
                   child: Text('Availability: ' + spot.starttime + ' - ' + spot.endtime),
                 ),
             ],
-          ): SizedBox(),
+          ): SizedBox(key: Key('timeSizedBox')),
           check(spot.days) ? Row(
             children: <Widget>[   
                 Container(
@@ -234,15 +253,15 @@ class DetailScreen extends StatelessWidget {
                   child: Text(spot.days.substring(1, spot.days.length-1)),
                 ),
             ],
-          ) : SizedBox(),
+          ) : SizedBox(key: Key('daysSizedBox')),
           check(spot.spacedetails) ? Padding(
             padding: EdgeInsets.all(20.0),
             child: Text('Space Details')
-          ) : SizedBox(),
+          ) : SizedBox(key: Key('detailsTitleBox')),
           check(spot.spacedetails) ? Padding(
             padding: EdgeInsets.all(20.0),
             child: Text(spot.spacedetails)
-          ) : SizedBox(),
+          ) : SizedBox(key: Key('spaceDetailsBox')),
         ],
       ),
     );

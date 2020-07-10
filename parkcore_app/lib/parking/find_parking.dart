@@ -128,9 +128,9 @@ class _MyFindParkingState extends State<FindParking> {
         height: 70,
         child: RaisedButton(
           onPressed: () {
-              setState(() {
-                pressed = true;
-              });
+            setState(() {
+              pressed = true;
+            });
           },
           color: Color(0xFF4D2C91),
           child:
@@ -149,16 +149,16 @@ class _MyFindParkingState extends State<FindParking> {
   Widget _googlemap(BuildContext context){
     return Container(
       child: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: LatLng(
-              num.parse(widget.latlong.substring(1, widget.latlong.indexOf(','))),
-              num.parse(widget.latlong.substring(widget.latlong.indexOf(',') + 1,
-              widget.latlong.length-1)),
-            ),
-            zoom: 15,
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: LatLng(
+            num.parse(widget.latlong.substring(1, widget.latlong.indexOf(','))),
+            num.parse(widget.latlong.substring(widget.latlong.indexOf(',') + 1,
+            widget.latlong.length-1)),
           ),
-          markers: _markers.values.toSet(),
+          zoom: 15,
+        ),
+        markers: _markers.values.toSet(),
       )
     );
   }
@@ -335,13 +335,11 @@ class _MyFindParkingState extends State<FindParking> {
 
   // show all listed parking spaces at this location (clear all selected)
   void showAll(){
-    setState(() {
-      numFilters = 0;
-      for(var i = 0; i < curFilter.length; i++){
-        curFilter[i] = 'All';
-        selected[i] = false;
-      }
-    });
+    numFilters = 0;
+    for(var i = 0; i < curFilter.length; i++){
+      curFilter[i] = 'All';
+      selected[i] = false;
+    }
   }
 
   // Get the dropdown menu items for the given filter option
@@ -560,13 +558,14 @@ class _MyFindParkingState extends State<FindParking> {
   }
 
   double adjustDistance(var i){
-      if(i > 1){
-        return i + i.floor()*.25;
-      }
-      else{
-        return i;
-      }
+    if(i > 1){
+      return i + i.floor()*.25;
     }
+    else{
+      return i;
+    }
+  }
+
   String haversize(coordinates) {
 
     var lat = num.parse(coordinates.substring(1, coordinates.indexOf(',')));
