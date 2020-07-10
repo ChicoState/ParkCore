@@ -47,14 +47,45 @@ void main() {
     expect(find.byType(LinearProgressIndicator), findsOneWidget);
   });
 
-  /*testWidgets('Flat Button Field', (WidgetTester tester) async {
+  testWidgets('getFilterOptions returns All option', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
       home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
-    expect(find.byType(FlatButton), findsOneWidget);
-  });*/
+    final options = ['All', 'Compact', 'Regular', 'Oversized'];
+    final dropdownlist = FindParking().createState().getFilterOptions(options);
+    final all = DropdownMenuItem<String>(value: 'All', child: Text('All'));
+    expect(dropdownlist[0].value, all.value);
+  });
+
+  testWidgets('getFilterOptions returns expected list item', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+    ));
+    final options = ['All', 'Compact', 'Regular', 'Oversized'];
+    final dropdownlist = FindParking().createState().getFilterOptions(options);
+    final all = DropdownMenuItem<String>(value: 'All', child: Text('All'));
+    final compact = DropdownMenuItem<String>(value: 'Compact', child: Text('Compact'));
+    final reg = DropdownMenuItem<String>(value: 'Regular', child: Text('Regular'));
+    final over = DropdownMenuItem<String>(value: 'Oversized', child: Text('Oversized'));
+    final expected = [all, compact, reg, over];
+    expect(dropdownlist[3].value, expected[3].value);
+  });
+
+//  testWidgets('test checkFilters function', (WidgetTester tester) async {
+//    // Build our app and trigger a frame.
+//    await tester.pumpWidget(MaterialApp(
+//      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+//    ));
+//    var numFilters = 0;
+//    numFilters++;
+//    FindParking().createState().checkFilters();
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 10));
+//    expect(numFilters, equals(0));
+//  });
 
   testWidgets('Finds Price Filter', (WidgetTester tester) async {
     // Build an app with a Text widget that displays the letter 'H'.
@@ -188,6 +219,15 @@ void main() {
     // Search for the childWidget in the tree and verify it exists.
     expect(find.byWidget(childWidget), findsOneWidget);
   });
+
+  /*testWidgets('Flat Button Field', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+    ));
+
+    expect(find.byType(FlatButton), findsOneWidget);
+  });*/
 
   /*testWidgets('Find ListView', (WidgetTester tester) async {
     // Build our app and trigger a frame.
