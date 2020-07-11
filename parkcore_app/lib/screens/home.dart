@@ -4,7 +4,7 @@ import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:parkcore_app/screens/parkcore_text.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -212,6 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => FindParking(
+                        colRef: Firestore.instance.collection('parkingSpaces'),
                         title: 'Find Parking',
                         city: _city.city,
                         latlong: _coordinates.coordinates =

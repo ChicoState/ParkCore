@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MenuDrawer extends StatelessWidget {
   @override
@@ -130,6 +131,7 @@ Widget DefaultMap(BuildContext context) {
         context,
         MaterialPageRoute(
           builder: (context) => FindParking(
+            colRef: Firestore.instance.collection('parkingSpaces'),
             title: 'Find Parking',
             city: 'Chico',
             latlong: '{39.7285,-121.8375}',
