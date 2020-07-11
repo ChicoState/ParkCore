@@ -644,7 +644,7 @@ class _MyFindParkingState extends State<FindParking> {
                 height: 90,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
-                  child: widget.city != "MockAnywhereTest"
+                  child: widget.city != 'MockAnywhereTest'
                     ? FadeInImage.assetNetwork(
                       fit: BoxFit.fill,
                       placeholder: 'assets/parkcore_logo_green2.jpg',
