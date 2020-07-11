@@ -61,6 +61,10 @@ dependencies:
   #for User Ratings
   flutter_rating_bar: ^3.0.1+1
 
+  # for Firestore unit tests
+  cloud_firestore_mocks: ^0.4.5
+
+
 dev_dependencies:
   pedantic: ^1.4.0
   build_runner: ^1.2.7

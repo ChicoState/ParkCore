@@ -1,14 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
+import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
 // look into cloud_firestore_mocks (Flutter Package)
 // http://blog.wafrat.com/how-to-write-unit-tests-for-firebase-in-flutter/
 
+const testCollection = 'parkingSpaces';
+
 void main() {
+  // Populate the mock database.
+  final instance = MockFirestoreInstance();
+
+  testWidgets('Create mock database', (WidgetTester tester) async {
+    await instance.collection(testCollection).add({
+      'title': 'Hello world!',
+      'address': '123 Main St',
+      'amenities': '[Lit, Covered, Security Camera, EV Charging]',
+      'coordinates': '{39.7285,-121.8375}',
+      'city': 'MockAnywhereTest',
+      'driveway': 'Right',
+      'monthprice': '42.00',
+      'spacetype': 'N/A',
+      'downloadURL': null,
+      'type': 'Driveway',
+      'size': 'Compact',
+      'days': '[MON, TUE, WED, THU, FRI]',
+      'spacedetails': 'near the park and downtown',
+      'starttime': '08:00',
+      'endtime': '16:00',
+      'state': 'CA',
+      'zip': '95928',
+      'uid': 'no current user',
+    });
+  });
+
   testWidgets('Find the Find Parking page title', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     // Find title
@@ -19,7 +49,8 @@ void main() {
   testWidgets('Calculate Distance RaisedButton Field', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     expect(find.widgetWithText(RaisedButton, 'Show distance to CSU, Chico'), findsOneWidget);
@@ -28,7 +59,8 @@ void main() {
   testWidgets('Tap Calculate Distance Button', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
     ));
 
     final buttontxt = 'Show distance to CSU, Chico';
@@ -39,20 +71,11 @@ void main() {
     expect(find.text('Find Parking'), findsOneWidget);
   });
 
-  testWidgets('Find LinearProgressIndicator Widget', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
-    ));
-
-    // Find Widget for LinearProgressIndicator widget
-    expect(find.byType(LinearProgressIndicator), findsOneWidget);
-  });
-
   testWidgets('getFilterOptions returns All option', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     final options = ['All', 'Compact', 'Regular', 'Oversized'];
@@ -64,7 +87,8 @@ void main() {
   testWidgets('getFilterOptions returns expected list item', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
     final options = ['All', 'Compact', 'Regular', 'Oversized'];
     final dropdownlist = FindParking().createState().getFilterOptions(options);
@@ -138,7 +162,8 @@ void main() {
   testWidgets('Haversize for Distance', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     expect(FindParking().createState().haversize('{39.727580,-121.840430}'), '13');
@@ -147,7 +172,8 @@ void main() {
   testWidgets('Haversize for Distance', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     expect(FindParking().createState().haversize('{39.72096140000001,-121.8450891}'), '17');
@@ -156,7 +182,8 @@ void main() {
   testWidgets('Haversize for Distance', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     expect(FindParking().createState().haversize('{39.7282242,-121.8408044}'), '12');
@@ -165,7 +192,8 @@ void main() {
   testWidgets('Adjust Distance-Less than a Mile', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     expect(FindParking().createState().adjustDistance(.5), .5);
@@ -174,7 +202,8 @@ void main() {
   testWidgets('Adjust Distance-Less than a Mile', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     expect(FindParking().createState().adjustDistance(.2), .2);
@@ -183,7 +212,8 @@ void main() {
   testWidgets('Adjust Distance-More than a Mile', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     expect(FindParking().createState().adjustDistance(3.6), 4.35);
@@ -192,7 +222,8 @@ void main() {
   testWidgets('Adjust Distance-More than a Mile', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
-      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
     ));
 
     expect(FindParking().createState().adjustDistance(2.5), 3);
@@ -209,17 +240,43 @@ void main() {
     expect(find.byWidget(childWidget), findsOneWidget);
   });
 
-//  testWidgets('Find noSpaces body', (WidgetTester tester) async {
+  testWidgets('find list body of parking spots', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+    ));
+    //final snapshot = await instance.collection(testCollection).getDocuments();
+    // Let the snapshots stream fire a snapshot; then re-render
+    await tester.idle();
+    await tester.pump();
+    // // Verify the output.
+    expect(find.byKey(Key('listBody')), findsOneWidget);
+  });
+
+  testWidgets('expect to not find any spots in this city', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'NowhereCity', latlong: '{39.7285,-121.8375}'),
+    ));
+    //final snapshot = await instance.collection(testCollection).getDocuments();
+    // Let the snapshots stream fire a snapshot; then re-render
+    await tester.idle();
+    await tester.pump();
+    // // Verify the output.
+    expect(find.byKey(Key('nospaces')), findsOneWidget);
+  });
+
+//  testWidgets('Find LinearProgressIndicator Widget', (WidgetTester tester) async {
 //    // Build our app and trigger a frame.
 //    await tester.pumpWidget(MaterialApp(
-//      home: FindParking(title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
+//      home: FindParking(colRef: instance.collection(testCollection),
+//          title: 'Find Parking', city: 'Chico', latlong: '{39.7285,-121.8375}'),
 //    ));
 //
 //    // Find Widget for LinearProgressIndicator widget
 //    expect(find.byType(LinearProgressIndicator), findsOneWidget);
-//    await tester.pump();
-//    await tester.pump(const Duration(milliseconds: 10));
-//    expect(find.byKey(Key('nospaces')), findsOneWidget);
 //  });
 
 //  testWidgets('test checkFilters function', (WidgetTester tester) async {
