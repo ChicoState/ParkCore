@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,13 +13,14 @@ import 'package:parkcore_app/models/Spot.dart';
   ///so we create a map of String and dynamic.
 
 class FindParking extends StatefulWidget {
-  FindParking({Key key, this.title, this.city, this.latlong}) : super(key: key);
+  FindParking({Key key, this.colRef, this.title, this.city, this.latlong}) : super(key: key);
   // This widget is the 'find parking' page of the app. It is stateful: it has a
   // State object (defined below) that contains fields that affect how it looks.
   // This class is the configuration for the state. It holds the values (title)
   // provided by the parent (App widget) and used by the build method of the
   // State. Fields in a Widget subclass are always marked 'final'.
 
+  final CollectionReference colRef;
   final String title;
   final String city;
   final String latlong;
@@ -28,6 +30,8 @@ class FindParking extends StatefulWidget {
 }
 
 class _MyFindParkingState extends State<FindParking> {
+ // CollectionReference colRef = Firestore.instance.collection('parkingSpaces');
+
   final Map<MarkerId, Marker> _markers = {};
   List<Marker> allMarkers = [];
 
@@ -47,8 +51,8 @@ class _MyFindParkingState extends State<FindParking> {
   bool pressed = false;
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    await Firestore.instance.collection('parkingSpaces')
-      .getDocuments()
+    await widget.colRef.getDocuments()
+    //await Firestore.instance.collection('parkingSpaces').getDocuments()
       .then((QuerySnapshot snapshot) {
         snapshot.documents.forEach((f) =>
         allMarkers.add(
@@ -165,10 +169,12 @@ class _MyFindParkingState extends State<FindParking> {
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('parkingSpaces')
-        .where('city', isEqualTo: widget.city)
-        .snapshots(),
+      stream: widget.colRef.where('city', isEqualTo: widget.city).snapshots(),
+//      stream: Firestore.instance.collection('parkingSpaces')
+//        .where('city', isEqualTo: widget.city)
+//        .snapshots(),
       builder: (context, snapshot) {
+       // if(snapshot.data == null) return LinearProgressIndicator();
         if (!snapshot.hasData) return LinearProgressIndicator();
         if(snapshot.data.documents.isEmpty){
           return _noSpaces(context);
@@ -209,6 +215,7 @@ class _MyFindParkingState extends State<FindParking> {
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return Align(
+      key: Key('listBody'),
       alignment: Alignment.bottomCenter,
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -637,10 +644,13 @@ class _MyFindParkingState extends State<FindParking> {
                 height: 90,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
-                  child: Image(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(image ?? 'https://homestaymatch.com/images/no-image-available.png'),
-                  ),
+                  child: widget.city != "MockAnywhereTest"
+                    ? FadeInImage.assetNetwork(
+                      fit: BoxFit.fill,
+                      placeholder: 'assets/parkcore_logo_green2.jpg',
+                      image: image ?? 'https://homestaymatch.com/images/no-image-available.png',
+                    )
+                    :SizedBox(height: 10),
                 ),
               ),
               Container(
@@ -695,11 +705,13 @@ class _MyFindParkingState extends State<FindParking> {
               child: ListTile(
                 title: Row(
                   children: <Widget>[
-                    Text(
-                      'We\'re not yet in\n' + widget.city +
-                          '\nLet us know you\'re interested!',
-                      style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.center,
+                    Expanded(
+                      child: Text(
+                        'We\'re not yet in\n' + widget.city +
+                            '\nLet us know you\'re interested!',
+                        style: Theme.of(context).textTheme.headline4,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),
