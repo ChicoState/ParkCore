@@ -321,6 +321,7 @@ class _MyFindParkingState extends State<FindParking> {
   // Apply or remove filters as selected
   Widget FiltersButton(String txt, bool apply){
     return RaisedButton(
+      key: Key('filterbuttons'),
       onPressed: () {
         setState(() {
           apply ? checkFilters() : showAll();
@@ -368,11 +369,13 @@ class _MyFindParkingState extends State<FindParking> {
       ),
       child: ListTileTheme(
         child: ListTile(
+          key: Key('sizeListTile'),
           title: Text(
             'Size',
             style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
+            key: Key('sizeButton'),
             hint: Text('Choose'),
             onChanged: (String changedValue) {
               setState(() {
@@ -612,6 +615,7 @@ class _MyFindParkingState extends State<FindParking> {
     return Padding(
      padding: const EdgeInsets.all(8.0),
        child: GestureDetector(
+         key: Key('gotodetails'),
          onTap: () {
            Navigator.push(
             context,
@@ -631,6 +635,7 @@ class _MyFindParkingState extends State<FindParking> {
     var roundedPrice = (num.parse(monthprice)).round();
 
     return Container(
+      key: Key('boxes'),
       child: FittedBox(
         child: Material(
           elevation: 20.0,
