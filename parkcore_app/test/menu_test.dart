@@ -5,7 +5,6 @@ import 'package:parkcore_app/screens/home.dart';
 import 'package:parkcore_app/screens/contact.dart';
 import 'package:parkcore_app/screens/about.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
-//import 'package:parkcore_app/parking/add_parking.dart';
 import 'package:parkcore_app/parking/pform/add_parking1.dart';
 
 void main() {

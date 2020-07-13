@@ -9,7 +9,7 @@ class LoginPage extends StatelessWidget {
         title: 'Parkcore Login',
         home: Scaffold(
             appBar: AppBar(
-              title: Text('Parkcore'),
+              title: Text('PARKCORE'),
               centerTitle: true,
               backgroundColor: Theme.of(context).backgroundColor,
               actions: <Widget>[
@@ -31,7 +31,7 @@ class LoginPage extends StatelessWidget {
                     onPressed: () => authService.googleSignIn(),
                     color: Colors.white,
                     textColor: Colors.black,
-                    child: Text('Login with google'),
+                    child: Text('Login with Google'),
                   ),
                   MaterialButton(
                     onPressed: () => authService.signOut(),
@@ -82,7 +82,7 @@ class LoginButton extends StatelessWidget {
               onPressed: () => authService.signOut(),
               color: Colors.red,
               textColor: Colors.white,
-              child: Text('Signout'),
+              child: Text('Sign out'),
             );
           } else {
             return MaterialButton(
