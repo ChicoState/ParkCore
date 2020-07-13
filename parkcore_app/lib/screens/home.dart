@@ -249,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return true;
     }
     catch(e){
-      print('Error occurred: $e');
+      //print('Error occurred: $e');
       return false;
     }
   }
@@ -277,7 +277,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
     catch (e) {
-      print('Error occurred: $e');
+      //print('Error occurred: $e');
       setState(() {
         _found.found = false;
         _loc.location = 'Sorry, no search results for "' + loc_input + '".';

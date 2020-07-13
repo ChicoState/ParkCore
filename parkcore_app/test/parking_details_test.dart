@@ -355,15 +355,16 @@ void main() {
     expect(myUser.rating, equals(4.5));
   });
 
-//  testWidgets('Find LinearProgressIndicator Widget', (WidgetTester tester) async {
-//    // Build our app and trigger a frame.
-//    await tester.pumpWidget(MaterialApp(
-//      home: DetailScreen(spot: mySpot),
-//    ));
-//
-//    // Find Widget for LinearProgressIndicator widget
-//    expect(find.byType(LinearProgressIndicator), findsOneWidget);
-//  });
+  testWidgets('Find LinearProgressIndicator Widget', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    mySpot.uid = 'randomuid';
+    await tester.pumpWidget(MaterialApp(
+      home: DetailScreen(spot: mySpot),
+    ));
+
+    // Find Widget for LinearProgressIndicator widget
+    expect(find.byType(LinearProgressIndicator), findsOneWidget);
+  });
 
 //  testWidgets('Tap clear button in AppBar', (WidgetTester tester) async {
 //    // Build our app and trigger a frame.

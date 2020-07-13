@@ -428,6 +428,23 @@ void main() {
     expect(find.byKey(Key('sizeButton')), findsOneWidget);
   });
 
+  testWidgets('tap Size filter button', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+    ));
+    //final snapshot = await instance.collection(testCollection).getDocuments();
+    // Let the snapshots stream fire a snapshot; then re-render
+    await tester.idle();
+    await tester.pump();
+    // // Verify the output.
+    final size = tester.widget(find.byKey(Key('sizeButton'))) as DropdownButton<String>;
+    size.onChanged('Compact');
+    size.onChanged('All');
+    expect(size.value, 'All');
+  });
+
   testWidgets('expect to find Type list tile', (WidgetTester tester) async {
     // Render the widget.
     await tester.pumpWidget(MaterialApp(
@@ -442,6 +459,23 @@ void main() {
     expect(find.widgetWithText(ListTile, 'Type'), findsOneWidget);
   });
 
+  testWidgets('tap Type filter button', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+    ));
+    //final snapshot = await instance.collection(testCollection).getDocuments();
+    // Let the snapshots stream fire a snapshot; then re-render
+    await tester.idle();
+    await tester.pump();
+    // // Verify the output.
+    final type = tester.widget(find.byKey(Key('typeButton'))) as DropdownButton<String>;
+    type.onChanged('Driveway');
+    type.onChanged('All');
+    expect(type.value, 'All');
+  });
+
   testWidgets('expect to find Price list tile', (WidgetTester tester) async {
     // Render the widget.
     await tester.pumpWidget(MaterialApp(
@@ -454,6 +488,23 @@ void main() {
     await tester.pump();
     // // Verify the output.
     expect(find.widgetWithText(ListTile, 'Price'), findsOneWidget);
+  });
+
+  testWidgets('tap Price filter button', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+    ));
+    //final snapshot = await instance.collection(testCollection).getDocuments();
+    // Let the snapshots stream fire a snapshot; then re-render
+    await tester.idle();
+    await tester.pump();
+    // // Verify the output.
+    final price = tester.widget(find.byKey(Key('priceButton'))) as DropdownButton<String>;
+    price.onChanged('\$50 or less');
+    price.onChanged('All');
+    expect(price.value, 'All');
   });
 
   testWidgets('expect to find Amenities filter button', (WidgetTester tester) async {

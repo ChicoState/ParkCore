@@ -405,6 +405,7 @@ class _MyFindParkingState extends State<FindParking> {
             style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
+            key: Key('typeButton'),
             hint: Text('Choose'),
             onChanged: (String changedValue) {
               setState(() {
@@ -436,6 +437,7 @@ class _MyFindParkingState extends State<FindParking> {
             style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
+            key: Key('priceButton'),
             hint: Text('Choose'),
             onChanged: (String changedValue) {
               setState(() {
