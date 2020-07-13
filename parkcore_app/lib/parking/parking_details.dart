@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-//import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:parkcore_app/models/Spot.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Users {
   Users.fromMap(Map<String, dynamic>map, {this.reference})
@@ -94,6 +94,7 @@ class DetailScreen extends StatelessWidget {
     }
 
     return StreamBuilder<QuerySnapshot>(
+      //stream: colRef.where('uid', isEqualTo: spot.uid).snapshots(),
       stream: Firestore.instance.collection('users').where('uid', isEqualTo: spot.uid).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
@@ -133,16 +134,22 @@ class DetailScreen extends StatelessWidget {
           Padding(
             key: Key('spotimage'),
             padding: EdgeInsets.only(bottom: 10.0),
-            child: userExists ?
-            Image(
-              image: NetworkImage(spot.image ?? 'https://homestaymatch.com/images/no-image-available.png'),
+            child: userExists && spot.image != null
+            ? Image(
+              //image: NetworkImage(spot.image ?? 'https://homestaymatch.com/images/no-image-available.png'),
+              image: NetworkImage(spot.image),
               width: 100,
               height: 225,
               fit: BoxFit.cover,
             )
-            :SizedBox(
-              height: 20,
-              child: Card(color: Theme.of(context).accentColor.withOpacity(0.3)),
+            : Opacity(
+              opacity: 0.2,
+              child: SvgPicture.asset(
+                'assets/Acorns.svg',
+                height: 225,
+                fit: BoxFit.cover,
+                semanticsLabel: 'Acorns image',
+              ),
             ),
           ),
           Padding(
@@ -166,13 +173,18 @@ class DetailScreen extends StatelessWidget {
                   children: <Widget>[
                     ClipRRect(
                       borderRadius: BorderRadius.circular(50.0),
-                      child: userExists ?
-                      Image(
+                      child: userExists && currentUser.photoURL != null
+                      ? Image(
                         fit: BoxFit.cover,
                         width: 50,
-                        image: NetworkImage(currentUser.photoURL ?? 'https://img.favpng.com/6/14/19/computer-icons-user-profile-icon-design-png-favpng-vcvaCZNwnpxfkKNYzX3fYz7h2.jpg'),
+                        //image: NetworkImage(currentUser.photoURL ?? 'https://img.favpng.com/6/14/19/computer-icons-user-profile-icon-design-png-favpng-vcvaCZNwnpxfkKNYzX3fYz7h2.jpg'),
+                        image: NetworkImage(currentUser.photoURL),
                       )
-                      :SizedBox(height: 10),
+                      : Image(
+                        fit: BoxFit.cover,
+                        width: 50,
+                        image: AssetImage('assets/parkcore_logo_green2.jpg'),
+                      ),
                     ),
                     Text(userExists ? currentUser.displayName : 'Name Withheld'),
                     RatingBar(

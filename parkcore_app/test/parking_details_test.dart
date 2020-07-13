@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/parking/parking_details.dart';
-//import 'package:parkcore_app/parking/find_parking.dart';
 import 'package:parkcore_app/screens/home.dart';
 import 'package:parkcore_app/models/Spot.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -27,6 +26,13 @@ void main() {
   myMap['zip'] = '95928';
   myMap['uid'] = 'no current user';
   final mySpot = Spot.fromMap(myMap);
+
+  var userMap = <String,dynamic>{};
+  userMap['displayName'] = 'Grace Hopper';
+  userMap['photoURL'] = null;
+  userMap['uid'] = 'randomuid';
+  userMap['rating'] = 4.5;
+  final myUser = Users.fromMap(userMap);
 
   testWidgets(
       'Find One Clear Icon Button', (WidgetTester tester) async {
@@ -323,6 +329,30 @@ void main() {
       home: DetailScreen(spot: mySpot),
     ));
     expect(find.byKey(Key('spaceDetailsBox')), findsOneWidget);
+  });
+
+  testWidgets('Expect to find displayName', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: DetailScreen(spot: mySpot),
+    ));
+    expect(myUser.displayName, equals('Grace Hopper'));
+  });
+
+  testWidgets('Expect to find uid', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: DetailScreen(spot: mySpot),
+    ));
+    expect(myUser.uid, equals('randomuid'));
+  });
+
+  testWidgets('Expect to find rating', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: DetailScreen(spot: mySpot),
+    ));
+    expect(myUser.rating, equals(4.5));
   });
 
 //  testWidgets('Find LinearProgressIndicator Widget', (WidgetTester tester) async {

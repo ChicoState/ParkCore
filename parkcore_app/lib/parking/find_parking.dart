@@ -79,9 +79,7 @@ class _MyFindParkingState extends State<FindParking> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DetailScreen(
-                              spot: Spot.fromSnapshot(f),
-                            ),
+                            builder: (context) => DetailScreen(spot: Spot.fromSnapshot(f)),
                           ),
                         );
                       },
@@ -516,7 +514,7 @@ class _MyFindParkingState extends State<FindParking> {
               onPressed: (int index) {
                 setState(() {
                   selected[index] = !selected[index];
-                  print('Selected: ' + selected.toString());
+                 // print('Selected: ' + selected.toString());
                 });
               },
               color: Theme.of(context).backgroundColor,
@@ -620,7 +618,7 @@ class _MyFindParkingState extends State<FindParking> {
            Navigator.push(
             context,
             MaterialPageRoute(
-            builder: (context) => DetailScreen(spot: parkingSpot),
+              builder: (context) => DetailScreen(spot: parkingSpot),
             ),
           );
          },
