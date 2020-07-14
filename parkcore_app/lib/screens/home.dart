@@ -5,6 +5,7 @@ import 'package:parkcore_app/screens/parkcore_text.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -169,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
           color: Colors.black,
           height: 20,
         ),
-        _found.found ? FoundResults() : FailedSearch(),
+        FoundResults(),
         Divider(
           color: Colors.black,
           height: 20,
@@ -178,10 +179,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // If Search was successful, show the location that was found
+  // If Search is successful, show found location & button to go to map;
+  // else, show error message
   Widget FoundResults() {
     return Row(
-      key: Key('foundResult'),
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -205,11 +206,10 @@ class _MyHomePageState extends State<MyHomePage> {
           fit: FlexFit.tight,
           child: Column(
             children: [
-              RaisedButton(
+              _found.found ? RaisedButton(
                 child: Text('Go!'),
                 onPressed: () {
-                  Navigator.push(
-                    context,
+                  Navigator.push(context,
                     MaterialPageRoute(
                       builder: (context) => FindParking(
                         colRef: Firestore.instance.collection('parkingSpaces'),
@@ -223,23 +223,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 color: Theme.of(context).backgroundColor,
                 textColor: Colors.white,
+              )
+              :Opacity(
+                key: Key('failedSearch'),
+                opacity: 0.3,
+                child: SvgPicture.asset(
+                  'assets/Acorns.svg',
+                  width: 60,
+                  fit: BoxFit.cover,
+                  semanticsLabel: 'Acorns image',
+                ),
               ),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  // If Search was not successful, show error message
-  Widget FailedSearch() {
-    return Padding(
-      key: Key('failedSearch'),
-      padding: EdgeInsets.all(10.0),
-      child: Text(
-        _loc.location,
-        style: Theme.of(context).textTheme.headline3,
-      ),
     );
   }
 
