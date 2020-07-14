@@ -110,6 +110,21 @@ void main() {
     expect(find.widgetWithIcon(RaisedButton, Icons.photo_camera),findsOneWidget);
   });
 
+  testWidgets('Tap Icon Button (camera)', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParkingSubmit(parkingData: parkData1, parkingData2: parkData2,
+          parkingData3: parkData3, curUser: username),
+    ));
+
+    // Find 1 photo_camera Icon Button
+    final camera = find.widgetWithIcon(RaisedButton, Icons.photo_camera);
+    await tester.tap(camera);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('Part 5 of 5'), findsOneWidget);
+  });
+
   testWidgets('Find One Icon Button (gallery)', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
@@ -119,6 +134,21 @@ void main() {
 
     // Find 1 photo_library Icon Button
     expect(find.widgetWithIcon(RaisedButton, Icons.photo_library),findsOneWidget);
+  });
+
+  testWidgets('Tap Icon Button (gallery)', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParkingSubmit(parkingData: parkData1, parkingData2: parkData2,
+          parkingData3: parkData3, curUser: username),
+    ));
+
+    // Find 1 photo_library Icon Button
+    final library = find.widgetWithIcon(RaisedButton, Icons.photo_library);
+    await tester.tap(library);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('Part 5 of 5'), findsOneWidget);
   });
 
   testWidgets('Find Parking Form page 5 restart button', (WidgetTester tester) async {

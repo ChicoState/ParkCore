@@ -699,6 +699,20 @@ void main() {
     expect(find.text('Enter a valid 5 digit US zip code'), findsOneWidget);
   });
 
+  testWidgets('check State field onchanged', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking1(title: 'Post Your Parking Space'),
+    ));
+
+    final txt = '* State:';
+    // // Verify the output in field onChanged.
+    final statefield = tester.widget(find.widgetWithText(DropDownFormField, txt)) as DropDownFormField;
+    statefield.onChanged('CA');
+    statefield.onChanged('');
+    expect(statefield.value, isEmpty);
+  });
+
   // After button is pressed to go to next page, the geocoder is used to
   // create a set of coordinates to go with the provided address. Geocoder
   // works in practice, but doesn't seem to work with flutter_test. Also,

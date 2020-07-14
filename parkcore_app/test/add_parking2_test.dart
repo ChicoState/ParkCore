@@ -522,6 +522,96 @@ void main() {
     expect(find.text('Make sure to fill out all required fields'), findsOneWidget);
   });
 
+  testWidgets('check Size field onchanged', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+
+    final txt = '* Parking Space Size';
+    // // Verify the output in field onChanged.
+    final sizefield = tester.widget(find.widgetWithText(DropDownFormField, txt)) as DropDownFormField;
+    sizefield.onChanged('Compact');
+    sizefield.onChanged('');
+    expect(sizefield.value, isNull);
+  });
+
+  testWidgets('check Type field onchanged', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+
+    final txt = '* Type of Parking Space';
+    // // Verify the output in field onChanged.
+    final typefield = tester.widget(find.widgetWithText(DropDownFormField, txt)) as DropDownFormField;
+    typefield.onChanged('Driveway');
+    typefield.onChanged('');
+    expect(typefield.value, isNull);
+  });
+
+  testWidgets('check space type field onchanged', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+
+    final txt = 'Additional Parking Space Info';
+    // // Verify the output in field onChanged.
+    final spacetypefield = tester.widget(find.widgetWithText(DropDownFormField, txt)) as DropDownFormField;
+    spacetypefield.onChanged('Parallel');
+    spacetypefield.onChanged('');
+    expect(spacetypefield.value, isEmpty);
+  });
+
+  testWidgets('check space type field onsaved', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+
+    final txt = 'Additional Parking Space Info';
+    // // Verify the output in field onChanged.
+    final spacetypefield = tester.widget(find.widgetWithText(DropDownFormField, txt)) as DropDownFormField;
+    spacetypefield.onSaved('Parallel');
+    spacetypefield.onSaved('');
+    expect(spacetypefield.value, isEmpty);
+  });
+
+  testWidgets('check amenities field onsaved', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+
+    final txt = 'Parking Spot Amenities';
+    // // Verify the output in field onChanged.
+    final amenityfield = tester.widget(find.widgetWithText(MultiSelectFormField, txt)) as MultiSelectFormField;
+    amenityfield.onSaved(['Lit']);
+    amenityfield.onSaved(['']);
+    expect(amenityfield.initialValue, isNull);
+  });
+
+  testWidgets('set required fields', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+    var parkingData2 = ParkingData2(null, '', '', '', null, '');
+    parkingData2.size = 'Compact';
+    parkingData2.type = 'Driveway';
+
+    // Create the finders
+    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
+
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    final titleFinder = find.text('Post Your Parking Space');
+    expect(titleFinder, findsOneWidget);
+  });
+
     // Can't test selecting options from dropdown, so since those fields are
     // required, we can't test navigation to next page
 //  testWidgets('Test go to page 3 from page 2', (WidgetTester tester) async {

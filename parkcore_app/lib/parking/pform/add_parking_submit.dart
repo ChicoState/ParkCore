@@ -116,9 +116,8 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
             child: Icon(
               type == 'camera' ? Icons.photo_camera : Icons.photo_library,
             ),
-            onPressed: () =>
-            type == 'camera' ?
-            getUserImage(ImageSource.camera) : getUserImage(ImageSource.gallery),
+            onPressed: () => type == 'camera' ?
+              getUserImage(ImageSource.camera) : getUserImage(ImageSource.gallery),
             color: Theme.of(context).backgroundColor,
             textColor: Colors.white,
           );
