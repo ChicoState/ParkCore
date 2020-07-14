@@ -728,7 +728,7 @@ void main() {
     final googleSignIn = MockGoogleSignIn();
     final signinAccount = await googleSignIn.signIn();
     final googleAuth = await signinAccount.authentication;
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
@@ -754,7 +754,7 @@ void main() {
     final googleSignIn = MockGoogleSignIn();
     final signinAccount = await googleSignIn.signIn();
     final googleAuth = await signinAccount.authentication;
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
+    final credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
