@@ -14,6 +14,9 @@ import 'package:parkcore_app/models/CurrentUser.dart';
 import 'package:parkcore_app/models/ParkingData.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:parkcore_app/parking/random_coordinates.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
   testWidgets('Find Add Parking Form Page 1', (WidgetTester tester) async {
@@ -711,6 +714,58 @@ void main() {
     statefield.onChanged('CA');
     statefield.onChanged('');
     expect(statefield.value, isEmpty);
+  });
+
+  // Mock AuthResult contains a hard-coded user with name = Bob
+  testWidgets('check currentUser name', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking1(title: 'Post Your Parking Space'),
+    ));
+    final curUser = CurrentUser(null, '', '');
+
+    // Mock sign in with Google.
+    final googleSignIn = MockGoogleSignIn();
+    final signinAccount = await googleSignIn.signIn();
+    final googleAuth = await signinAccount.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    // Sign in.
+    final auth = MockFirebaseAuth();
+    final result = await auth.signInWithCredential(credential);
+    final user = await result.user;
+
+    curUser.setUser(user);
+    final name = curUser.getUserName();
+    expect(name, equals('Bob'));
+  });
+
+  // Mock AuthResult contains a hard-coded user with uid = aabbcc
+  testWidgets('check currentUser uid', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking1(title: 'Post Your Parking Space'),
+    ));
+    final curUser = CurrentUser(null, '', '');
+
+    // Mock sign in with Google.
+    final googleSignIn = MockGoogleSignIn();
+    final signinAccount = await googleSignIn.signIn();
+    final googleAuth = await signinAccount.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    // Sign in.
+    final auth = MockFirebaseAuth();
+    final result = await auth.signInWithCredential(credential);
+    final user = await result.user;
+
+    curUser.setUser(user);
+    final id = curUser.getUserID();
+    expect(id, equals('aabbcc'));
   });
 
   // After button is pressed to go to next page, the geocoder is used to

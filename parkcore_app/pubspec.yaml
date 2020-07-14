@@ -29,7 +29,8 @@ dependencies:
   cloud_firestore: ^0.13.2+1
   
   # login and auth
-  firebase_auth: ^0.15.5
+  #firebase_auth: ^0.15.5
+  firebase_auth: ^0.16.0
   google_sign_in: ^4.2.0
   #rxdart: 0.20.0
   rxdart: ^0.23.1
@@ -63,6 +64,8 @@ dependencies:
 
   # for Firestore unit tests
   cloud_firestore_mocks: ^0.4.5
+  firebase_auth_mocks: ^0.2.1
+  google_sign_in_mocks: ^0.1.0+2
 
 dev_dependencies:
   pedantic: ^1.4.0

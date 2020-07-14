@@ -46,9 +46,7 @@ class _MyAddParking1State extends State<AddParking1> {
   void loadCurrentUser() {
     FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
-        curUser.currentUser = user;
-        curUser.name = user.displayName;
-        curUser.id = user.uid;
+        curUser.setUser(user);
       });
     });
   }

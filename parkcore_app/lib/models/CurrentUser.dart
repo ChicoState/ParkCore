@@ -30,4 +30,10 @@ class CurrentUser {
       return 'no current user';
     }
   }
+
+  void setUser(FirebaseUser user) {
+    currentUser = user;
+    name = user.displayName;
+    id = user.uid;
+  }
 }
