@@ -79,7 +79,10 @@ class _MyFindParkingState extends State<FindParking> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DetailScreen(spot: Spot.fromSnapshot(f)),
+                            builder: (context) => DetailScreen(
+                              spot: Spot.fromSnapshot(f),
+                              colRef: Firestore.instance.collection('users'),
+                            ),
                           ),
                         );
                       },
@@ -620,7 +623,10 @@ class _MyFindParkingState extends State<FindParking> {
            Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DetailScreen(spot: parkingSpot),
+              builder: (context) => DetailScreen(
+                spot: parkingSpot,
+                colRef: Firestore.instance.collection('users'),
+              ),
             ),
           );
          },
