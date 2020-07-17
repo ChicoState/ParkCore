@@ -173,6 +173,32 @@ void main() {
     expect(find.widgetWithText(DateTimeField, txt),findsOneWidget);
   });
 
+  testWidgets('Set Start Time', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking3(parkingData: null, parkingData2: null, curUser: null),
+    ));
+    final type = 'start';
+    final time = TimeOfDay.now();
+    final start = AddParking3().createState().getTime(type);
+    await AddParking3().createState().setTime(type, time);
+    await tester.pump();
+    expect(start, isNotNull);
+  });
+
+  testWidgets('Set End Time', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking3(parkingData: null, parkingData2: null, curUser: null),
+    ));
+    final type = 'end';
+    final time = TimeOfDay.now();
+    final end = AddParking3().createState().getTime(type);
+    await AddParking3().createState().setTime(type, time);
+    await tester.pump();
+    expect(end, isNotNull);
+  });
+
   testWidgets('Find Parking Form DateTime for End', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(

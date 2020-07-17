@@ -117,7 +117,8 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
               type == 'camera' ? Icons.photo_camera : Icons.photo_library,
             ),
             onPressed: () => type == 'camera' ?
-              getUserImage(ImageSource.camera) : getUserImage(ImageSource.gallery),
+              getUserImage(ImageSource.camera) :
+              getUserImage(ImageSource.gallery),
             color: Theme.of(context).backgroundColor,
             textColor: Colors.white,
           );
@@ -148,13 +149,10 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
     //StorageUploadTask
     final uploadTask = ref.putFile(
       _imageFile,
-      StorageMetadata(
-        contentLanguage: 'en',
-      ),
+      StorageMetadata(contentLanguage: 'en'),
     );
 
-    final downloadURL =
-    await (await uploadTask.onComplete).ref.getDownloadURL();
+    final downloadURL = await (await uploadTask.onComplete).ref.getDownloadURL();
     return downloadURL.toString();
   }
 
@@ -172,8 +170,10 @@ class _MyAddParkingSubmitState extends State<AddParkingSubmit> {
             form.save();
 
             createParkingSpace();
-            Navigator.of(context)
-              .pushNamedAndRemoveUntil('/form_success', (Route<dynamic> route) => false);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              '/form_success',
+              (Route<dynamic> route) => false,
+            );
           },
           child: Text(
             'Submit',

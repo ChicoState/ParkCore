@@ -301,27 +301,38 @@ class _MyAddParking1State extends State<AddParking1> {
       var first = addresses.first;
       parkingData.coordinates = first.coordinates.toString();
       parkingData.coord_rand = getRandomCoordinates(parkingData.coordinates);
+//      print(first.addressLine + ' : ' + first.coordinates.toString());
+//      print('random coordinates : ' + parkingData.coord_rand);
 
-      print(first.addressLine + ' : ' + first.coordinates.toString());
-      print('random coordinates : ' + parkingData.coord_rand);
       var addr = first.addressLine.split(', ');
-
       setState(() {
-        parkingData.city_format = addr[1];
-        formError.invalidLoc = false;
+        foundLoc(addr);
       });
     }
     catch (e) {
-      print('Error occurred: $e');
       setState(() {
-        formError.invalidLoc = true;
-        formError.errorMessage = 'We can\'t find you!\nPlease enter a valid location.';
+        setErrorMessage();
       });
     }
 
     if(validateAndSave()){
       goToNextPage();
     }
+  }
+
+  void foundLoc(List<String> addr){
+    if(addr.length <= 3){
+      parkingData.city_format = addr[0];  // when addr is: city, state, country
+    }
+    else{
+      parkingData.city_format = addr[1]; // for addr: address, city, state, country
+    }
+    formError.invalidLoc = false;
+  }
+
+  void setErrorMessage(){
+    formError.invalidLoc = true;
+    formError.errorMessage = 'We can\'t find you!\nPlease enter a valid location.';
   }
 
   // Confirm page 1 is complete (no empty fields, location is valid),

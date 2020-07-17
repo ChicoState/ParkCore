@@ -260,27 +260,36 @@ class _MyHomePageState extends State<MyHomePage> {
       var first = addresses.first; // Get Address
       var addr = getSplitAddress(first.addressLine.toString()); // String []
 
-      // geocoder has different results depending on details given
-      // extracting city from the address so find_parking goes to specified city
       setState(() {
-        _found.found = true;
-        if(addr.length <= 3){
-          _city.city = addr[0];  // when addr is: city, state, country
-        }
-        else{
-          _city.city = addr[1]; // when addr is: address, city, state, country
-        }
-        _loc.location = '${first.addressLine}';
-        _coordinates.coordinates = first.coordinates.toString();
+        setLoc(first, addr);
       });
     }
     catch (e) {
-      //print('Error occurred: $e');
       setState(() {
-        _found.found = false;
-        _loc.location = 'Sorry, no search results for "' + loc_input + '".';
+        locNotFound(loc_input);
       });
     }
+  }
+
+  // geocoder has different results depending on the address details given
+  // extracting city from the address so find_parking goes to specified city
+  void setLoc(Address first, List<String> addr){
+    _found.found = true;
+    if(addr.length <= 3){
+      _city.city = addr[0];  // when addr is: city, state, country
+    }
+    else{
+      _city.city = addr[1]; // when addr is: address, city, state, country
+    }
+    _loc.location = '${first.addressLine}';
+    _coordinates.coordinates = first.coordinates.toString();
+  }
+
+  // If geocoder fails to find the location searched for,
+  // set 'found' to false, and set search failure message
+  void locNotFound(String loc_input){
+    _found.found = false;
+    _loc.location = 'Sorry, no search results for "' + loc_input + '".';
   }
 
   List<String> getSplitAddress(String address){

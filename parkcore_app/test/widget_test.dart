@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/screens/home.dart';
+import 'package:geocoder/geocoder.dart';
 
 void main() {
   testWidgets('Find Home Page Title', (WidgetTester tester) async {
@@ -376,5 +377,47 @@ void main() {
     // expect to find validateLocation() function
     // haven't found way to test geocoder (which this function uses)
     MyHomePage().createState().validateLocation();
+  });
+
+  testWidgets('Test set location (full address)', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: 'ParkCore'),
+    ));
+    final query = '1600 Amphiteatre Parkway, Mountain View, CA, USA';
+    //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
+    final first = Address();
+    var addr = MyHomePage().createState().getSplitAddress(query); // String []
+    MyHomePage().createState().setLoc(first, addr);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('ParkCore'), findsOneWidget);
+  });
+
+  testWidgets('Test set location (just city)', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: 'ParkCore'),
+    ));
+    final query = 'Mountain View, CA, USA';
+    //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
+    final first = Address();
+    var addr = MyHomePage().createState().getSplitAddress(query); // String []
+    MyHomePage().createState().setLoc(first, addr);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('ParkCore'), findsOneWidget);
+  });
+
+  testWidgets('Test location not found setState', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: MyHomePage(title: 'ParkCore'),
+    ));
+    final query = 'notarealplace';
+    MyHomePage().createState().locNotFound(query);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('ParkCore'), findsOneWidget);
   });
 }

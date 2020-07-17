@@ -768,6 +768,44 @@ void main() {
     expect(id, equals('aabbcc'));
   });
 
+  testWidgets('Test set location (full address)', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking1(title: 'Post Your Parking Space'),
+    ));
+    final query = ['1600 Amphiteatre Parkway', 'Mountain View', 'CA', 'USA'];
+    //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
+    AddParking1().createState().foundLoc(query);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('Post Your Parking Space'), findsOneWidget);
+  });
+
+  testWidgets('Test set location (no street address)', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking1(title: 'Post Your Parking Space'),
+    ));
+    final query = ['Mountain View', 'CA', 'USA'];
+    //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
+    AddParking1().createState().foundLoc(query);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('Post Your Parking Space'), findsOneWidget);
+  });
+
+  testWidgets('Test set error message (no location)', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking1(title: 'Post Your Parking Space'),
+    ));
+    //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
+    AddParking1().createState().setErrorMessage();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.text('Post Your Parking Space'), findsOneWidget);
+  });
+
   // After button is pressed to go to next page, the geocoder is used to
   // create a set of coordinates to go with the provided address. Geocoder
   // works in practice, but doesn't seem to work with flutter_test. Also,

@@ -144,13 +144,17 @@ class _MyAddParking3State extends State<AddParking3> {
           initialTime: TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
         );
         setState(() {
-          type == 'start' ?
-          parkingData3.startTime = DateFormat('HH:mm').format(DateTimeField.convert(time))
-            : parkingData3.endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
+          setTime(type, time);
         });
         return DateTimeField.convert(time);
       },
     );
+  }
+
+  void setTime(String type, TimeOfDay time){
+    type == 'start' ?
+    parkingData3.startTime = DateFormat('HH:mm').format(DateTimeField.convert(time))
+    : parkingData3.endTime = DateFormat('HH:mm').format(DateTimeField.convert(time));
   }
 
   Widget getPrice() {
