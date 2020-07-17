@@ -8,55 +8,111 @@ import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 
 void main() {
+  // parkingData2 params: size, type, driveway, spaceType, amenities, details
+  final parkingData2 = ParkingData2(null, null, '', '', null, '');
 
   test('ParkingData2 size is null', () {
     // parkingData2 params: size, type, driveway, spaceType, amenities, details
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    final parkingJson = parkingData.toJson();
+    final parkingJson = parkingData2.toJson();
     expect(parkingJson['size'], null);
+  });
+
+  testWidgets('expect size input missing due to incomplete form', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+
+    // Create the finders
+    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
+
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(parkingData2.size, isNull);
+  });
+
+  testWidgets('expect type input missing due to incomplete form', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+    // Create the finders
+    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
+
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(parkingData2.type, isNull);
+  });
+
+  testWidgets('expect spaceType input missing due to incomplete form', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+    // Create the finders
+    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
+
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(parkingData2.spaceType, isEmpty);
+  });
+
+  testWidgets('expect amenities input missing due to incomplete form', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+    // Create the finders
+    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
+
+    // Tap the search icon and trigger a frame
+    await tester.tap(submit);
+    await tester.pump();
+
+    expect(parkingData2.myAmenities, isNull);
   });
 
   test('ParkingData2 Size set as Compact', () {
     // parkingData2 params: size, type, driveway, spaceType, amenities, details
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    parkingData.size = 'Compact';
-    final parkingJson = parkingData.toJson();
+    parkingData2.size = 'Compact';
+    final parkingJson = parkingData2.toJson();
     expect(parkingJson['size'], 'Compact');
   });
 
   test('ParkingData2 Type set as Driveway', () {
     // parkingData2 params: size, type, driveway, spaceType, amenities, details
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    parkingData.type = 'Driveway';
-    final parkingJson = parkingData.toJson();
+    parkingData2.type = 'Driveway';
+    final parkingJson = parkingData2.toJson();
     expect(parkingJson['type'], 'Driveway');
   });
 
   test('ParkingData2 Driveway set as Left', () {
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    parkingData.driveway = 'Left';
-    final parkingJson = parkingData.toJson();
+    parkingData2.driveway = 'Left';
+    final parkingJson = parkingData2.toJson();
     expect(parkingJson['driveway'], 'Left');
   });
 
   test('ParkingData2 Type -- Space Type set as Parallel', () {
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    parkingData.spaceType = 'Parallel';
-    final parkingJson = parkingData.toJson();
+    parkingData2.spaceType = 'Parallel';
+    final parkingJson = parkingData2.toJson();
     expect(parkingJson['spacetype'], 'Parallel');
   });
 
   test('ParkingData2 Amenities all selected', () {
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    parkingData.myAmenities = ['Lit', 'Covered', 'Security Camera', 'EV Charging'];
-    final parkingJson = parkingData.toJson();
+    parkingData2.myAmenities = ['Lit', 'Covered', 'Security Camera', 'EV Charging'];
+    final parkingJson = parkingData2.toJson();
     expect(parkingJson['amenities'], '[Lit, Covered, Security Camera, EV Charging]');
   });
 
   test('ParkingData2 Details set', () {
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    parkingData.details = 'down an alley';
-    final parkingJson = parkingData.toJson();
+    parkingData2.details = 'down an alley';
+    final parkingJson = parkingData2.toJson();
     expect(parkingJson['spacedetails'], 'down an alley');
   });
 
@@ -226,84 +282,14 @@ void main() {
     expect(find.text(txt), findsOneWidget);
   });
 
-  testWidgets('expect size input missing due to incomplete form', (
-      WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
-      home: AddParking2(parkingData: null, curUser: null),
-    ));
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-
-    // Create the finders
-    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
-
-    // Tap the search icon and trigger a frame
-    await tester.tap(submit);
-    await tester.pump();
-
-    expect(parkingData.size, isNull);
-  });
-
-  testWidgets('expect type input missing due to incomplete form', (
-      WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
-      home: AddParking2(parkingData: null, curUser: null),
-    ));
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-
-    // Create the finders
-    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
-
-    // Tap the search icon and trigger a frame
-    await tester.tap(submit);
-    await tester.pump();
-
-    expect(parkingData.type, isNull);
-  });
-
-  testWidgets('expect spaceType input missing due to incomplete form', (
-      WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
-      home: AddParking2(parkingData: null, curUser: null),
-    ));
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-
-    // Create the finders
-    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
-
-    // Tap the search icon and trigger a frame
-    await tester.tap(submit);
-    await tester.pump();
-
-    expect(parkingData.spaceType, isEmpty);
-  });
-
-  testWidgets('expect amenities input missing due to incomplete form', (
-      WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
-      home: AddParking2(parkingData: null, curUser: null),
-    ));
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-
-    // Create the finders
-    final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
-
-    // Tap the search icon and trigger a frame
-    await tester.tap(submit);
-    await tester.pump();
-
-    expect(parkingData.myAmenities, isNull);
-  });
-
   testWidgets('expect incomplete form error is true', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    final parkingData = ParkingData2(null, null, '', '', null, '');
     final formError = FormError();
-    parkingData.size = 'Compact';
-    parkingData.type = 'Parking Lot';
-    parkingData.spaceType = 'Perpendicular';
+    parkingData2.size = 'Compact';
+
     // Create the finders
     final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
 
@@ -319,9 +305,8 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    parkingData.type = 'Parking Lot';
-    parkingData.spaceType = 'Perpendicular';
+    parkingData2.type = 'Parking Lot';
+    parkingData2.spaceType = 'Perpendicular';
     // Create the finders
     final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
 
@@ -337,9 +322,8 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    parkingData.type = 'Parking Lot';
-    parkingData.spaceType = 'Perpendicular';
+    parkingData2.type = 'Parking Lot';
+    parkingData2.spaceType = 'Perpendicular';
     // Create the finders
     final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
 
@@ -357,8 +341,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    final parkingData = ParkingData2(null, null, '', '', null, '');
-    parkingData.size = 'Compact';
+    parkingData2.size = 'Compact';
     // Create the finders
     final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
 
@@ -414,13 +397,12 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    var parkingData = ParkingData2(null, null, '', '', null, '');
     var formError = FormError();
     final detailstext = find.byKey(Key('details'));
 
     // Test form search field input
-    parkingData.size = 'Compact';
-    parkingData.type = 'Parking Lot';
+    parkingData2.size = 'Compact';
+    parkingData2.type = 'Parking Lot';
     await tester.enterText(detailstext, 'near Acker Gym');
     // Create the finders
     final submit = find.widgetWithText(RaisedButton, 'Next: Price & Availability');
@@ -459,7 +441,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    var parkingData2 = ParkingData2(null, '', '', '', null, '');
+    parkingData2.size = null;
     parkingData2.type = 'Driveway';
 
     // Create the finders
@@ -472,16 +454,23 @@ void main() {
     expect(find.text('Make sure to fill out all required fields'), findsOneWidget);
   });
 
-  testWidgets('find Regular and Driveway field input for size & type', (
+  testWidgets('find Regular chosen as field input for size', (
       WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    var parkingData2 = ParkingData2('', '', '', '', null, '');
     parkingData2.size = 'Regular';
-    parkingData2.type = 'Driveway';
 
     expect(find.widgetWithText(DropDownFormField, 'Regular'), findsOneWidget);
+  });
+
+  testWidgets('find Driveway chosen as field input for type', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+    parkingData2.type = 'Driveway';
+
     expect(find.widgetWithText(DropDownFormField, 'Driveway'), findsOneWidget);
   });
 
@@ -490,7 +479,6 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    var parkingData2 = ParkingData2(null, '', '', '', null, '');
     parkingData2.type = 'Parking Lot';
     parkingData2.spaceType = 'Perpendicular';
 
@@ -509,7 +497,6 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    var parkingData2 = ParkingData2(null, '', '', '', null, '');
     parkingData2.myAmenities = ['Lit'];
 
     // Create the finders
@@ -597,7 +584,6 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking2(parkingData: null, curUser: null),
     ));
-    var parkingData2 = ParkingData2(null, '', '', '', null, '');
     parkingData2.size = 'Compact';
     parkingData2.type = 'Driveway';
 
@@ -611,6 +597,23 @@ void main() {
     final titleFinder = find.text('Post Your Parking Space');
     expect(titleFinder, findsOneWidget);
   });
+
+//  testWidgets('find Driveway type form field', (WidgetTester tester) async {
+//
+//    await tester.pumpWidget(MaterialApp(
+//      home: AddParking2(parkingData: null, curUser: null),
+//    ));
+//    parkingData2.type = 'Driveway';
+//    await tester.idle();
+//    await tester.pump();
+//   // await tester.pump(const Duration(milliseconds: 10));;
+//    AddParking2().createState().getType();
+//    await tester.idle();
+//    await tester.pump();
+//    expect(find.byKey(Key('drivewayField')), findsOneWidget);
+////    expect(find.widgetWithText(DropDownFormField, 'Regular'), findsOneWidget);
+////    expect(find.widgetWithText(DropDownFormField, 'Driveway'), findsOneWidget);
+//  });
 
     // Can't test selecting options from dropdown, so since those fields are
     // required, we can't test navigation to next page

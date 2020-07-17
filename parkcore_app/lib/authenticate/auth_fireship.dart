@@ -11,10 +11,7 @@ class AuthService {
 
     profile = user.switchMap((FirebaseUser u) {
       if (u != null) {
-        return _db
-            .collection('users')
-            .document(u.uid)
-            .snapshots()
+        return _db.collection('users').document(u.uid).snapshots()
             .map((snap) => snap.data);
       } else {
         return Stream.value({});
@@ -48,7 +45,7 @@ class AuthService {
     var user = (await _auth.signInWithCredential(credential)).user;
 
     updateUserData(user);
-    print('signed in ' + user.displayName);
+    //print('signed in ' + user.displayName);
     loading.add(false);
     return user;
   }

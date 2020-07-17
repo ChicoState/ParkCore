@@ -122,15 +122,10 @@ class _MyAddParking2State extends State<AddParking2> {
         child: getType(),
       ),
       SizedBox(height: 10),
-      parkingData2.type == 'Driveway' ?
-      Container(
-        key: Key('drivewayField'),
-        decoration: BoxDecoration(color: Colors.green[50]),
-        child: getDrivewayDetails(),
-      ):
       Container(
         decoration: BoxDecoration(color: Colors.green[50]),
-        child: getSpaceType(),
+        child: parkingData2.type == 'Driveway' ?
+          getSpaceType('Driveway') : getSpaceType('Other')
       ),
       SizedBox(height: 10),
       Container(
@@ -192,55 +187,50 @@ class _MyAddParking2State extends State<AddParking2> {
     );
   }
 
-  // Provides additional parking space info if 'Driveway' is chosen for Type
-  Widget getDrivewayDetails() {
-    return DropDownFormField(
-      titleText: 'Driveway Parking Space Info:',
-      hintText: 'Select one:',
-      value: parkingData2.driveway,
-      onSaved: (value) {
-        setState(() {
-          if (value == null) {
-            parkingData2.driveway = 'N/A';
-          } else {
-            parkingData2.driveway = value;
-          }
-          parkingData2.spaceType = 'N/A';
-        });
-      },
-      onChanged: (value) {
-        setState(() {
-          parkingData2.driveway = value;
-        });
-      },
-      dataSource: _drivewayData,
-      textField: 'display',
-      valueField: 'value',
-    );
+  void drivewayOrOther(String type, String value){
+    if(type == 'Driveway'){
+      if (value == null) {
+        parkingData2.driveway = 'N/A';
+      } else {
+        parkingData2.driveway = value;
+      }
+      parkingData2.spaceType = 'N/A';
+    }
+    else{
+      if (value == null) {
+        parkingData2.spaceType = 'N/A';
+      } else {
+        parkingData2.spaceType = value;
+      }
+      parkingData2.driveway = 'N/A';
+    }
   }
 
-  // Provides add'l parking space info if 'Parking Lot' or 'Street' chosen for Type
-  Widget getSpaceType() {
+  // Provides add'l parking space info if Type is 'Driveway' or 'Other'
+  // Other options for type: 'Parking Lot' or 'Street'
+  // Driveway add'l info: portion of driveway (Left, Right, Center) or Whole Driveway
+  // Other add'l info: Angled, Parallel, or Perpendicular parking space
+  Widget getSpaceType(String type) {
     return DropDownFormField(
       titleText: 'Additional Parking Space Info',
       hintText: 'Select one:',
-      value: parkingData2.spaceType,
+      value: type == 'Driveway' ? parkingData2.driveway : parkingData2.spaceType,
       onSaved: (value) {
         setState(() {
-          if (value == null) {
-            parkingData2.spaceType = 'N/A';
-          } else {
-            parkingData2.spaceType = value;
-          }
-          parkingData2.driveway = 'N/A';
+          drivewayOrOther(type, value);
         });
       },
       onChanged: (value) {
         setState(() {
-          parkingData2.spaceType = value;
+          if(type == 'Driveway') {
+            parkingData2.driveway = value;
+          }
+          else{
+            parkingData2.spaceType = value;
+          }
         });
       },
-      dataSource: _parkingSpaceTypeData,
+      dataSource: type == 'Driveway' ? _drivewayData : _parkingSpaceTypeData,
       textField: 'display',
       valueField: 'value',
     );
