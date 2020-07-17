@@ -798,6 +798,147 @@ void main() {
     expect(find.text('Contact Us'), findsOneWidget);
   });
 
+  testWidgets('check alertDialog content', (WidgetTester tester) async {
+    var myMap = <String,dynamic>{};
+    myMap['title'] = 'My Parking Spot';
+    myMap['address'] = '123 Main St';
+    myMap['amenities'] = '[Lit, Covered, Security Camera, EV Charging]';
+    myMap['coordinates'] = '{39.7285,-121.8375}';
+    myMap['city'] = 'Chico';
+    myMap['driveway'] = 'Right';
+    myMap['monthprice'] = '42.00';
+    myMap['spacetype'] = 'N/A';
+    myMap['downloadURL'] = null;
+    myMap['type'] = 'Driveway';
+    myMap['size'] = 'Compact';
+    myMap['days'] = '[MON, TUE, WED, THU, FRI]';
+    myMap['spacedetails'] = 'near the park and downtown';
+    myMap['starttime'] = '08:00';
+    myMap['endtime'] = '16:00';
+    myMap['state'] = 'CA';
+    myMap['zip'] = '95928';
+    myMap['uid'] = 'no current user';
+    final mySpot = Spot.fromMap(myMap);
+
+    final routes = <String, WidgetBuilder>{
+      '/details' : (BuildContext context) => DetailScreen(spot: mySpot),
+    };
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+      initialRoute: '/',
+      routes: routes,
+    ));
+
+    // Let the snapshots stream fire a snapshot; then re-render
+    await tester.idle();
+    await tester.pump();
+    // // Verify the output.
+    final alert = FindParking().createState().spotAlert(mySpot, mySpot.title) as AlertDialog;
+    final txt = 'Want to know more about this location?';
+    expect(alert.content.toString(), Text(txt).toString());
+  });
+
+  testWidgets('Check alertDialog title', (WidgetTester tester) async {
+    var myMap = <String,dynamic>{};
+    myMap['title'] = 'My Parking Spot';
+    myMap['address'] = '123 Main St';
+    myMap['amenities'] = '[Lit, Covered, Security Camera, EV Charging]';
+    myMap['coordinates'] = '{39.7285,-121.8375}';
+    myMap['city'] = 'Chico';
+    myMap['driveway'] = 'Right';
+    myMap['monthprice'] = '42.00';
+    myMap['spacetype'] = 'N/A';
+    myMap['downloadURL'] = null;
+    myMap['type'] = 'Driveway';
+    myMap['size'] = 'Compact';
+    myMap['days'] = '[MON, TUE, WED, THU, FRI]';
+    myMap['spacedetails'] = 'near the park and downtown';
+    myMap['starttime'] = '08:00';
+    myMap['endtime'] = '16:00';
+    myMap['state'] = 'CA';
+    myMap['zip'] = '95928';
+    myMap['uid'] = 'no current user';
+    final mySpot = Spot.fromMap(myMap);
+
+    final routes = <String, WidgetBuilder>{
+      '/details' : (BuildContext context) => DetailScreen(spot: mySpot),
+    };
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+      initialRoute: '/',
+      routes: routes,
+    ));
+
+    // Let the snapshots stream fire a snapshot; then re-render
+    await tester.idle();
+    await tester.pump();
+    // // Verify the output.
+    final alert = FindParking().createState().spotAlert(mySpot, mySpot.title) as AlertDialog;
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(alert.title.toString(), Text(mySpot.title).toString());
+  });
+
+//  testWidgets('Find alertDialog actions', (WidgetTester tester) async {
+//    var myMap = <String,dynamic>{};
+//    myMap['title'] = 'My Parking Spot';
+//    myMap['address'] = '123 Main St';
+//    myMap['amenities'] = '[Lit, Covered, Security Camera, EV Charging]';
+//    myMap['coordinates'] = '{39.7285,-121.8375}';
+//    myMap['city'] = 'Chico';
+//    myMap['driveway'] = 'Right';
+//    myMap['monthprice'] = '42.00';
+//    myMap['spacetype'] = 'N/A';
+//    myMap['downloadURL'] = null;
+//    myMap['type'] = 'Driveway';
+//    myMap['size'] = 'Compact';
+//    myMap['days'] = '[MON, TUE, WED, THU, FRI]';
+//    myMap['spacedetails'] = 'near the park and downtown';
+//    myMap['starttime'] = '08:00';
+//    myMap['endtime'] = '16:00';
+//    myMap['state'] = 'CA';
+//    myMap['zip'] = '95928';
+//    myMap['uid'] = 'no current user';
+//    final mySpot = Spot.fromMap(myMap);
+//
+//    final routes = <String, WidgetBuilder>{
+//      '/details' : (BuildContext context) => DetailScreen(spot: mySpot),
+//    };
+//    // Render the widget.
+//    await tester.pumpWidget(MaterialApp(
+//      home: FindParking(colRef: instance.collection(testCollection),
+//          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+//      initialRoute: '/',
+//      routes: routes,
+//    ));
+//
+//    //final snapshot = await instance.collection(testCollection).getDocuments();
+//    // Let the snapshots stream fire a snapshot; then re-render
+//    await tester.idle();
+//    await tester.pump();
+//    // // Verify the output.
+//    final alert = FindParking().createState().spotAlert(mySpot, mySpot.title) as AlertDialog;
+//    //await tester.tap(alert);
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 10));
+////    final clear = find.widgetWithIcon(IconButton, Icons.clear);
+////    await tester.tap(clear);
+////    await tester.pump();
+////    await tester.pump(const Duration(milliseconds: 10));
+//    final button = FlatButton(
+//      child: Text('Visit the details page for this spot'),
+//      onPressed: () {
+//        FindParking().createState().goToDetails(mySpot);
+//      },
+//    );
+//    expect(alert.actions, [button]);
+//    // expect(alert.content, Text('Want to know more about this location?'));
+//  });
+
 //  testWidgets('expect to find 1 marker', (WidgetTester tester) async {
 //    // Render the widget.
 //    await tester.pumpWidget(MaterialApp(

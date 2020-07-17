@@ -30,8 +30,6 @@ class FindParking extends StatefulWidget {
 }
 
 class _MyFindParkingState extends State<FindParking> {
- // CollectionReference colRef = Firestore.instance.collection('parkingSpaces');
-
   final Map<MarkerId, Marker> _markers = {};
   List<Marker> allMarkers = [];
 
@@ -51,8 +49,8 @@ class _MyFindParkingState extends State<FindParking> {
   bool pressed = false;
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    await widget.colRef.getDocuments()
     //await Firestore.instance.collection('parkingSpaces').getDocuments()
+    await widget.colRef.getDocuments()
       .then((QuerySnapshot snapshot) {
         snapshot.documents.forEach((f) =>
         allMarkers.add(
@@ -69,26 +67,7 @@ class _MyFindParkingState extends State<FindParking> {
             onTap: () {
               showDialog(
                 context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('${f.data['title']}'),
-                  content: Text('Want to know more about this location?'),
-                  actions: [
-                    FlatButton(
-                      child: Text('Visit the details page for this spot'),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailScreen(
-                              spot: Spot.fromSnapshot(f),
-                              colRef: Firestore.instance.collection('users'),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                builder: (context) => spotAlert(Spot.fromSnapshot(f),'${f.data['title']}'),
               );
             },
           ),
@@ -100,6 +79,33 @@ class _MyFindParkingState extends State<FindParking> {
         _markers[allMarkers[i].markerId] = allMarkers[i];
       }
     });
+  }
+
+  Widget spotAlert(Spot thisSpot, String spotTitle){
+    return AlertDialog(
+      title: Text(spotTitle),
+      content: Text('Want to know more about this location?'),
+      actions: [
+        FlatButton(
+          child: Text('Visit the details page for this spot'),
+          onPressed: () {
+            goToDetails(thisSpot);
+          },
+        ),
+      ],
+    );
+  }
+
+  void goToDetails(Spot thisSpot){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailScreen(
+          spot: thisSpot,
+          colRef: Firestore.instance.collection('users'),
+        ),
+      ),
+    );
   }
 
   @override
@@ -172,10 +178,8 @@ class _MyFindParkingState extends State<FindParking> {
     return StreamBuilder<QuerySnapshot>(
       stream: widget.colRef.where('city', isEqualTo: widget.city).snapshots(),
 //      stream: Firestore.instance.collection('parkingSpaces')
-//        .where('city', isEqualTo: widget.city)
-//        .snapshots(),
+//        .where('city', isEqualTo: widget.city).snapshots(),
       builder: (context, snapshot) {
-       // if(snapshot.data == null) return LinearProgressIndicator();
         if (!snapshot.hasData) return LinearProgressIndicator();
         if(snapshot.data.documents.isEmpty){
           return _noSpaces(context);
@@ -603,10 +607,16 @@ class _MyFindParkingState extends State<FindParking> {
       padding: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget> [
-          Text(haversize(coordinates) + ' Min' ?? 'null', style: TextStyle(fontSize: 15)),
-          Icon(Icons.directions_walk, size: 20,)
-        ]
-      )
+          Text(
+            haversize(coordinates) + ' Min' ?? 'null',
+            style: TextStyle(fontSize: 15),
+          ),
+          Icon(
+            Icons.directions_walk,
+            size: 20,
+          ),
+        ],
+      ),
     );
   }
 
@@ -620,18 +630,11 @@ class _MyFindParkingState extends State<FindParking> {
        child: GestureDetector(
          key: Key('gotodetails'),
          onTap: () {
-           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DetailScreen(
-                spot: parkingSpot,
-                colRef: Firestore.instance.collection('users'),
-              ),
-            ),
-          );
+           goToDetails(parkingSpot);
          },
          child: _boxes(parkingSpot.image, parkingSpot.title, parkingSpot.city,
-           parkingSpot.state, parkingSpot.zip, parkingSpot.monthPrice, parkingSpot.type, parkingSpot.coordinates),
+           parkingSpot.state, parkingSpot.zip, parkingSpot.monthPrice,
+           parkingSpot.type, parkingSpot.coordinates),
        )
     );
   }
@@ -674,9 +677,24 @@ class _MyFindParkingState extends State<FindParking> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(title ?? 'N/A', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0), textAlign: TextAlign.center),
-                      Text(city + ', ' + state + ', ' + zip, style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
-                      Text(type ?? 'N/A', style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
+                      Text(
+                        title ?? 'N/A',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        city + ', ' + state + ', ' + zip,
+                        style: TextStyle(fontSize: 15.0),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        type ?? 'N/A',
+                        style: TextStyle(fontSize: 15.0),
+                        textAlign: TextAlign.center,
+                      ),
                     ],
                   ),
                 ),
@@ -687,7 +705,13 @@ class _MyFindParkingState extends State<FindParking> {
                   child: Column(
                     children: <Widget>[
                       pressed ? displayDistance(coordinates) : SizedBox(),
-                      Text('\$' + roundedPrice.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      Text(
+                        '\$' + roundedPrice.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ),
                     ],
                   ),
                 ),
