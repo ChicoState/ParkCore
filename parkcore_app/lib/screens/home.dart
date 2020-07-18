@@ -29,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _loc = MyLoc();
   final _city = MyCity();
   final _coordinates = MyCoordinates();
-  final _found = LocFound();
+  final found = LocFound();
 
   @override
   void dispose() {
@@ -206,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
           fit: FlexFit.tight,
           child: Column(
             children: [
-              _found.found ? RaisedButton(
+              found.found ? RaisedButton(
                 child: Text('Go!'),
                 onPressed: () {
                   Navigator.push(context,
@@ -215,8 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         colRef: Firestore.instance.collection('parkingSpaces'),
                         title: 'Find Parking',
                         city: _city.city,
-                        latlong: _coordinates.coordinates =
-                            _coordinates.coordinates ?? '{39.7285,-121.8375}',
+                        latlong: _coordinates.coordinates ?? '{39.7285,-121.8375}',
                       ),
                     ),
                   );
@@ -261,20 +260,19 @@ class _MyHomePageState extends State<MyHomePage> {
       var addr = getSplitAddress(first.addressLine.toString()); // String []
 
       setState(() {
-        setLoc(first, addr);
+        found.found = setLoc(first, addr);
       });
     }
     catch (e) {
       setState(() {
-        locNotFound(loc_input);
+        found.found = locNotFound(loc_input);
       });
     }
   }
 
   // geocoder has different results depending on the address details given
   // extracting city from the address so find_parking goes to specified city
-  void setLoc(Address first, List<String> addr){
-    _found.found = true;
+  bool setLoc(Address first, List<String> addr){
     if(addr.length <= 3){
       _city.city = addr[0];  // when addr is: city, state, country
     }
@@ -283,13 +281,14 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     _loc.location = '${first.addressLine}';
     _coordinates.coordinates = first.coordinates.toString();
+    return true;
   }
 
   // If geocoder fails to find the location searched for,
   // set 'found' to false, and set search failure message
-  void locNotFound(String loc_input){
-    _found.found = false;
+  bool locNotFound(String loc_input){
     _loc.location = 'Sorry, no search results for "' + loc_input + '".';
+    return false;
   }
 
   List<String> getSplitAddress(String address){

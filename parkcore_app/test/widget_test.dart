@@ -388,10 +388,10 @@ void main() {
     //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
     final first = Address();
     var addr = MyHomePage().createState().getSplitAddress(query); // String []
-    MyHomePage().createState().setLoc(first, addr);
+    final found = MyHomePage().createState().setLoc(first, addr);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
-    expect(find.text('ParkCore'), findsOneWidget);
+    expect(found, isTrue);
   });
 
   testWidgets('Test set location (just city)', (WidgetTester tester) async {
@@ -403,10 +403,10 @@ void main() {
     //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
     final first = Address();
     var addr = MyHomePage().createState().getSplitAddress(query); // String []
-    MyHomePage().createState().setLoc(first, addr);
+    final found = MyHomePage().createState().setLoc(first, addr);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
-    expect(find.text('ParkCore'), findsOneWidget);
+    expect(found, isTrue);
   });
 
   testWidgets('Test location not found setState', (WidgetTester tester) async {
@@ -415,9 +415,9 @@ void main() {
       home: MyHomePage(title: 'ParkCore'),
     ));
     final query = 'notarealplace';
-    MyHomePage().createState().locNotFound(query);
+    final found = MyHomePage().createState().locNotFound(query);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
-    expect(find.text('ParkCore'), findsOneWidget);
+    expect(found, isFalse);
   });
 }

@@ -222,12 +222,8 @@ class _MyAddParking2State extends State<AddParking2> {
       },
       onChanged: (value) {
         setState(() {
-          if(type == 'Driveway') {
-            parkingData2.driveway = value;
-          }
-          else{
-            parkingData2.spaceType = value;
-          }
+          type == 'Driveway' ?
+            parkingData2.driveway = value : parkingData2.spaceType = value;
         });
       },
       dataSource: type == 'Driveway' ? _drivewayData : _parkingSpaceTypeData,

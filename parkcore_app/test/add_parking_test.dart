@@ -773,12 +773,13 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
+    var formError = FormError();
     final query = ['1600 Amphiteatre Parkway', 'Mountain View', 'CA', 'USA'];
     //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
-    AddParking1().createState().foundLoc(query);
+    AddParking1().createState().foundLoc(query, formError);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
-    expect(find.text('Post Your Parking Space'), findsOneWidget);
+    expect(formError.invalidLoc, isFalse);
   });
 
   testWidgets('Test set location (no street address)', (WidgetTester tester) async {
@@ -786,12 +787,13 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
+    var formError = FormError();
     final query = ['Mountain View', 'CA', 'USA'];
     //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
-    AddParking1().createState().foundLoc(query);
+    AddParking1().createState().foundLoc(query, formError);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
-    expect(find.text('Post Your Parking Space'), findsOneWidget);
+    expect(formError.invalidLoc, isFalse);
   });
 
   testWidgets('Test set error message (no location)', (WidgetTester tester) async {
@@ -799,11 +801,12 @@ void main() {
     await tester.pumpWidget(MaterialApp(
       home: AddParking1(title: 'Post Your Parking Space'),
     ));
+    var formError = FormError();
     //final first = await Geocoder.local.findAddressesFromQuery(query) as Address;
-    AddParking1().createState().setErrorMessage();
+    AddParking1().createState().setErrorMessage(formError);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
-    expect(find.text('Post Your Parking Space'), findsOneWidget);
+    expect(formError.invalidLoc, isTrue);
   });
 
   // After button is pressed to go to next page, the geocoder is used to

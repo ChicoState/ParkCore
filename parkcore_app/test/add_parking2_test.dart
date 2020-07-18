@@ -598,22 +598,29 @@ void main() {
     expect(titleFinder, findsOneWidget);
   });
 
-//  testWidgets('find Driveway type form field', (WidgetTester tester) async {
-//
-//    await tester.pumpWidget(MaterialApp(
-//      home: AddParking2(parkingData: null, curUser: null),
-//    ));
-//    parkingData2.type = 'Driveway';
-//    await tester.idle();
-//    await tester.pump();
-//   // await tester.pump(const Duration(milliseconds: 10));;
-//    AddParking2().createState().getType();
-//    await tester.idle();
-//    await tester.pump();
-//    expect(find.byKey(Key('drivewayField')), findsOneWidget);
-////    expect(find.widgetWithText(DropDownFormField, 'Regular'), findsOneWidget);
-////    expect(find.widgetWithText(DropDownFormField, 'Driveway'), findsOneWidget);
-//  });
+  testWidgets('test DrivewayOrOther with value', (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+    final type = 'Driveway';
+    final value = 'Left';
+    AddParking2().createState().drivewayOrOther(type, value);
+    await tester.idle();
+    await tester.pump();
+    expect(value, isNotNull);
+  });
+
+  testWidgets('test DrivewayOrOther, no value', (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking2(parkingData: null, curUser: null),
+    ));
+    final type = 'Driveway';
+    final value = null;
+    AddParking2().createState().drivewayOrOther(type, value);
+    await tester.idle();
+    await tester.pump();
+    expect(value, isNull);
+  });
 
     // Can't test selecting options from dropdown, so since those fields are
     // required, we can't test navigation to next page

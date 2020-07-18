@@ -292,6 +292,8 @@ class _MyAddParking1State extends State<AddParking1> {
   // approximate location for the parking space, and help preserve user privacy
   // After geocoder is complete, confirm form page 1 entries are complete and
   // valid before navigating to next page
+  // For testing: print(first.addressLine + ' : ' + first.coordinates.toString());
+  //              print('random coordinates : ' + parkingData.coord_rand);
   void validateGeo() async {
     try {
       _formKey.currentState.save();
@@ -301,17 +303,15 @@ class _MyAddParking1State extends State<AddParking1> {
       var first = addresses.first;
       parkingData.coordinates = first.coordinates.toString();
       parkingData.coord_rand = getRandomCoordinates(parkingData.coordinates);
-//      print(first.addressLine + ' : ' + first.coordinates.toString());
-//      print('random coordinates : ' + parkingData.coord_rand);
 
       var addr = first.addressLine.split(', ');
       setState(() {
-        foundLoc(addr);
+        foundLoc(addr, formError);
       });
     }
     catch (e) {
       setState(() {
-        setErrorMessage();
+        setErrorMessage(formError);
       });
     }
 
@@ -320,7 +320,8 @@ class _MyAddParking1State extends State<AddParking1> {
     }
   }
 
-  void foundLoc(List<String> addr){
+  // If a location is found, then invalidLoc is false (no error)
+  void foundLoc(List<String> addr, FormError formError){
     if(addr.length <= 3){
       parkingData.city_format = addr[0];  // when addr is: city, state, country
     }
@@ -330,7 +331,7 @@ class _MyAddParking1State extends State<AddParking1> {
     formError.invalidLoc = false;
   }
 
-  void setErrorMessage(){
+  void setErrorMessage(FormError formError){
     formError.invalidLoc = true;
     formError.errorMessage = 'We can\'t find you!\nPlease enter a valid location.';
   }
