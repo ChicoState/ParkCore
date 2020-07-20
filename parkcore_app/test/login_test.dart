@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:parkcore_app/authenticate/login_fireship.dart';
@@ -147,6 +148,105 @@ void main() {
     await tester.pump();
 
     expect(find.widgetWithText(MaterialButton, 'Login with Google'), findsOneWidget);
+  });
+
+  testWidgets('show user profile', (WidgetTester tester) async {
+    final _profile = {
+      'displayName': 'Bob',
+      'uid': 'aabbcc',
+      'email': 'bob@bobbob.com',
+      'rating': 4.5,
+      'lastSeen': Timestamp.now(),
+    };
+
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: LoginPage(),
+    ));
+
+    final col = showProfile(_profile);
+    expect(col.key, Key('showprofile'));
+  });
+
+  testWidgets('find all Show Profile widgets', (WidgetTester tester) async {
+    final _profile = {
+      'displayName': 'Bob',
+      'uid': 'aabbcc',
+      'email': 'bob@bobbob.com',
+      'rating': 4.5,
+      'lastSeen': Timestamp.now(),
+    };
+
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: LoginPage(),
+    ));
+
+    final col = showProfile(_profile) as Column;
+    expect(col.children.length, equals(8));
+  });
+
+  testWidgets('find acorn image', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: LoginPage(),
+    ));
+
+    expect(find.byKey(Key('acornImage')), findsOneWidget);
+  });
+
+  testWidgets('find user id', (WidgetTester tester) async {
+    final _profile = {
+      'displayName': 'Bob',
+      'uid': 'aabbcc',
+      'email': 'bob@bobbob.com',
+      'rating': 4.5,
+      'lastSeen': Timestamp.now(),
+    };
+
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: LoginPage(),
+    ));
+
+    final col = showProfile(_profile) as Column;
+    expect(col.children[2].toString(), Text('uid: aabbcc').toString());
+  });
+
+  testWidgets('find user email', (WidgetTester tester) async {
+    final _profile = {
+      'displayName': 'Bob',
+      'uid': 'aabbcc',
+      'email': 'bob@bobbob.com',
+      'rating': 4.5,
+      'lastSeen': Timestamp.now(),
+    };
+
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: LoginPage(),
+    ));
+
+    final col = showProfile(_profile) as Column;
+    expect(col.children[3].toString(), Text('email: bob@bobbob.com').toString());
+  });
+
+  testWidgets('find user rating', (WidgetTester tester) async {
+    final _profile = {
+      'displayName': 'Bob',
+      'uid': 'aabbcc',
+      'email': 'bob@bobbob.com',
+      'rating': 4.5,
+      'lastSeen': Timestamp.now(),
+    };
+
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: LoginPage(),
+    ));
+
+    final col = showProfile(_profile) as Column;
+    expect(col.children[5].toString(), Text('rating: 4.5').toString());
   });
 
 //  testWidgets('Tap login button', (WidgetTester tester) async {
