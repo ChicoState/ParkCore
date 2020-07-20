@@ -35,6 +35,9 @@ void main() {
       'zip': '95928',
       'uid': 'no current user',
     });
+  });
+
+//  testWidgets('Create mock database', (WidgetTester tester) async {
 //    await instance.collection(testCollection).add({
 //      'title': 'Only Required Fields',
 //      'address': '1 Anywhere Ave',
@@ -75,7 +78,7 @@ void main() {
 //      'zip': '95926',
 //      'uid': 'no current user',
 //    });
-  });
+ // });
 
   testWidgets('Find the Find Parking page title', (WidgetTester tester) async {
     // Build our app and trigger a frame.
@@ -883,6 +886,97 @@ void main() {
     expect(alert.title.toString(), Text(mySpot.title).toString());
   });
 
+  testWidgets('Check alertDialog actions', (WidgetTester tester) async {
+    var myMap = <String,dynamic>{};
+    myMap['title'] = 'My Parking Spot';
+    myMap['address'] = '123 Main St';
+    myMap['amenities'] = '[Lit, Covered, Security Camera, EV Charging]';
+    myMap['coordinates'] = '{39.7285,-121.8375}';
+    myMap['city'] = 'Chico';
+    myMap['driveway'] = 'Right';
+    myMap['monthprice'] = '42.00';
+    myMap['spacetype'] = 'N/A';
+    myMap['downloadURL'] = null;
+    myMap['type'] = 'Driveway';
+    myMap['size'] = 'Compact';
+    myMap['days'] = '[MON, TUE, WED, THU, FRI]';
+    myMap['spacedetails'] = 'near the park and downtown';
+    myMap['starttime'] = '08:00';
+    myMap['endtime'] = '16:00';
+    myMap['state'] = 'CA';
+    myMap['zip'] = '95928';
+    myMap['uid'] = 'no current user';
+    final mySpot = Spot.fromMap(myMap);
+
+    final routes = <String, WidgetBuilder>{
+      '/details' : (BuildContext context) => DetailScreen(spot: mySpot),
+    };
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+      initialRoute: '/',
+      routes: routes,
+    ));
+
+    // Let the snapshots stream fire a snapshot; then re-render
+    await tester.idle();
+    await tester.pump();
+    // // Verify the output.
+    final alert = FindParking().createState().spotAlert(mySpot, mySpot.title) as AlertDialog;
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    final action = alert.actions[0] as FlatButton;
+    expect(action.child.toString(), Text('Visit the details page for this spot').toString());
+  });
+
+  testWidgets('Tap alertDialog actions', (WidgetTester tester) async {
+    var myMap = <String,dynamic>{};
+    myMap['title'] = 'My Parking Spot';
+    myMap['address'] = '123 Main St';
+    myMap['amenities'] = '[Lit, Covered, Security Camera, EV Charging]';
+    myMap['coordinates'] = '{39.7285,-121.8375}';
+    myMap['city'] = 'Chico';
+    myMap['driveway'] = 'Right';
+    myMap['monthprice'] = '42.00';
+    myMap['spacetype'] = 'N/A';
+    myMap['downloadURL'] = null;
+    myMap['type'] = 'Driveway';
+    myMap['size'] = 'Compact';
+    myMap['days'] = '[MON, TUE, WED, THU, FRI]';
+    myMap['spacedetails'] = 'near the park and downtown';
+    myMap['starttime'] = '08:00';
+    myMap['endtime'] = '16:00';
+    myMap['state'] = 'CA';
+    myMap['zip'] = '95928';
+    myMap['uid'] = 'no current user';
+    final mySpot = Spot.fromMap(myMap);
+
+    final routes = <String, WidgetBuilder>{
+      '/details' : (BuildContext context) => DetailScreen(spot: mySpot),
+    };
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+      initialRoute: '/',
+      routes: routes,
+    ));
+
+    // Let the snapshots stream fire a snapshot; then re-render
+    await tester.idle();
+    await tester.pump();
+    // // Verify the output.
+    final alert = FindParking().createState().spotAlert(mySpot, mySpot.title) as AlertDialog;
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    final action = alert.actions[0] as FlatButton;
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 10));
+//    expect(find.text('Find Parking'), findsNothing);
+    expect(action.onPressed, isNotNull);
+  });
+
   testWidgets('Find alertDialog button', (WidgetTester tester) async {
     var myMap = <String,dynamic>{};
     myMap['title'] = 'My Parking Spot';
@@ -922,6 +1016,32 @@ void main() {
     // Verify the output.
     FindParking().createState().spotAlert(mySpot, mySpot.title);
     expect(find.byType(FlatButton), findsOneWidget);
+  });
+
+  testWidgets('test checkFilters finds match for size', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+        title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+    ));
+    var curFilter = ['Compact', 'All', 'All', 'All'];
+    FindParking().createState().checkFilters(curFilter);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.byKey(Key('boxes')), findsOneWidget);
+  });
+
+  testWidgets('test checkFilters finds match for type', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(MaterialApp(
+      home: FindParking(colRef: instance.collection(testCollection),
+          title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
+    ));
+    var curFilter = ['All', 'Driveway', 'All', 'All'];
+    FindParking().createState().checkFilters(curFilter);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 10));
+    expect(find.byKey(Key('boxes')), findsOneWidget);
   });
 
 //  testWidgets('Find alertDialog actions', (WidgetTester tester) async {
@@ -1014,20 +1134,6 @@ void main() {
 //    await tester.pump();
 //    await tester.pump(const Duration(milliseconds: 10));
 //    expect(find.widgetWithIcon(Container, Icons.lightbulb_outline), findsOneWidget);
-//  });
-
-//  testWidgets('test checkFilters function', (WidgetTester tester) async {
-//    // Build our app and trigger a frame.
-//    await tester.pumpWidget(MaterialApp(
-//      home: FindParking(colRef: instance.collection(testCollection),
-//        title: 'Find Parking', city: 'MockAnywhereTest', latlong: '{39.7285,-121.8375}'),
-//    ));
-//    var numFilters = 0;
-//    numFilters++;
-//    FindParking().createState().checkFilters();
-//    await tester.pump();
-//    await tester.pump(const Duration(milliseconds: 10));
-//    expect(numFilters, equals(0));
 //  });
 
   /*testWidgets('Flat Button Field', (WidgetTester tester) async {

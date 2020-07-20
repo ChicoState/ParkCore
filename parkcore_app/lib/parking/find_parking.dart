@@ -338,7 +338,7 @@ class _MyFindParkingState extends State<FindParking> {
       key: Key('filterbuttons'),
       onPressed: () {
         setState(() {
-          apply ? checkFilters() : showAll();
+          apply ? checkFilters(curFilter) : showAll();
         });
       },
       child: Text(
@@ -552,7 +552,7 @@ class _MyFindParkingState extends State<FindParking> {
   }
 
   // When Apply Filters button is clicked, reset filter parameters
-  void checkFilters() {
+  void checkFilters(List<String> curFilter) {
     // re-initialize numFilters to 0
     numFilters = 0;
 
