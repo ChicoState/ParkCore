@@ -6,7 +6,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Parkcore Login',
+        title: 'ParkCore Login',
         home: Scaffold(
             appBar: AppBar(
               title: Text('PARKCORE'),
@@ -29,15 +29,23 @@ class LoginPage extends StatelessWidget {
                 children: <Widget>[
                   MaterialButton(
                     onPressed: () => authService.googleSignIn(),
-                    color: Colors.white,
-                    textColor: Colors.black,
-                    child: Text('Login with Google'),
+//                    color: Colors.white,
+//                    textColor: Colors.black,
+                    color: Color(0xFF358D5B),
+                    child: Text(
+                      'Login with Google',
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
                   ),
                   MaterialButton(
                     onPressed: () => authService.signOut(),
-                    color: Colors.red,
-                    textColor: Colors.black,
-                    child: Text('Sign out'),
+//                    color: Colors.red,
+//                    textColor: Colors.black,
+                    color: Theme.of(context).accentColor,
+                    child: Text(
+                      'Sign out',
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
                   ),
                   UserProfile(),
                 ],

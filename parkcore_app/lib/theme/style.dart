@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+// Color Theme (Primary, Light, Dark):
+// Green (#67BE88, #99F1B8, #358D5B)
+// Purple (#7E57C2, #B085F5, #4D2C91)
+
 ThemeData appTheme() {
   return ThemeData(
     primarySwatch: Colors.green,

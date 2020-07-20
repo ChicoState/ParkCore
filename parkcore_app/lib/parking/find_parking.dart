@@ -148,13 +148,18 @@ class _MyFindParkingState extends State<FindParking> {
           Padding(
             padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
             child: Text(
-            'Show distance to CSU, Chico',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10, color: Colors.white, letterSpacing: 1),
+              'Show distance to CSU, Chico',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.white,
+                letterSpacing: 1,
+              ),
+            ),
           ),
         ),
-      )
-    ));
+      ),
+    );
   }
 
   Widget _googlemap(BuildContext context){
@@ -187,35 +192,39 @@ class _MyFindParkingState extends State<FindParking> {
 
         // If filter options are chosen, update the list of parking spaces shown
         if(numFilters > 0){
-          //List<DocumentSnapshot>
-          var filtered = snapshot.data.documents;
-          for(var i = 0; i < choice.length; i++){
-            if(i < 2){ // Type or Size filter
-              if(choice[i] != 'none'){
-                filtered = filtered.where((DocumentSnapshot docSnap) =>
-                docSnap[docType[i]] == choice[i]).toList();
-              }
-            }
-            else if(i == 2){ // Price filter
-              if(choice[i] != 'none'){
-                filtered = filtered.where((DocumentSnapshot docSnap) =>
-                double.parse(docSnap[docType[i]]) <= double.parse(choice[i])).toList();
-              }
-            }
-            else{ // Amenities filters (i >= 3)
-              if(choice[i] != 'none'){
-                filtered = filtered.where((DocumentSnapshot docSnap) =>
-                  docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
-                    .split(', ').contains(choice[i])).toList();
-              }
-            }
-          }
+          var filtered = applyFilters(snapshot.data.documents);
           return _buildList(context, filtered);
         }
 
         return _buildList(context, snapshot.data.documents);
       },
     );
+  }
+
+  List<DocumentSnapshot> applyFilters(List<DocumentSnapshot> snapDataDocs){
+    var filtered = snapDataDocs;
+    for(var i = 0; i < choice.length; i++){
+      if(i < 2){ // Type or Size filter
+        if(choice[i] != 'none'){
+          filtered = filtered.where((DocumentSnapshot docSnap) =>
+          docSnap[docType[i]] == choice[i]).toList();
+        }
+      }
+      else if(i == 2){ // Price filter
+        if(choice[i] != 'none'){
+          filtered = filtered.where((DocumentSnapshot docSnap) =>
+          double.parse(docSnap[docType[i]]) <= double.parse(choice[i])).toList();
+        }
+      }
+      else{ // Amenities filters (i >= 3)
+        if(choice[i] != 'none'){
+          filtered = filtered.where((DocumentSnapshot docSnap) =>
+            docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
+              .split(', ').contains(choice[i])).toList();
+        }
+      }
+    }
+    return filtered;
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {

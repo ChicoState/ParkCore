@@ -3,7 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Spot{
 
   Spot.fromMap(Map<String, dynamic>map, {this.reference})
-      : title = map['title'], address = map['address'],
+      : title = map['title'],
+        address = map['address'],
         amenities = map['amenities'],
         coordinates = map['coordinates'],
         city = map['city'],
@@ -20,7 +21,6 @@ class Spot{
         state = map['state'],
         zip = map['zip'],
         uid = map['uid'];
-
 
   Spot.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);

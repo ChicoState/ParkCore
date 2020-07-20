@@ -301,10 +301,11 @@ class _MyAddParking1State extends State<AddParking1> {
           + ', ' + parkingData.zip;
       var addresses = await Geocoder.local.findAddressesFromQuery(_geoAddress);
       var first = addresses.first;
+      var addr = first.addressLine.split(', ');
+
       parkingData.coordinates = first.coordinates.toString();
       parkingData.coord_rand = getRandomCoordinates(parkingData.coordinates);
 
-      var addr = first.addressLine.split(', ');
       setState(() {
         foundLoc(addr, formError);
       });

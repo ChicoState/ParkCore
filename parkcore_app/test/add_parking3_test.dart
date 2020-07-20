@@ -334,4 +334,19 @@ void main() {
     await tester.pump(const Duration(milliseconds: 10));
     expect(find.text('Part 1 of 5'), findsOneWidget);
   });
+
+  testWidgets('check days field onsaved', (WidgetTester tester) async {
+    // Render the widget.
+    await tester.pumpWidget(MaterialApp(
+      home: AddParking3(parkingData: null, parkingData2: null, curUser: null),
+
+    ));
+
+    final txt = 'Days Available';
+    // // Verify the output in field onChanged.
+    final dayfield = tester.widget(find.widgetWithText(MultiSelectFormField, txt)) as MultiSelectFormField;
+    dayfield.onSaved(['TUE', 'WED', 'THU']);
+    dayfield.onSaved(['']);
+    expect(dayfield.initialValue, isNull);
+  });
 }

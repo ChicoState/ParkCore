@@ -89,10 +89,14 @@ class _MyDetailScreenState extends State<DetailScreen> {
             Padding(
               padding: EdgeInsets.all(10.0),
               child: RaisedButton(
-              color: Colors.purple[100],
+              //color: Colors.purple[100],
+              color: Color(0xFFB085F5),
               padding: EdgeInsets.all(15.0),
               onPressed: () {},
-              child: Text('Reserve'),
+              child: Text(
+                'Reserve',
+                style: Theme.of(context).textTheme.headline4,
+              ),
               )
             ),
           ],
@@ -170,7 +174,10 @@ class _MyDetailScreenState extends State<DetailScreen> {
             child: Text(
               widget.spot.title,
               textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
             ),
           ),
           Row(
@@ -181,7 +188,9 @@ class _MyDetailScreenState extends State<DetailScreen> {
                 ),
                 Container(
                   padding: EdgeInsets.all(5.0),
-                  child: Text(widget.spot.city + ' ' + widget.spot.state + ', ' + widget.spot.zip),
+                  child: Text(
+                    widget.spot.city + ' ' + widget.spot.state + ', ' + widget.spot.zip
+                  ),
                 ),
                 Container(
                   padding: EdgeInsets.only(left: 80.0, top: 5.0),
@@ -210,7 +219,7 @@ class _MyDetailScreenState extends State<DetailScreen> {
                         RatingBar(
                           itemSize: 20,
                           initialRating: userExists ? currentUser.rating.toDouble() : 0.0,
-                          unratedColor: Colors.purple[100],
+                          unratedColor: Colors.deepPurple[100],
                           minRating: 1,
                           direction: Axis.horizontal,
                           allowHalfRating: false,
@@ -218,7 +227,9 @@ class _MyDetailScreenState extends State<DetailScreen> {
                           itemPadding: EdgeInsets.symmetric(horizontal: 1.0),
                           itemBuilder: (context, _) => Icon(
                           Icons.star,
-                           color: Colors.purple[400],
+                            color: Color(0xFF7E57C2),
+                            //color: Color(0xFF4D2C91),
+                          // color: Colors.purple[400],
                           ),
                           //These changes can be added for specific users who can rate
                           onRatingUpdate: (rating) {

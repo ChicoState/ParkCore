@@ -27,6 +27,7 @@ class MenuDrawer extends StatelessWidget {
             text: 'Home',
             route: '/home',
           ),
+          DefaultMap(context),
           CreateMenuItem(
             myKey: Key('addParking1Key'),
             context: context,
@@ -34,7 +35,6 @@ class MenuDrawer extends StatelessWidget {
             text: 'Post a Parking Space',
             route: '/add_parking1',
           ),
-          DefaultMap(context),
           CreateMenuItem(
             myKey: Key('contactKey'),
             context: context,
@@ -58,7 +58,6 @@ class MenuDrawer extends StatelessWidget {
 Widget CreateMenuItem(
     {Key myKey, BuildContext context, IconData icon, String text, String route}) {
   return ListTile(
-    //key: Key('menuItem'),
     key: myKey,
     title: Row(
       children: <Widget>[
@@ -126,7 +125,6 @@ Widget DefaultMap(BuildContext context) {
     ),
     onTap: () {
       // Update the state of the app, then close the drawer.
-      //Navigator.pushReplacementNamed(context, );
       Navigator.push(
         context,
         MaterialPageRoute(
