@@ -27,9 +27,14 @@ class _MyAboutState extends State<About>{
 
   void getText() async {
     final text = await loadAboutUs();
-    final text_short = await loadAboutUsShort();
     setState(() {
       about_us = text;
+    });
+  }
+
+  void getShort() async {
+    final text_short = await loadAboutUsShort();
+    setState(() {
       about_us_short = text_short;
     });
   }
@@ -38,6 +43,7 @@ class _MyAboutState extends State<About>{
   void initState() {
     super.initState();
     getText();
+    getShort();
   }
 
   @override

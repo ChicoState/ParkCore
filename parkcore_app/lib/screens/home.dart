@@ -4,7 +4,8 @@ import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'package:parkcore_app/screens/parkcore_text.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -28,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _loc = MyLoc();
   final _city = MyCity();
   final _coordinates = MyCoordinates();
-  final _found = LocFound();
+  final found = LocFound();
 
   @override
   void dispose() {
@@ -169,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
           color: Colors.black,
           height: 20,
         ),
-        _found.found ? FoundResults() : FailedSearch(),
+        FoundResults(),
         Divider(
           color: Colors.black,
           height: 20,
@@ -178,10 +179,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // If Search was successful, show the location that was found
+  // If Search is successful, show found location & button to go to map;
+  // else, show error message
   Widget FoundResults() {
     return Row(
-      key: Key('foundResult'),
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -205,40 +206,37 @@ class _MyHomePageState extends State<MyHomePage> {
           fit: FlexFit.tight,
           child: Column(
             children: [
-              RaisedButton(
+              found.found ? RaisedButton(
                 child: Text('Go!'),
                 onPressed: () {
-                  Navigator.push(
-                    context,
+                  Navigator.push(context,
                     MaterialPageRoute(
                       builder: (context) => FindParking(
+                        colRef: Firestore.instance.collection('parkingSpaces'),
                         title: 'Find Parking',
                         city: _city.city,
-                        latlong: _coordinates.coordinates =
-                            _coordinates.coordinates ?? '{39.7285,-121.8375}',
+                        latlong: _coordinates.coordinates ?? '{39.7285,-121.8375}',
                       ),
                     ),
                   );
                 },
                 color: Theme.of(context).backgroundColor,
                 textColor: Colors.white,
+              )
+              :Opacity(
+                key: Key('failedSearch'),
+                opacity: 0.3,
+                child: SvgPicture.asset(
+                  'assets/Acorns.svg',
+                  width: 60,
+                  fit: BoxFit.cover,
+                  semanticsLabel: 'Acorns image',
+                ),
               ),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  // If Search was not successful, show error message
-  Widget FailedSearch() {
-    return Padding(
-      key: Key('failedSearch'),
-      padding: EdgeInsets.all(10.0),
-      child: Text(
-        _loc.location,
-        style: Theme.of(context).textTheme.headline3,
-      ),
     );
   }
 
@@ -248,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return true;
     }
     catch(e){
-      print('Error occurred: $e');
+      //print('Error occurred: $e');
       return false;
     }
   }
@@ -261,27 +259,36 @@ class _MyHomePageState extends State<MyHomePage> {
       var first = addresses.first; // Get Address
       var addr = getSplitAddress(first.addressLine.toString()); // String []
 
-      // geocoder has different results depending on details given
-      // extracting city from the address so find_parking goes to specified city
       setState(() {
-        _found.found = true;
-        if(addr.length <= 3){
-          _city.city = addr[0];  // when addr is: city, state, country
-        }
-        else{
-          _city.city = addr[1]; // when addr is: address, city, state, country
-        }
-        _loc.location = '${first.addressLine}';
-        _coordinates.coordinates = first.coordinates.toString();
+        found.found = setLoc(first, addr);
       });
     }
     catch (e) {
-      print('Error occurred: $e');
       setState(() {
-        _found.found = false;
-        _loc.location = 'Sorry, no search results for "' + loc_input + '".';
+        found.found = locNotFound(loc_input);
       });
     }
+  }
+
+  // geocoder has different results depending on the address details given
+  // extracting city from the address so find_parking goes to specified city
+  bool setLoc(Address first, List<String> addr){
+    if(addr.length <= 3){
+      _city.city = addr[0];  // when addr is: city, state, country
+    }
+    else{
+      _city.city = addr[1]; // when addr is: address, city, state, country
+    }
+    _loc.location = '${first.addressLine}';
+    _coordinates.coordinates = first.coordinates.toString();
+    return true;
+  }
+
+  // If geocoder fails to find the location searched for,
+  // set 'found' to false, and set search failure message
+  bool locNotFound(String loc_input){
+    _loc.location = 'Sorry, no search results for "' + loc_input + '".';
+    return false;
   }
 
   List<String> getSplitAddress(String address){

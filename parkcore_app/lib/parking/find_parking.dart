@@ -1,56 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:great_circle_distance2/great_circle_distance2.dart';
 import 'package:parkcore_app/navigate/parkcore_button.dart';
 import 'parking_details.dart';
-
-class Spot{
-
-  Spot.fromMap(Map<String, dynamic>map, {this.reference})
-    : title = map['title'], address = map['address'],
-    amenities = map['amenities'],
-    coordinates = map['coordinates'],
-    city = map['city'],
-    driveway = map['driveway'],
-    monthPrice = map['monthprice'],
-    spacetype = map['spacetype'],
-    image = map['downloadURL'],
-    type = map['type'],
-    size = map['size'],
-    days = map['days'],
-    spacedetails = map['spacedetails'],
-    starttime = map['starttime'],
-    endtime = map['endtime'],
-    state = map['state'],
-    zip = map['zip'],
-    uid = map['uid'];
-
-
-  Spot.fromSnapshot(DocumentSnapshot snapshot)
-    : this.fromMap(snapshot.data, reference: snapshot.reference);
-
-  String title;
-  String address;
-  String amenities;
-  String coordinates;
-  String city;
-  String driveway;
-  String monthPrice;
-  String spacetype;
-  String image;
-  String type;
-  String size;
-  String days;
-  String spacedetails;
-  String starttime;
-  String endtime;
-  String state;
-  String zip;
-  String uid;
-  final DocumentReference reference;
-
-}//end of class
+import 'package:parkcore_app/models/Spot.dart';
 
   ///This method is to deserialize your JSON
   ///Basically converting a string response to an object model
@@ -58,13 +13,14 @@ class Spot{
   ///so we create a map of String and dynamic.
 
 class FindParking extends StatefulWidget {
-  FindParking({Key key, this.title, this.city, this.latlong}) : super(key: key);
+  FindParking({Key key, this.colRef, this.title, this.city, this.latlong}) : super(key: key);
   // This widget is the 'find parking' page of the app. It is stateful: it has a
   // State object (defined below) that contains fields that affect how it looks.
   // This class is the configuration for the state. It holds the values (title)
   // provided by the parent (App widget) and used by the build method of the
   // State. Fields in a Widget subclass are always marked 'final'.
 
+  final CollectionReference colRef;
   final String title;
   final String city;
   final String latlong;
@@ -93,8 +49,8 @@ class _MyFindParkingState extends State<FindParking> {
   bool pressed = false;
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    await Firestore.instance.collection('parkingSpaces')
-      .getDocuments()
+    //await Firestore.instance.collection('parkingSpaces').getDocuments()
+    await widget.colRef.getDocuments()
       .then((QuerySnapshot snapshot) {
         snapshot.documents.forEach((f) =>
         allMarkers.add(
@@ -111,25 +67,7 @@ class _MyFindParkingState extends State<FindParking> {
             onTap: () {
               showDialog(
                 context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('${f.data['title']}'),
-                  content: Text('Want to know more about this location?'),
-                  actions: [
-                    FlatButton(
-                      child: Text('Visit the details page for this spot'),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailScreen(
-                              spot: Spot.fromSnapshot(f),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                builder: (context) => spotAlert(Spot.fromSnapshot(f),'${f.data['title']}'),
               );
             },
           ),
@@ -141,6 +79,33 @@ class _MyFindParkingState extends State<FindParking> {
         _markers[allMarkers[i].markerId] = allMarkers[i];
       }
     });
+  }
+
+  Widget spotAlert(Spot thisSpot, String spotTitle){
+    return AlertDialog(
+      title: Text(spotTitle),
+      content: Text('Want to know more about this location?'),
+      actions: [
+        FlatButton(
+          child: Text('Visit the details page for this spot'),
+          onPressed: () {
+            goToDetails(thisSpot);
+          },
+        ),
+      ],
+    );
+  }
+
+  void goToDetails(Spot thisSpot){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailScreen(
+          spot: thisSpot,
+          colRef: Firestore.instance.collection('users'),
+        ),
+      ),
+    );
   }
 
   @override
@@ -174,77 +139,60 @@ class _MyFindParkingState extends State<FindParking> {
         height: 70,
         child: RaisedButton(
           onPressed: () {
-              setState(() {
-                pressed = true;
-              });
+            setState(() {
+              pressed = true;
+            });
           },
           color: Color(0xFF4D2C91),
           child:
           Padding(
             padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
             child: Text(
-            'Show distance to CSU, Chico',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 10, color: Colors.white, letterSpacing: 1),
+              'Show distance to CSU, Chico',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.white,
+                letterSpacing: 1,
+              ),
+            ),
           ),
         ),
-      )
-    ));
+      ),
+    );
   }
 
   Widget _googlemap(BuildContext context){
     return Container(
       child: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: LatLng(
-              num.parse(widget.latlong.substring(1, widget.latlong.indexOf(','))),
-              num.parse(widget.latlong.substring(widget.latlong.indexOf(',') + 1,
-              widget.latlong.length-1)),
-            ),
-            zoom: 15,
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: LatLng(
+            num.parse(widget.latlong.substring(1, widget.latlong.indexOf(','))),
+            num.parse(widget.latlong.substring(widget.latlong.indexOf(',') + 1,
+            widget.latlong.length-1)),
           ),
-          markers: _markers.values.toSet(),
+          zoom: 15,
+        ),
+        markers: _markers.values.toSet(),
       )
     );
   }
 
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('parkingSpaces')
-        .where('city', isEqualTo: widget.city)
-        .snapshots(),
+      stream: widget.colRef.where('city', isEqualTo: widget.city).snapshots(),
+//      stream: Firestore.instance.collection('parkingSpaces')
+//        .where('city', isEqualTo: widget.city).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
         if(snapshot.data.documents.isEmpty){
-         return _noSpaces(context);
+          return _noSpaces(context);
         }
 
         // If filter options are chosen, update the list of parking spaces shown
         if(numFilters > 0){
-          //List<DocumentSnapshot>
-          var filtered = snapshot.data.documents;
-          for(var i = 0; i < choice.length; i++){
-            if(i < 2){ // Type or Size filter
-              if(choice[i] != 'none'){
-                filtered = filtered.where((DocumentSnapshot docSnap) =>
-                docSnap[docType[i]] == choice[i]).toList();
-              }
-            }
-            else if(i == 2){ // Price filter
-              if(choice[i] != 'none'){
-                filtered = filtered.where((DocumentSnapshot docSnap) =>
-                double.parse(docSnap[docType[i]]) <= double.parse(choice[i])).toList();
-              }
-            }
-            else{ // Amenities filters (i >= 3)
-              if(choice[i] != 'none'){
-                filtered = filtered.where((DocumentSnapshot docSnap) =>
-                  docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
-                    .split(', ').contains(choice[i])).toList();
-              }
-            }
-          }
+          var filtered = applyFilters(snapshot.data.documents);
           return _buildList(context, filtered);
         }
 
@@ -253,8 +201,35 @@ class _MyFindParkingState extends State<FindParking> {
     );
   }
 
+  List<DocumentSnapshot> applyFilters(List<DocumentSnapshot> snapDataDocs){
+    var filtered = snapDataDocs;
+    for(var i = 0; i < choice.length; i++){
+      if(i < 2){ // Type or Size filter
+        if(choice[i] != 'none'){
+          filtered = filtered.where((DocumentSnapshot docSnap) =>
+          docSnap[docType[i]] == choice[i]).toList();
+        }
+      }
+      else if(i == 2){ // Price filter
+        if(choice[i] != 'none'){
+          filtered = filtered.where((DocumentSnapshot docSnap) =>
+          double.parse(docSnap[docType[i]]) <= double.parse(choice[i])).toList();
+        }
+      }
+      else{ // Amenities filters (i >= 3)
+        if(choice[i] != 'none'){
+          filtered = filtered.where((DocumentSnapshot docSnap) =>
+            docSnap[docType[3]].substring(1, docSnap[docType[3]].length-1)
+              .split(', ').contains(choice[i])).toList();
+        }
+      }
+    }
+    return filtered;
+  }
+
   Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return Align(
+      key: Key('listBody'),
       alignment: Alignment.bottomCenter,
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -360,9 +335,10 @@ class _MyFindParkingState extends State<FindParking> {
   // Apply or remove filters as selected
   Widget FiltersButton(String txt, bool apply){
     return RaisedButton(
+      key: Key('filterbuttons'),
       onPressed: () {
         setState(() {
-          apply ? checkFilters() : showAll();
+          apply ? checkFilters(curFilter) : showAll();
         });
       },
       child: Text(
@@ -381,13 +357,11 @@ class _MyFindParkingState extends State<FindParking> {
 
   // show all listed parking spaces at this location (clear all selected)
   void showAll(){
-    setState(() {
-      numFilters = 0;
-      for(var i = 0; i < curFilter.length; i++){
-        curFilter[i] = 'All';
-        selected[i] = false;
-      }
-    });
+    numFilters = 0;
+    for(var i = 0; i < curFilter.length; i++){
+      curFilter[i] = 'All';
+      selected[i] = false;
+    }
   }
 
   // Get the dropdown menu items for the given filter option
@@ -409,11 +383,13 @@ class _MyFindParkingState extends State<FindParking> {
       ),
       child: ListTileTheme(
         child: ListTile(
+          key: Key('sizeListTile'),
           title: Text(
             'Size',
             style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
+            key: Key('sizeButton'),
             hint: Text('Choose'),
             onChanged: (String changedValue) {
               setState(() {
@@ -445,6 +421,7 @@ class _MyFindParkingState extends State<FindParking> {
             style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
+            key: Key('typeButton'),
             hint: Text('Choose'),
             onChanged: (String changedValue) {
               setState(() {
@@ -476,6 +453,7 @@ class _MyFindParkingState extends State<FindParking> {
             style: Theme.of(context).textTheme.headline5,
           ),
           trailing: DropdownButton<String>(
+            key: Key('priceButton'),
             hint: Text('Choose'),
             onChanged: (String changedValue) {
               setState(() {
@@ -554,7 +532,7 @@ class _MyFindParkingState extends State<FindParking> {
               onPressed: (int index) {
                 setState(() {
                   selected[index] = !selected[index];
-                  print('Selected: ' + selected.toString());
+                 // print('Selected: ' + selected.toString());
                 });
               },
               color: Theme.of(context).backgroundColor,
@@ -574,7 +552,7 @@ class _MyFindParkingState extends State<FindParking> {
   }
 
   // When Apply Filters button is clicked, reset filter parameters
-  void checkFilters() {
+  void checkFilters(List<String> curFilter) {
     // re-initialize numFilters to 0
     numFilters = 0;
 
@@ -606,13 +584,14 @@ class _MyFindParkingState extends State<FindParking> {
   }
 
   double adjustDistance(var i){
-      if(i > 1){
-        return i + i.floor()*.25;
-      }
-      else{
-        return i;
-      }
+    if(i > 1){
+      return i + i.floor()*.25;
     }
+    else{
+      return i;
+    }
+  }
+
   String haversize(coordinates) {
 
     var lat = num.parse(coordinates.substring(1, coordinates.indexOf(',')));
@@ -637,10 +616,16 @@ class _MyFindParkingState extends State<FindParking> {
       padding: EdgeInsets.all(5.0),
       child: Row(
         children: <Widget> [
-          Text(haversize(coordinates) + ' Min' ?? 'null', style: TextStyle(fontSize: 15)),
-          Icon(Icons.directions_walk, size: 20,)
-        ]
-      )
+          Text(
+            haversize(coordinates) + ' Min' ?? 'null',
+            style: TextStyle(fontSize: 15),
+          ),
+          Icon(
+            Icons.directions_walk,
+            size: 20,
+          ),
+        ],
+      ),
     );
   }
 
@@ -652,16 +637,13 @@ class _MyFindParkingState extends State<FindParking> {
     return Padding(
      padding: const EdgeInsets.all(8.0),
        child: GestureDetector(
+         key: Key('gotodetails'),
          onTap: () {
-           Navigator.push(
-            context,
-            MaterialPageRoute(
-            builder: (context) => DetailScreen(spot: parkingSpot),
-            ),
-          );
+           goToDetails(parkingSpot);
          },
          child: _boxes(parkingSpot.image, parkingSpot.title, parkingSpot.city,
-           parkingSpot.state, parkingSpot.zip, parkingSpot.monthPrice, parkingSpot.type, parkingSpot.coordinates),
+           parkingSpot.state, parkingSpot.zip, parkingSpot.monthPrice,
+           parkingSpot.type, parkingSpot.coordinates),
        )
     );
   }
@@ -671,6 +653,7 @@ class _MyFindParkingState extends State<FindParking> {
     var roundedPrice = (num.parse(monthprice)).round();
 
     return Container(
+      key: Key('boxes'),
       child: FittedBox(
         child: Material(
           elevation: 20.0,
@@ -684,10 +667,13 @@ class _MyFindParkingState extends State<FindParking> {
                 height: 90,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
-                  child: Image(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(image ?? 'https://homestaymatch.com/images/no-image-available.png'),
-                  ),
+                  child: widget.city != 'MockAnywhereTest'
+                    ? FadeInImage.assetNetwork(
+                      fit: BoxFit.fill,
+                      placeholder: 'assets/parkcore_logo_green2.jpg',
+                      image: image ?? 'https://homestaymatch.com/images/no-image-available.png',
+                    )
+                    :SizedBox(height: 10),
                 ),
               ),
               Container(
@@ -700,9 +686,24 @@ class _MyFindParkingState extends State<FindParking> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(title ?? 'N/A', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0), textAlign: TextAlign.center),
-                      Text(city + ', ' + state + ', ' + zip, style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
-                      Text(type ?? 'N/A', style: TextStyle(fontSize: 15.0), textAlign: TextAlign.center),
+                      Text(
+                        title ?? 'N/A',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        city + ', ' + state + ', ' + zip,
+                        style: TextStyle(fontSize: 15.0),
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                        type ?? 'N/A',
+                        style: TextStyle(fontSize: 15.0),
+                        textAlign: TextAlign.center,
+                      ),
                     ],
                   ),
                 ),
@@ -713,7 +714,13 @@ class _MyFindParkingState extends State<FindParking> {
                   child: Column(
                     children: <Widget>[
                       pressed ? displayDistance(coordinates) : SizedBox(),
-                      Text('\$' + roundedPrice.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+                      Text(
+                        '\$' + roundedPrice.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -727,6 +734,7 @@ class _MyFindParkingState extends State<FindParking> {
 
   Widget _noSpaces(BuildContext context){
     return Align(
+      key: Key('nospaces'),
       alignment: Alignment.bottomCenter,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -741,11 +749,13 @@ class _MyFindParkingState extends State<FindParking> {
               child: ListTile(
                 title: Row(
                   children: <Widget>[
-                    Text(
-                      'We\'re not yet in\n' + widget.city +
-                          '\nLet us know you\'re interested!',
-                      style: Theme.of(context).textTheme.headline4,
-                      textAlign: TextAlign.center,
+                    Expanded(
+                      child: Text(
+                        'We\'re not yet in\n' + widget.city +
+                            '\nLet us know you\'re interested!',
+                        style: Theme.of(context).textTheme.headline4,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),

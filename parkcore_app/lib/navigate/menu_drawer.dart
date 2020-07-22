@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:parkcore_app/parking/find_parking.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MenuDrawer extends StatelessWidget {
   @override
@@ -26,14 +27,14 @@ class MenuDrawer extends StatelessWidget {
             text: 'Home',
             route: '/home',
           ),
+          DefaultMap(context),
           CreateMenuItem(
-            myKey: Key('addParkingKey'),
+            myKey: Key('addParking1Key'),
             context: context,
             icon: Icons.directions_car,
             text: 'Post a Parking Space',
-            route: '/add_parking',
+            route: '/add_parking1',
           ),
-          DefaultMap(context),
           CreateMenuItem(
             myKey: Key('contactKey'),
             context: context,
@@ -57,7 +58,6 @@ class MenuDrawer extends StatelessWidget {
 Widget CreateMenuItem(
     {Key myKey, BuildContext context, IconData icon, String text, String route}) {
   return ListTile(
-    //key: Key('menuItem'),
     key: myKey,
     title: Row(
       children: <Widget>[
@@ -125,11 +125,11 @@ Widget DefaultMap(BuildContext context) {
     ),
     onTap: () {
       // Update the state of the app, then close the drawer.
-      //Navigator.pushReplacementNamed(context, );
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => FindParking(
+            colRef: Firestore.instance.collection('parkingSpaces'),
             title: 'Find Parking',
             city: 'Chico',
             latlong: '{39.7285,-121.8375}',
